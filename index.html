@@ -1,296 +1,229 @@
-import React, { useState } from "react";
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ReMeal – Có gì trong tủ?</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  .handwrite { font-family: 'Comic Sans MS', 'Segoe Print', cursive; }
+  .hero {
+    aspect-ratio: 1536 / 900;
+    min-height: 480px;
+    background:
+      radial-gradient(ellipse 55% 60% at 8% 15%, rgba(196,224,150,0.55) 0%, rgba(196,224,150,0) 60%),
+      radial-gradient(ellipse 45% 55% at 4% 90%, rgba(214,232,150,0.5) 0%, rgba(214,232,150,0) 60%),
+      radial-gradient(ellipse 50% 55% at 96% 10%, rgba(200,228,180,0.45) 0%, rgba(200,228,180,0) 60%),
+      radial-gradient(ellipse 55% 60% at 98% 90%, rgba(190,222,160,0.5) 0%, rgba(190,222,160,0) 60%),
+      linear-gradient(180deg, #fbfdf6 0%, #f8faf1 100%);
+  }
+  .glow-left {
+    position:absolute; left:-8%; bottom:-10%; width:45%; height:70%;
+    background: radial-gradient(circle, rgba(150,210,110,0.35) 0%, rgba(150,210,110,0) 70%);
+    filter: blur(20px); pointer-events:none;
+  }
+  .glow-right {
+    position:absolute; right:-6%; top:0; width:40%; height:100%;
+    background: radial-gradient(circle, rgba(180,220,150,0.3) 0%, rgba(180,220,150,0) 70%);
+    filter: blur(20px); pointer-events:none;
+  }
+  .decor { position:absolute; pointer-events:none; }
+  .card {
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+    background: rgba(255,255,255,0.7); backdrop-filter: blur(2px);
+    border:1px solid rgba(190,224,190,0.7);
+    border-radius:24px;
+    box-shadow: 0 8px 20px -8px rgba(47,107,58,0.25);
+    width:118px; height:128px; padding:16px;
+  }
+  @media (min-width:640px){ .card{ width:136px; height:146px; } }
+  @media (min-width:768px){ .card{ width:150px; height:160px; } }
+  .icon-circle {
+    width:44px; height:44px; border-radius:9999px; background:#dcefdc;
+    display:flex; align-items:center; justify-content:center; margin-bottom:8px;
+  }
+  @media (min-width:768px){ .icon-circle{ width:48px; height:48px; } }
+  .cta-btn {
+    display:flex; align-items:center; justify-content:space-between;
+    border-radius:9999px; font-weight:800; color:#fff;
+    background: linear-gradient(135deg, #4c9a52 0%, #2c6a37 100%);
+    padding:14px 10px 14px 26px;
+    width: clamp(220px, 22vw, 320px);
+    font-size: clamp(14px, 1.4vw, 19px);
+    box-shadow: 0 8px 18px -6px rgba(44,106,55,0.45);
+    transition: box-shadow .25s ease, transform .25s ease;
+    border:none; cursor:pointer;
+  }
+  .cta-btn:hover {
+    box-shadow: 0 14px 26px -8px rgba(44,106,55,0.55);
+    transform: translateY(-3px);
+  }
+  .cta-circle {
+    width: clamp(34px, 3vw, 44px); height: clamp(34px, 3vw, 44px);
+    background:#fff; border-radius:9999px;
+    display:flex; align-items:center; justify-content:center;
+    transition: transform .25s ease;
+  }
+  .cta-btn:hover .cta-circle { transform: translateX(4px); }
+</style>
+</head>
+<body class="bg-white">
 
-const ASSET = {
-  mascot: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/mascot.png",
-  mon1: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%201.png",
-  mon2: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%202.png",
-  mon3: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%203.png",
-  tomato1: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/tomato%202.jpg",
-  tomato2: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/tomato%201.png",
-  onion: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/onion.webp",
-  leaf: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/leaf.png",
-  igdi1: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/igdi.jpg",
-  igdi2: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/igdi%202.webp",
-  fruitSet: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/hoa%20qu%E1%BA%A3%20trang%20tr%C3%AD.png",
-  egg: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/egg.webp",
-  chilli: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/chilli.webp",
-  broccoli: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/broccoli.png",
-};
+<div class="hero relative w-full overflow-hidden select-none">
 
-function ClockIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 md:w-7 md:h-7" stroke="#2f6b3a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 7v5l3 2" />
-    </svg>
-  );
-}
-function LeafIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 md:w-7 md:h-7" stroke="#2f6b3a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M6 20c8 0 13-5 13-13 0-1 0-2-.2-3C10.5 4.2 6 9 6 17c0 1 0 2 .2 3z" />
-      <path d="M7 19C10 15 13 12 18 8" />
-    </svg>
-  );
-}
-function BowlIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 md:w-7 md:h-7" stroke="#2f6b3a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 11h18a9 8 0 0 1-18 0z" />
-      <path d="M8 11c0-2 .5-4 1.5-5" />
-      <path d="M14 11c.5-1.5.5-3 0-4.5" />
-    </svg>
-  );
-}
-function HeartIcon({ className = "w-3.5 h-3.5" }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="#3f7d4a" className={className}>
-      <path d="M12 21s-7.5-4.6-10-9.2C.5 8 2 4.5 5.5 4c2-.3 3.7.7 4.5 2.2C10.8 4.7 12.5 3.7 14.5 4 18 4.5 19.5 8 22 11.8 14.5 16.4 12 21 12 21z" />
-    </svg>
-  );
-}
-function ArrowRightIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="#2f6b3a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M5 12h14M13 6l6 6-6 6" />
-    </svg>
-  );
-}
+  <!-- ambient glows -->
+  <div class="glow-left"></div>
+  <div class="glow-right"></div>
 
-function BenefitCard({ Icon, lines }) {
-  return (
-    <div className="relative flex flex-col items-center justify-center text-center bg-white/70 backdrop-blur-sm border border-green-200/70 rounded-[24px] shadow-[0_8px_20px_-8px_rgba(47,107,58,0.25)] px-4 py-5 w-[118px] h-[128px] sm:w-[136px] sm:h-[146px] md:w-[150px] md:h-[160px]">
-      <div className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-green-100 flex items-center justify-center mb-2">
-        <Icon />
-      </div>
-      <p className="text-[#2f6b3a] font-extrabold leading-tight text-[13px] md:text-[14px] whitespace-pre-line">
-        {lines}
-      </p>
-      <svg className="mt-1.5" width="34" height="8" viewBox="0 0 34 8" fill="none">
-        <path d="M2 5.5C8 1.5 14 1.5 17 4C20 6.5 26 6.5 32 2.5" stroke="#3f7d4a" strokeWidth="2" strokeLinecap="round" />
+  <!-- ===== DECORATIVE INGREDIENTS ===== -->
+  <!-- top-left -->
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/leaf.png" alt="" class="decor w-10 md:w-14 opacity-90" style="top:-1%; left:22%; transform:rotate(-15deg);" />
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/igdi.jpg" alt="" class="decor w-8 md:w-10 rounded-full object-cover opacity-90" style="top:3%; left:29%; transform:rotate(10deg);" />
+
+  <!-- top-right -->
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/tomato%202.jpg" alt="" class="decor w-16 md:w-24 rounded-full object-cover shadow-md" style="top:-3%; right:6%; transform:rotate(8deg);" />
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/onion.webp" alt="" class="decor w-12 md:w-16 object-contain" style="top:0; right:0; transform:rotate(-6deg);" />
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/leaf.png" alt="" class="decor w-10 md:w-14 opacity-90" style="top:2%; right:18%; transform:rotate(20deg) scaleX(-1);" />
+
+  <!-- bottom-left near mascot feet -->
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/chilli.webp" alt="" class="decor w-12 md:w-16 object-contain" style="bottom:10%; left:1%; transform:rotate(-10deg);" />
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/hoa%20qu%E1%BA%A3%20trang%20tr%C3%AD.png" alt="" class="decor w-16 md:w-24 object-contain" style="bottom:6%; left:5%;" />
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/broccoli.png" alt="" class="decor w-10 md:w-14 object-contain" style="bottom:13%; left:0;" />
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/tomato%201.png" alt="" class="decor w-10 md:w-14 object-contain" style="bottom:2%; left:13%; transform:rotate(6deg);" />
+
+  <!-- bottom-right near salmon -->
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/leaf.png" alt="" class="decor w-10 md:w-14 opacity-90" style="bottom:3%; right:20%; transform:rotate(-25deg);" />
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/igdi%202.webp" alt="" class="decor w-9 md:w-12 rounded-full object-cover opacity-90" style="bottom:1%; right:27%;" />
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/egg.webp" alt="" class="decor w-8 md:w-10 object-contain opacity-90" style="bottom:18%; right:31%; transform:rotate(-8deg);" />
+
+  <!-- mid-right accent -->
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/tomato%201.png" alt="" class="decor w-8 md:w-10 object-contain" style="top:60%; right:27%; transform:rotate(-10deg);" />
+
+  <!-- ===== LOGO TOP LEFT ===== -->
+  <div class="absolute z-20" style="top:3%; left:3%;">
+    <div class="relative inline-block">
+      <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/leaf.png" alt="" class="absolute w-5 md:w-6" style="top:-12px; left:4px; transform:rotate(-10deg);" />
+      <h1 class="font-extrabold leading-none" style="font-size:clamp(22px,3vw,40px); color:#2c6a37; letter-spacing:-0.5px;">ReMeal</h1>
+      <svg class="mt-0.5" width="70" height="10" viewBox="0 0 70 10" fill="none">
+        <path d="M2 3C15 9 25 9 35 4C45 -1 55 -1 68 5" stroke="#3f7d4a" stroke-width="2.5" stroke-linecap="round" />
       </svg>
-      <HeartIcon className="absolute bottom-2 right-2 w-3 h-3 opacity-80" />
     </div>
-  );
-}
+    <p class="font-bold mt-1" style="color:#2c6a37; font-size:clamp(10px,1vw,13px); line-height:1.3;">
+      Biến đồ ăn có sẵn<br />thành bữa ăn tuyệt vời
+    </p>
+  </div>
 
-export default function ReMealLanding() {
-  const [hover, setHover] = useState(false);
+  <!-- ===== MASCOT ===== -->
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/mascot.png" alt="ReMeal mascot"
+       class="absolute z-10 object-contain" style="left:-2%; bottom:0; width:clamp(220px,30vw,460px); filter:drop-shadow(0 20px 25px rgba(40,90,45,0.25));" />
 
-  return (
-    <div
-      className="relative w-full overflow-hidden font-sans select-none"
-      style={{
-        aspectRatio: "1536 / 900",
-        minHeight: 480,
-        background:
-          "radial-gradient(ellipse 55% 60% at 8% 15%, rgba(196,224,150,0.55) 0%, rgba(196,224,150,0) 60%), radial-gradient(ellipse 45% 55% at 4% 90%, rgba(214,232,150,0.5) 0%, rgba(214,232,150,0) 60%), radial-gradient(ellipse 50% 55% at 96% 10%, rgba(200,228,180,0.45) 0%, rgba(200,228,180,0) 60%), radial-gradient(ellipse 55% 60% at 98% 90%, rgba(190,222,160,0.5) 0%, rgba(190,222,160,0) 60%), linear-gradient(180deg, #fbfdf6 0%, #f8faf1 100%)",
-      }}
-    >
-      {/* ambient glow behind mascot */}
-      <div
-        className="absolute rounded-full pointer-events-none"
-        style={{
-          left: "-8%",
-          bottom: "-10%",
-          width: "45%",
-          height: "70%",
-          background: "radial-gradient(circle, rgba(150,210,110,0.35) 0%, rgba(150,210,110,0) 70%)",
-          filter: "blur(20px)",
-        }}
-      />
-      {/* ambient glow behind dishes */}
-      <div
-        className="absolute rounded-full pointer-events-none"
-        style={{
-          right: "-6%",
-          top: "0%",
-          width: "40%",
-          height: "100%",
-          background: "radial-gradient(circle, rgba(180,220,150,0.3) 0%, rgba(180,220,150,0) 70%)",
-          filter: "blur(20px)",
-        }}
-      />
+  <!-- Sticky note near mascot -->
+  <div class="absolute z-20 rounded-md shadow-md px-4 py-3" style="left:20%; bottom:8%; width:clamp(110px,12vw,160px); background:#f7f0d8; transform:rotate(-6deg);">
+    <p class="handwrite font-bold" style="color:#3f7d4a; font-size:clamp(11px,1vw,14px); line-height:1.35;">
+      Ăn ngon hơn<br />Sống xanh hơn<br />Mỗi ngày!
+    </p>
+    <svg class="mt-1" width="60" height="8" viewBox="0 0 60 8" fill="none">
+      <path d="M2 4C15 8 25 1 35 5C45 8 52 3 58 5" stroke="#3f7d4a" stroke-width="1.5" stroke-linecap="round" />
+    </svg>
+  </div>
 
-      {/* ---------- DECORATIVE INGREDIENTS ---------- */}
-      {/* top-left */}
-      <img src={ASSET.leaf} alt="" className="absolute w-10 md:w-14 opacity-90 pointer-events-none" style={{ top: "-1%", left: "22%", transform: "rotate(-15deg)" }} />
-      <img src={ASSET.igdi1} alt="" className="absolute w-8 md:w-10 rounded-full object-cover opacity-90 pointer-events-none" style={{ top: "3%", left: "29%", transform: "rotate(10deg)" }} />
+  <!-- ===== THREE DISHES RIGHT SIDE ===== -->
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%201.png" alt="Món ăn 1"
+       class="absolute z-10 object-contain" style="right:-3%; top:2%; width:clamp(160px,20vw,320px); filter:drop-shadow(0 18px 20px rgba(40,90,45,0.25));" />
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%202.png" alt="Món ăn 2"
+       class="absolute z-10 object-contain" style="right:-2%; top:38%; width:clamp(160px,20vw,320px); filter:drop-shadow(0 18px 20px rgba(40,90,45,0.25));" />
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%203.png" alt="Món ăn 3"
+       class="absolute z-10 object-contain" style="right:-3%; bottom:0; width:clamp(170px,21vw,340px); filter:drop-shadow(0 18px 20px rgba(40,90,45,0.25));" />
 
-      {/* top-right */}
-      <img src={ASSET.tomato1} alt="" className="absolute w-16 md:w-24 rounded-full object-cover pointer-events-none shadow-md" style={{ top: "-3%", right: "6%", transform: "rotate(8deg)" }} />
-      <img src={ASSET.onion} alt="" className="absolute w-12 md:w-16 object-contain pointer-events-none" style={{ top: "0%", right: "0%", transform: "rotate(-6deg)" }} />
-      <img src={ASSET.leaf} alt="" className="absolute w-10 md:w-14 opacity-90 pointer-events-none" style={{ top: "2%", right: "18%", transform: "rotate(20deg) scaleX(-1)" }} />
+  <!-- ===== CENTER CONTENT ===== -->
+  <div class="absolute z-30 flex flex-col items-center text-center" style="top:6%; left:50%; transform:translateX(-50%); width:clamp(280px,46vw,700px);">
 
-      {/* bottom-left near mascot feet */}
-      <img src={ASSET.chilli} alt="" className="absolute w-12 md:w-16 object-contain pointer-events-none" style={{ bottom: "10%", left: "1%", transform: "rotate(-10deg)" }} />
-      <img src={ASSET.fruitSet} alt="" className="absolute w-16 md:w-24 object-contain pointer-events-none" style={{ bottom: "6%", left: "5%" }} />
-      <img src={ASSET.broccoli} alt="" className="absolute w-10 md:w-14 object-contain pointer-events-none" style={{ bottom: "13%", left: "0%" }} />
-      <img src={ASSET.tomato2} alt="" className="absolute w-10 md:w-14 object-contain pointer-events-none" style={{ bottom: "2%", left: "13%", transform: "rotate(6deg)" }} />
+    <div class="relative">
+      <svg class="absolute" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3f7d4a" stroke-width="2" style="top:-12px; left:-32px; opacity:0.7;">
+        <path d="M4 12c2-4 6-6 10-4M6 6c1-2 3-3 5-2" stroke-linecap="round" />
+      </svg>
+      <h2 class="font-extrabold" style="color:#2c6a37; font-size:clamp(30px,4.6vw,64px); line-height:1.05; text-shadow:0 3px 0 rgba(255,255,255,0.5);">
+        Có gì trong tủ?
+      </h2>
+    </div>
 
-      {/* bottom-right near salmon */}
-      <img src={ASSET.leaf} alt="" className="absolute w-10 md:w-14 opacity-90 pointer-events-none" style={{ bottom: "3%", right: "20%", transform: "rotate(-25deg)" }} />
-      <img src={ASSET.igdi2} alt="" className="absolute w-9 md:w-12 rounded-full object-cover opacity-90 pointer-events-none" style={{ bottom: "1%", right: "27%" }} />
-      <img src={ASSET.egg} alt="" className="absolute w-8 md:w-10 object-contain opacity-90 pointer-events-none" style={{ bottom: "18%", right: "31%", transform: "rotate(-8deg)" }} />
+    <p class="font-extrabold mt-2" style="color:#2c6a37; font-size:clamp(14px,1.7vw,24px); line-height:1.35;">
+      Hãy biến chúng thành<br />một bữa ăn phù hợp với bạn
+    </p>
+    <svg class="mt-1" width="180" height="10" viewBox="0 0 180 10" fill="none">
+      <path d="M4 6C50 -2 90 10 130 4C150 1 165 4 176 6" stroke="#3f7d4a" stroke-width="3" stroke-linecap="round" />
+    </svg>
 
-      {/* mid-right small tomato accent near mon2 */}
-      <img src={ASSET.tomato2} alt="" className="absolute w-8 md:w-10 object-contain pointer-events-none" style={{ top: "60%", right: "27%", transform: "rotate(-10deg)" }} />
+    <!-- Benefit cards -->
+    <div class="flex items-center justify-center gap-3 md:gap-4 mt-5">
 
-      {/* ---------- LOGO TOP LEFT ---------- */}
-      <div className="absolute z-20" style={{ top: "3%", left: "3%" }}>
-        <div className="relative inline-block">
-          <img src={ASSET.leaf} alt="" className="absolute w-5 md:w-6 -top-3 left-1" style={{ transform: "rotate(-10deg)" }} />
-          <h1
-            className="font-extrabold leading-none"
-            style={{ fontSize: "clamp(22px, 3vw, 40px)", color: "#2c6a37", letterSpacing: "-0.5px" }}
-          >
-            ReMeal
-          </h1>
-          <svg className="mt-0.5" width="70" height="10" viewBox="0 0 70 10" fill="none">
-            <path d="M2 3C15 9 25 9 35 4C45 -1 55 -1 68 5" stroke="#3f7d4a" strokeWidth="2.5" strokeLinecap="round" />
+      <div class="card relative">
+        <div class="icon-circle">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#2f6b3a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />
           </svg>
         </div>
-        <p className="font-bold mt-1" style={{ color: "#2c6a37", fontSize: "clamp(10px, 1vw, 13px)", lineHeight: 1.3 }}>
-          Biến đồ ăn có sẵn<br />thành bữa ăn tuyệt vời
-        </p>
-      </div>
-
-      {/* ---------- MASCOT ---------- */}
-      <img
-        src={ASSET.mascot}
-        alt="ReMeal mascot"
-        className="absolute z-10 pointer-events-none object-contain drop-shadow-[0_20px_25px_rgba(40,90,45,0.25)]"
-        style={{
-          left: "-2%",
-          bottom: "0%",
-          width: "clamp(220px, 30vw, 460px)",
-        }}
-      />
-
-      {/* Sticky note near mascot */}
-      <div
-        className="absolute z-20 bg-[#f7f0d8] rounded-md shadow-md px-4 py-3"
-        style={{
-          left: "20%",
-          bottom: "8%",
-          width: "clamp(110px, 12vw, 160px)",
-          transform: "rotate(-6deg)",
-        }}
-      >
-        <p
-          className="font-bold"
-          style={{
-            color: "#3f7d4a",
-            fontFamily: "'Comic Sans MS', 'Segoe Print', cursive",
-            fontSize: "clamp(11px, 1vw, 14px)",
-            lineHeight: 1.35,
-          }}
-        >
-          Ăn ngon hơn
-          <br />
-          Sống xanh hơn
-          <br />
-          Mỗi ngày!
-        </p>
-        <svg className="mt-1" width="60" height="8" viewBox="0 0 60 8" fill="none">
-          <path d="M2 4C15 8 25 1 35 5C45 8 52 3 58 5" stroke="#3f7d4a" strokeWidth="1.5" strokeLinecap="round" />
+        <p class="font-extrabold" style="color:#2f6b3a; font-size:14px; line-height:1.25;">Tiết kiệm<br />thời gian</p>
+        <svg class="mt-1.5" width="34" height="8" viewBox="0 0 34 8" fill="none">
+          <path d="M2 5.5C8 1.5 14 1.5 17 4C20 6.5 26 6.5 32 2.5" stroke="#3f7d4a" stroke-width="2" stroke-linecap="round" />
         </svg>
-        <HeartIcon className="absolute -top-2 -right-2 w-4 h-4" />
+        <svg class="absolute" width="12" height="12" viewBox="0 0 24 24" fill="#3f7d4a" style="bottom:8px; right:8px;">
+          <path d="M12 21s-7.5-4.6-10-9.2C.5 8 2 4.5 5.5 4c2-.3 3.7.7 4.5 2.2C10.8 4.7 12.5 3.7 14.5 4 18 4.5 19.5 8 22 11.8 14.5 16.4 12 21 12 21z" />
+        </svg>
       </div>
 
-      {/* ---------- THREE DISHES RIGHT SIDE ---------- */}
-      <img
-        src={ASSET.mon1}
-        alt="Món ăn 1"
-        className="absolute z-10 pointer-events-none object-contain drop-shadow-[0_18px_20px_rgba(40,90,45,0.25)]"
-        style={{ right: "-3%", top: "2%", width: "clamp(160px, 20vw, 320px)" }}
-      />
-      <img
-        src={ASSET.mon2}
-        alt="Món ăn 2"
-        className="absolute z-10 pointer-events-none object-contain drop-shadow-[0_18px_20px_rgba(40,90,45,0.25)]"
-        style={{ right: "-2%", top: "38%", width: "clamp(160px, 20vw, 320px)" }}
-      />
-      <img
-        src={ASSET.mon3}
-        alt="Món ăn 3"
-        className="absolute z-10 pointer-events-none object-contain drop-shadow-[0_18px_20px_rgba(40,90,45,0.25)]"
-        style={{ right: "-3%", bottom: "0%", width: "clamp(170px, 21vw, 340px)" }}
-      />
-
-      {/* ---------- CENTER CONTENT ---------- */}
-      <div className="absolute z-30 left-1/2 -translate-x-1/2 flex flex-col items-center text-center" style={{ top: "6%", width: "clamp(280px, 46vw, 700px)" }}>
-        <div className="relative">
-          <svg className="absolute -top-3 -left-8 w-6 h-6 opacity-70" viewBox="0 0 24 24" fill="none" stroke="#3f7d4a" strokeWidth="2">
-            <path d="M4 12c2-4 6-6 10-4M6 6c1-2 3-3 5-2" strokeLinecap="round" />
+      <div class="card relative">
+        <div class="icon-circle">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#2f6b3a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 20c8 0 13-5 13-13 0-1 0-2-.2-3C10.5 4.2 6 9 6 17c0 1 0 2 .2 3z" />
+            <path d="M7 19C10 15 13 12 18 8" />
           </svg>
-          <h2
-            className="font-extrabold"
-            style={{
-              color: "#2c6a37",
-              fontSize: "clamp(30px, 4.6vw, 64px)",
-              lineHeight: 1.05,
-              textShadow: "0 3px 0 rgba(255,255,255,0.5)",
-            }}
-          >
-            Có gì trong tủ?
-          </h2>
-          <HeartIcon className="absolute -top-1 -right-8 w-5 h-5" />
         </div>
-
-        <p
-          className="font-extrabold mt-2"
-          style={{ color: "#2c6a37", fontSize: "clamp(14px, 1.7vw, 24px)", lineHeight: 1.35 }}
-        >
-          Hãy biến chúng thành
-          <br />
-          một bữa ăn phù hợp với bạn
-        </p>
-        <svg className="mt-1" width="180" height="10" viewBox="0 0 180 10" fill="none">
-          <path d="M4 6C50 -2 90 10 130 4C150 1 165 4 176 6" stroke="#3f7d4a" strokeWidth="3" strokeLinecap="round" />
+        <p class="font-extrabold" style="color:#2f6b3a; font-size:14px; line-height:1.25;">Giảm<br />lãng phí</p>
+        <svg class="mt-1.5" width="34" height="8" viewBox="0 0 34 8" fill="none">
+          <path d="M2 5.5C8 1.5 14 1.5 17 4C20 6.5 26 6.5 32 2.5" stroke="#3f7d4a" stroke-width="2" stroke-linecap="round" />
         </svg>
-
-        {/* Benefit cards */}
-        <div className="flex items-center justify-center gap-3 md:gap-4 mt-5">
-          <BenefitCard Icon={ClockIcon} lines={"Tiết kiệm\nthời gian"} />
-          <BenefitCard Icon={LeafIcon} lines={"Giảm\nlãng phí"} />
-          <BenefitCard Icon={BowlIcon} lines={"Ăn uống\ncân bằng"} />
-        </div>
-
-        {/* CTA button */}
-        <button
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
-          className="mt-6 flex items-center justify-between rounded-full font-extrabold text-white transition-all duration-250 ease-out"
-          style={{
-            background: "linear-gradient(135deg, #4c9a52 0%, #2c6a37 100%)",
-            padding: "14px 10px 14px 26px",
-            width: "clamp(220px, 22vw, 320px)",
-            fontSize: "clamp(14px, 1.4vw, 19px)",
-            boxShadow: hover
-              ? "0 14px 26px -8px rgba(44,106,55,0.55)"
-              : "0 8px 18px -6px rgba(44,106,55,0.45)",
-            transform: hover ? "translateY(-3px)" : "translateY(0px)",
-          }}
-        >
-          <span className="flex items-center gap-2">
-            <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M6 20c8 0 13-5 13-13 0-1 0-2-.2-3C10.5 4.2 6 9 6 17c0 1 0 2 .2 3z" />
-            </svg>
-            Tạo bữa ăn ngay
-          </span>
-          <span
-            className="flex items-center justify-center rounded-full bg-white transition-transform duration-250 ease-out"
-            style={{
-              width: "clamp(34px, 3vw, 44px)",
-              height: "clamp(34px, 3vw, 44px)",
-              transform: hover ? "translateX(4px)" : "translateX(0px)",
-            }}
-          >
-            <ArrowRightIcon />
-          </span>
-        </button>
+        <svg class="absolute" width="12" height="12" viewBox="0 0 24 24" fill="#3f7d4a" style="bottom:8px; right:8px;">
+          <path d="M12 21s-7.5-4.6-10-9.2C.5 8 2 4.5 5.5 4c2-.3 3.7.7 4.5 2.2C10.8 4.7 12.5 3.7 14.5 4 18 4.5 19.5 8 22 11.8 14.5 16.4 12 21 12 21z" />
+        </svg>
       </div>
+
+      <div class="card relative">
+        <div class="icon-circle">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#2f6b3a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 11h18a9 8 0 0 1-18 0z" />
+            <path d="M8 11c0-2 .5-4 1.5-5" /><path d="M14 11c.5-1.5.5-3 0-4.5" />
+          </svg>
+        </div>
+        <p class="font-extrabold" style="color:#2f6b3a; font-size:14px; line-height:1.25;">Ăn uống<br />cân bằng</p>
+        <svg class="mt-1.5" width="34" height="8" viewBox="0 0 34 8" fill="none">
+          <path d="M2 5.5C8 1.5 14 1.5 17 4C20 6.5 26 6.5 32 2.5" stroke="#3f7d4a" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        <svg class="absolute" width="12" height="12" viewBox="0 0 24 24" fill="#3f7d4a" style="bottom:8px; right:8px;">
+          <path d="M12 21s-7.5-4.6-10-9.2C.5 8 2 4.5 5.5 4c2-.3 3.7.7 4.5 2.2C10.8 4.7 12.5 3.7 14.5 4 18 4.5 19.5 8 22 11.8 14.5 16.4 12 21 12 21z" />
+        </svg>
+      </div>
+
     </div>
-  );
-}
+
+    <!-- CTA button -->
+    <button class="cta-btn mt-6">
+      <span class="flex items-center gap-2">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 20c8 0 13-5 13-13 0-1 0-2-.2-3C10.5 4.2 6 9 6 17c0 1 0 2 .2 3z" />
+        </svg>
+        Tạo bữa ăn ngay
+      </span>
+      <span class="cta-circle">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#2f6b3a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M13 6l6 6-6 6" />
+        </svg>
+      </span>
+    </button>
+
+  </div>
+</div>
+
+</body>
+</html>
