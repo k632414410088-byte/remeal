@@ -17,13 +17,13 @@
             width: 100%;
             height: 100%;
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #d9e8b8 0%, #e8f1d0 25%, #f5f9e8 50%, #eef6e0 75%, #e8f1cc 100%);
         }
 
         body {
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            background: linear-gradient(135deg, #d9e8b8 0%, #e8f1d0 25%, #f5f9e8 50%, #eef6e0 75%, #e8f1cc 100%);
         }
 
         .container {
@@ -39,6 +39,8 @@
         /* Logo Section */
         .logo-section {
             margin-bottom: 30px;
+            z-index: 20;
+            position: relative;
         }
 
         .logo {
@@ -231,14 +233,16 @@
         .mascot-section {
             position: absolute;
             bottom: 0;
-            left: 0;
-            width: 300px;
-            height: 360px;
+            left: -80px;
+            width: 350px;
+            height: 420px;
+            z-index: 15;
         }
 
-        .mascot-svg {
+        .mascot-img {
             width: 100%;
             height: 100%;
+            object-fit: contain;
             filter: drop-shadow(0 20px 40px rgba(27, 94, 32, 0.25));
             animation: float 4s ease-in-out infinite;
         }
@@ -248,39 +252,35 @@
             50% { transform: translateY(-30px); }
         }
 
-        .mascot-logo {
-            position: absolute;
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: white;
-            font-weight: 700;
-            font-size: 12px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
         .spoon {
             position: absolute;
-            bottom: 80px;
-            left: -30px;
+            bottom: 150px;
+            left: 80px;
             font-size: 48px;
             opacity: 0.9;
+            animation: float 4s ease-in-out infinite;
         }
 
         .veg-around-mascot {
             position: absolute;
             font-size: 32px;
             opacity: 0.75;
+            animation: float-slow 6s ease-in-out infinite;
+        }
+
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
         }
 
         .veg1 { bottom: 140px; left: -50px; }
         .veg2 { bottom: 40px; left: -60px; }
-        .veg3 { bottom: 20px; left: 10px; }
+        .veg3 { bottom: 20px; left: 40px; }
 
         .note {
             position: absolute;
-            bottom: 20px;
-            left: -100px;
+            bottom: 30px;
+            left: -120px;
             background: rgba(255, 250, 240, 0.85);
             padding: 16px;
             border-radius: 8px;
@@ -293,6 +293,7 @@
             font-weight: 600;
             line-height: 1.6;
             text-align: center;
+            z-index: 5;
         }
 
         .note-heart {
@@ -308,10 +309,6 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             overflow: hidden;
             background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3.5rem;
         }
 
         .bowl1 {
@@ -335,25 +332,70 @@
             right: 10px;
         }
 
+        .food-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         /* Decorations */
         .deco {
             position: absolute;
-            font-size: 2.5rem;
             opacity: 0.7;
+            animation: float-slow 6s ease-in-out infinite;
         }
 
-        .deco-top-right1 { top: 40px; right: 450px; }
-        .deco-top-right2 { top: 80px; right: 420px; }
-        .deco-top-right3 { top: 50px; right: 380px; }
+        .deco-img {
+            max-width: 100%;
+            height: auto;
+        }
 
-        .deco-bottom-left1 { bottom: 200px; left: 20px; }
-        .deco-bottom-left2 { bottom: 80px; left: 180px; }
-        .deco-bottom-left3 { bottom: 120px; left: 60px; }
+        .deco-top-right1 { 
+            top: 40px; 
+            right: 450px;
+            width: 60px;
+            height: 60px;
+        }
+
+        .deco-top-right2 { 
+            top: 80px; 
+            right: 420px;
+            width: 50px;
+            height: 50px;
+        }
+
+        .deco-top-right3 { 
+            top: 50px; 
+            right: 380px;
+            width: 45px;
+            height: 45px;
+        }
+
+        .deco-bottom-left1 { 
+            bottom: 200px; 
+            left: 20px;
+            width: 60px;
+            height: 60px;
+        }
+
+        .deco-bottom-left2 { 
+            bottom: 80px; 
+            left: 180px;
+            width: 55px;
+            height: 55px;
+        }
+
+        .deco-bottom-left3 { 
+            bottom: 120px; 
+            left: 60px;
+            width: 50px;
+            height: 50px;
+        }
 
         .heart-deco {
             position: absolute;
-            font-size: 1.2rem;
-            opacity: 0.5;
+            font-size: 1.5rem;
+            opacity: 0.4;
             color: #e91e63;
         }
 
@@ -381,6 +423,10 @@
             }
 
             .bowl1, .bowl2, .bowl3 {
+                display: none;
+            }
+
+            .deco {
                 display: none;
             }
         }
@@ -481,7 +527,7 @@
                 </div>
 
                 <!-- CTA Button -->
-                <button class="btn-cta">
+                <button class="btn-cta" onclick="alert('Tạo bữa ăn ngay!')">
                     <span>🍃 Tạo bữa ăn ngay</span>
                     <div class="btn-arrow">→</div>
                 </button>
@@ -491,40 +537,7 @@
             <div class="hero-right">
                 <!-- Mascot -->
                 <div class="mascot-section">
-                    <svg class="mascot-svg" viewBox="0 0 280 320" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Body -->
-                        <ellipse cx="140" cy="180" rx="85" ry="105" fill="#7ec850"/>
-                        <ellipse cx="140" cy="160" rx="75" ry="85" fill="#8fd65d" opacity="0.7"/>
-                        
-                        <!-- Face -->
-                        <circle cx="140" cy="100" r="70" fill="#f5f5f5"/>
-                        
-                        <!-- Eyes -->
-                        <circle cx="120" cy="90" r="12" fill="#000"/>
-                        <circle cx="122" cy="88" r="4" fill="#fff"/>
-                        <path d="M 155 105 Q 165 100 175 105" stroke="#000" stroke-width="3" fill="none" stroke-linecap="round"/>
-                        
-                        <!-- Smile -->
-                        <path d="M 120 125 Q 140 145 160 125" stroke="#e91e63" stroke-width="8" fill="none" stroke-linecap="round"/>
-                        
-                        <!-- Cheeks -->
-                        <circle cx="95" cy="110" r="13" fill="#ffb3ba" opacity="0.7"/>
-                        <circle cx="185" cy="110" r="13" fill="#ffb3ba" opacity="0.7"/>
-                        
-                        <!-- Leaves -->
-                        <ellipse cx="105" cy="40" rx="16" ry="28" fill="#7ec850" transform="rotate(-35 105 40)"/>
-                        <ellipse cx="175" cy="40" rx="16" ry="28" fill="#7ec850" transform="rotate(35 175 40)"/>
-                        
-                        <!-- Arms -->
-                        <ellipse cx="55" cy="190" rx="22" ry="38" fill="#7ec850" transform="rotate(-40 55 190)"/>
-                        <ellipse cx="225" cy="190" rx="22" ry="38" fill="#7ec850" transform="rotate(40 225 190)"/>
-                        
-                        <!-- Legs -->
-                        <ellipse cx="110" cy="280" rx="18" ry="32" fill="#7ec850"/>
-                        <ellipse cx="170" cy="280" rx="18" ry="32" fill="#7ec850"/>
-                    </svg>
-                    
-                    <div class="mascot-logo">ReMeal</div>
+                    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/mascot.png" alt="ReMeal Mascot" class="mascot-img">
                     <div class="spoon">🥄</div>
                     <div class="veg-around-mascot veg1">🥦</div>
                     <div class="veg-around-mascot veg2">🌶️</div>
@@ -539,31 +552,43 @@
                 </div>
 
                 <!-- Food Bowls -->
-                <div class="food-bowl bowl1">🍤</div>
-                <div class="food-bowl bowl2">🍚</div>
-                <div class="food-bowl bowl3">🐟</div>
+                <div class="food-bowl bowl1">
+                    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%201.png" alt="Món ăn 1" class="food-img">
+                </div>
+                <div class="food-bowl bowl2">
+                    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%202.png" alt="Món ăn 2" class="food-img">
+                </div>
+                <div class="food-bowl bowl3">
+                    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%203.png" alt="Món ăn 3" class="food-img">
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Decorations -->
-    <div class="deco deco-top-right1">🥬</div>
-    <div class="deco deco-top-right2">🍅</div>
-    <div class="deco deco-top-right3">🧅</div>
+    <!-- Decorations with Fruits Image -->
+    <div class="deco deco-top-right1">
+        <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/hoa%20qu%E1%BA%A3%20trang%20tr%C3%AD.png" alt="decoration" class="deco-img">
+    </div>
+    <div class="deco deco-top-right2">
+        <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/hoa%20qu%E1%BA%A3%20trang%20tr%C3%AD.png" alt="decoration" class="deco-img">
+    </div>
+    <div class="deco deco-top-right3">
+        <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/hoa%20qu%E1%BA%A3%20trang%20tr%C3%AD.png" alt="decoration" class="deco-img">
+    </div>
 
-    <div class="deco deco-bottom-left1">🥦</div>
-    <div class="deco deco-bottom-left2">🍅</div>
-    <div class="deco deco-bottom-left3">🌶️</div>
+    <div class="deco deco-bottom-left1">
+        <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/hoa%20qu%E1%BA%A3%20trang%20tr%C3%AD.png" alt="decoration" class="deco-img">
+    </div>
+    <div class="deco deco-bottom-left2">
+        <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/hoa%20qu%E1%BA%A3%20trang%20tr%C3%AD.png" alt="decoration" class="deco-img">
+    </div>
+    <div class="deco deco-bottom-left3">
+        <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/hoa%20qu%E1%BA%A3%20trang%20tr%C3%AD.png" alt="decoration" class="deco-img">
+    </div>
 
     <div class="heart-deco heart1">♥</div>
     <div class="heart-deco heart2">♥</div>
     <div class="heart-deco heart3">♥</div>
     <div class="heart-deco heart4">♥</div>
-
-    <script>
-        document.querySelector('.btn-cta').addEventListener('click', function() {
-            alert('Tạo bữa ăn ngay!');
-        });
-    </script>
 </body>
 </html>
