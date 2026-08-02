@@ -1,683 +1,699 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="ReMeal - Nền tảng quản lý bữa ăn, dinh dưỡng và thực phẩm thông minh">
-  <title>ReMeal — Trợ lý bữa ăn thông minh</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
-  <style>
-    :root{--g950:#0a3821;--g900:#0f5130;--g800:#12673a;--g700:#187946;--g600:#249655;--g500:#46ad6e;--g400:#79c594;--g300:#a9d9b8;--g200:#ccebd6;--g100:#eaf7ee;--g50:#f5fbf6;--cream:#fffaf0;--orange:#f39a22;--o100:#fff1dc;--red:#e85d55;--r100:#fff0ee;--blue:#3d82d3;--b100:#ebf4ff;--purple:#7a62cf;--p100:#f0edff;--ink:#1d2a22;--muted:#6e7a71;--line:#e3eae4;--panel:rgba(255,255,255,.94);--shadow:0 20px 60px rgba(14,74,39,.10);--shadow-sm:0 9px 28px rgba(14,74,39,.08);--header:72px}
-    *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:"Be Vietnam Pro",sans-serif;color:var(--ink);background:radial-gradient(circle at 8% 3%,rgba(255,209,126,.25),transparent 22%),radial-gradient(circle at 92% 6%,rgba(112,191,137,.16),transparent 19%),#f7faf7;min-height:100vh}button,input,select,textarea{font:inherit}button{border:0;cursor:pointer}img{width:100%;display:block}.hidden{display:none!important}.app{width:min(1640px,100%);margin:0 auto;padding:0 18px 42px}
-    .topbar{position:sticky;top:0;z-index:80;height:var(--header);margin:0 -18px;padding:0 24px;display:flex;align-items:center;gap:20px;background:rgba(255,255,255,.9);backdrop-filter:blur(18px);border-bottom:1px solid rgba(25,104,58,.08);box-shadow:0 4px 22px rgba(18,74,40,.05)}.brand{min-width:178px;display:flex;align-items:center;gap:10px;text-decoration:none}.brand-logo{width:44px;height:44px;border-radius:14px 14px 18px 18px;position:relative;overflow:hidden;background:linear-gradient(145deg,#9bd455,#e8cf50);box-shadow:inset 0 0 0 1px rgba(255,255,255,.5)}.brand-logo:before,.brand-logo:after{content:"";position:absolute;width:17px;height:25px;top:4px;background:var(--g700);border-radius:100% 0 100% 0}.brand-logo:before{left:5px;transform:rotate(-27deg)}.brand-logo:after{right:5px;transform:scaleX(-1) rotate(-27deg)}.brand-logo span{position:absolute;left:20px;top:12px;width:4px;height:28px;border-radius:4px;background:var(--g950)}.brand-copy strong{display:block;color:var(--g800);font-size:22px;line-height:1;letter-spacing:-.6px}.brand-copy small{display:block;margin-top:4px;color:#6b776f;font-size:9px;font-weight:600}.main-nav{flex:1;display:flex;justify-content:center;gap:4px}.nav-btn{min-height:42px;padding:0 12px;border-radius:12px;display:inline-flex;align-items:center;gap:7px;color:#425047;background:transparent;font-size:11px;font-weight:700;white-space:nowrap;transition:.2s}.nav-btn svg{width:16px;height:16px}.nav-btn:hover,.nav-btn.active{color:var(--g800);background:var(--g50)}.header-actions{display:flex;align-items:center;gap:9px}.header-chip{min-height:39px;padding:0 13px;border-radius:999px;border:1px solid var(--g300);color:var(--g800);background:#fff;display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:800}.avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 3px 14px rgba(0,0,0,.13)}.menu-btn{display:none;width:40px;height:40px;border-radius:12px;color:var(--g800);background:var(--g50)}
-    .view{display:none;animation:fadeIn .28s ease}.view.active{display:block}@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-@keyframes riseFadeIn{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
-.view.active{animation:riseFadeIn .42s cubic-bezier(.22,.9,.35,1.1)}
-.panel{transition:transform .22s ease,box-shadow .22s ease}
-.home-stat:hover,.recipe-card:hover,.family-card:hover,.quick-step:hover{transform:translateY(-5px);box-shadow:0 16px 34px rgba(14,74,39,.14)}
-.recipe-card{will-change:transform}
-.primary-btn,.secondary-btn,.small-btn{transition:transform .16s ease,box-shadow .18s ease,background .18s ease}
-.primary-btn:hover{transform:translateY(-2px);box-shadow:0 16px 30px rgba(25,130,69,.32)}
-.secondary-btn:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(14,74,39,.14)}
-.primary-btn:active,.secondary-btn:active,.small-btn:active{transform:scale(.96)}
-@keyframes trackFill{from{width:0}}
-.mini-track span,.weight-track span{transition:width 1s cubic-bezier(.16,.8,.3,1);position:relative;overflow:hidden}
-.mini-track span:after,.weight-track span:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);animation:shimmerSweep 2.6s ease-in-out infinite}
-@keyframes shimmerSweep{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.hero-card{animation:floatY 5.5s ease-in-out infinite}
-.home-stats{display:grid!important}
-.home-stats .home-stat{opacity:0;animation:riseFadeIn .5s ease forwards}
-.home-stats .home-stat:nth-child(1){animation-delay:.05s}
-.home-stats .home-stat:nth-child(2){animation-delay:.12s}
-.home-stats .home-stat:nth-child(3){animation-delay:.19s}
-.home-stats .home-stat:nth-child(4){animation-delay:.26s}
-.quick-steps .quick-step{opacity:0;animation:riseFadeIn .5s ease forwards}
-.quick-steps .quick-step:nth-child(1){animation-delay:.1s}
-.quick-steps .quick-step:nth-child(2){animation-delay:.18s}
-.quick-steps .quick-step:nth-child(3){animation-delay:.26s}
-.quick-steps .quick-step:nth-child(4){animation-delay:.34s}
-.nav-btn{transition:transform .16s ease,background .2s ease,color .2s ease}
-.nav-btn:hover{transform:translateY(-1px)}
-.option-btn{transition:transform .18s ease,box-shadow .2s ease,background .2s ease,border-color .2s ease}
-.option-btn:active{transform:scale(.95)}
-.page-head{margin:28px 0 16px;display:flex;align-items:flex-end;justify-content:space-between;gap:18px}.page-head h1,.page-head h2{font-size:28px;letter-spacing:-1px;color:#1b3424}.page-head p{margin-top:6px;max-width:720px;color:var(--muted);font-size:12px;line-height:1.65}.eyebrow{display:inline-flex;align-items:center;gap:7px;color:var(--g700);text-transform:uppercase;letter-spacing:1.3px;font-size:10px;font-weight:800;margin-bottom:10px}.eyebrow:before{content:"";width:28px;height:3px;border-radius:999px;background:linear-gradient(90deg,var(--g600),#9cca50)}.panel{background:var(--panel);border:1px solid rgba(25,91,51,.09);border-radius:21px;box-shadow:var(--shadow-sm)}.panel-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.panel-title h3{font-size:15px;letter-spacing:-.35px}.panel-title small{color:var(--muted);font-size:9px}.primary-btn,.secondary-btn,.soft-btn,.danger-btn{min-height:44px;padding:0 16px;border-radius:13px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:800;font-size:11px;transition:.2s}.primary-btn{color:#fff;background:linear-gradient(135deg,#4db276,#0d743d);box-shadow:0 10px 22px rgba(25,130,69,.22)}.primary-btn:hover{transform:translateY(-2px)}.secondary-btn{color:var(--g800);background:#fff;border:1px solid var(--g300)}.soft-btn{color:var(--g800);background:var(--g100)}.danger-btn{color:var(--red);background:var(--r100)}.small-btn{min-height:34px;padding:0 11px;border-radius:10px;font-size:9px;font-weight:800}.pill{display:inline-flex;align-items:center;gap:6px;min-height:29px;padding:0 10px;border-radius:999px;background:var(--g100);color:var(--g800);font-size:9px;font-weight:800}.pill.orange{background:var(--o100);color:#d87a00}.pill.red{background:var(--r100);color:var(--red)}.pill.blue{background:var(--b100);color:var(--blue)}.pill.purple{background:var(--p100);color:var(--purple)}
-    .hero{min-height:550px;margin-top:18px;position:relative;overflow:hidden;border-radius:31px;border:1px solid rgba(255,255,255,.9);box-shadow:var(--shadow);background:linear-gradient(90deg,rgba(255,252,244,.99) 0%,rgba(255,248,233,.95) 43%,rgba(255,255,255,.08) 72%),url("https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=1800&q=86") center/cover;display:flex;align-items:center}.hero:before{content:"";position:absolute;width:360px;height:360px;left:-110px;bottom:-150px;border-radius:50%;background:rgba(255,206,100,.25)}.hero-copy{position:relative;z-index:2;width:min(650px,62%);padding:60px 62px}.hero h1{max-width:650px;color:#263429;font-size:clamp(40px,4.7vw,68px);line-height:1.06;letter-spacing:-2.9px}.hero h1 span{color:var(--g700)}.hero p{max-width:570px;margin:19px 0 25px;color:#5e6b61;font-size:15px;line-height:1.75}.hero-actions{display:flex;gap:11px;flex-wrap:wrap}.hero-benefits{margin-top:28px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:590px}.hero-benefit{padding:12px;border-radius:15px;background:rgba(255,255,255,.78);border:1px solid rgba(255,255,255,.85);box-shadow:0 8px 22px rgba(22,80,44,.07);font-size:10px;line-height:1.5;font-weight:700;transition:.25s}.hero-benefit:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(22,80,44,.14)}.hero-benefit svg{width:20px;height:20px;color:#fff}.hero-benefit .hb-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;background:linear-gradient(145deg,var(--g600),var(--g800))}.hero-card{position:absolute;right:42px;bottom:32px;width:300px;padding:16px;border-radius:22px;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);box-shadow:0 18px 55px rgba(7,56,29,.20);display:grid;grid-template-columns:78px 1fr;gap:12px;align-items:center}.hero-card img{width:78px;height:78px;object-fit:cover;border-radius:16px}.hero-card small{color:var(--muted);font-size:9px}.hero-card strong{display:block;margin:5px 0 8px;font-size:13px}.mini-track{height:7px;border-radius:999px;background:#e8efe9;overflow:hidden}.mini-track span{display:block;width:92%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#69c087,#188048)}
-    .home-stats{margin-top:16px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.home-stat{padding:17px;display:flex;align-items:center;gap:12px}.home-stat-icon{width:43px;height:43px;border-radius:13px;display:grid;place-items:center;color:var(--g800);background:var(--g100)}.home-stat:nth-child(2) .home-stat-icon{color:#da7c00;background:var(--o100)}.home-stat:nth-child(3) .home-stat-icon{color:var(--blue);background:var(--b100)}.home-stat:nth-child(4) .home-stat-icon{color:var(--purple);background:var(--p100)}.home-stat strong{display:block;font-size:20px;letter-spacing:-.6px}.home-stat small{color:var(--muted);font-size:9px}.home-grid{margin-top:16px;display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.quick-start,.expiry-rescue{padding:20px}.quick-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.quick-step{padding:15px 12px;border-radius:15px;background:linear-gradient(145deg,#fbfdfb,#f2f8f3);border:1px solid #e4ece5}.quick-step-num{width:31px;height:31px;border-radius:50%;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,#4eb075,#156e3b);font-size:11px;font-weight:800;margin-bottom:10px}.quick-step strong{display:block;font-size:11px;margin-bottom:5px}.quick-step p{color:var(--muted);font-size:9px;line-height:1.5}.rescue-list{display:grid;gap:9px}.rescue-item{padding:10px;display:grid;grid-template-columns:38px 1fr auto;gap:9px;align-items:center;border-radius:13px;background:#fffdf8;border:1px solid #f0eadc}.food-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:23px;background:#fff8e9}.rescue-item strong{display:block;font-size:10px}.rescue-item small{color:var(--muted);font-size:8px}.days-left{color:var(--red);font-size:9px;font-weight:800}
-    .pantry-layout{display:grid;grid-template-columns:minmax(0,1fr) 315px;gap:16px;align-items:start}.pantry-main{padding:19px}.toolbar{display:flex;align-items:center;gap:9px;margin-bottom:14px;flex-wrap:wrap}.search-box{flex:1;min-width:220px;position:relative}.search-box svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:17px;color:#778179}.search-box input,.field input,.field select,.field textarea{width:100%;border:1px solid #dfe7e1;border-radius:12px;background:#fff;outline:0}.search-box input{height:44px;padding:0 13px 0 40px}.search-box input:focus,.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--g500);box-shadow:0 0 0 4px rgba(70,173,110,.09)}.filter-select{min-height:44px;padding:0 12px;border-radius:12px;border:1px solid #dfe7e1;background:#fff;color:#465249;font-size:10px;font-weight:700}.pantry-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.pantry-card{position:relative;min-height:150px;padding:13px;border-radius:16px;background:linear-gradient(145deg,#fff,#fbfcfa);border:1px solid #e4eae5;box-shadow:0 5px 16px rgba(23,75,43,.04)}.pantry-card-top{display:flex;gap:10px;align-items:center}.pantry-card .food-icon{width:49px;height:49px;font-size:31px;border-radius:14px}.pantry-card h4{font-size:11px;margin-bottom:3px}.pantry-card p{color:var(--muted);font-size:9px}.pantry-card-meta{margin-top:12px;display:grid;gap:7px;font-size:8px}.meta-line{display:flex;align-items:center;justify-content:space-between;gap:8px}.expiry-track{height:6px;border-radius:999px;background:#edf1ed;overflow:hidden}.expiry-track span{display:block;height:100%;border-radius:inherit;background:var(--g500)}.expiry-track.urgent span{background:var(--red)}.expiry-track.soon span{background:var(--orange)}.pantry-card-actions{margin-top:11px;display:flex;gap:6px}.icon-btn{width:31px;height:31px;border-radius:10px;display:grid;place-items:center;background:#f3f7f4;color:#506057}.icon-btn svg{width:14px;height:14px}.pantry-side{display:grid;gap:16px}.side-card{padding:18px}.health-notice{padding:13px;border-radius:14px;background:linear-gradient(135deg,#edf7ff,#fbfdff);border:1px solid #d8eaf9;color:#416273;font-size:9px;line-height:1.6}.status-list{display:grid;gap:9px}.status-row{display:grid;grid-template-columns:1fr auto;gap:9px;align-items:center;font-size:9px}.status-row span:first-child{color:#4c5a50}.status-row strong{color:var(--g800)}.leftover-box{margin-top:13px}.leftover-result{margin-top:10px;display:grid;gap:8px}.leftover-suggestion{padding:10px;border-radius:12px;background:#fafcf9;border:1px solid #e5ebe5;font-size:9px;line-height:1.5}.leftover-suggestion strong{display:block;font-size:10px;color:var(--g800);margin-bottom:3px}
-    .builder-layout{display:grid;grid-template-columns:220px minmax(0,1fr) 330px;gap:16px;align-items:start}.steps-panel{padding:14px;position:sticky;top:88px}.step-item{position:relative;min-height:73px;padding:14px 8px 17px 50px;border-radius:14px}.step-item.active{background:linear-gradient(135deg,#eaf7ee,#f8fbf8)}.step-item:not(:last-child):after{content:"";position:absolute;left:26px;top:48px;height:43px;border-left:1px dashed #8cc89e}.step-number{position:absolute;left:7px;top:12px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,#4eb174,#146c39);font-size:11px;font-weight:800}.step-item strong{display:block;font-size:11px}.step-item small{color:var(--muted);font-size:8px;line-height:1.45}.builder-center{display:grid;gap:16px}.builder-panel{padding:18px}.ingredients-preview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.ingredient-select{position:relative;min-height:95px;padding:11px;border-radius:14px;border:1px solid #e5eae5;background:#fff;display:grid;place-items:center;text-align:center}.ingredient-select .food-icon{width:44px;height:44px}.ingredient-select strong{font-size:9px;margin-top:6px}.ingredient-select small{color:var(--muted);font-size:7px}.ingredient-select input{position:absolute;right:8px;top:8px;accent-color:var(--g600)}.control-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.control-block{padding:14px;border-radius:15px;background:#fbfdfb;border:1px solid #e5ebe5}.control-block h4{font-size:10px;margin-bottom:10px}.control-block label{display:flex;justify-content:space-between;gap:10px;color:#4b5a50;font-size:9px;font-weight:700;margin-bottom:8px}input[type=range]{width:100%;accent-color:var(--g600)}.option-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.option-grid.four-col{grid-template-columns:repeat(4,1fr)}.option-grid.three-col{grid-template-columns:repeat(3,1fr)}@media(max-width:640px){.option-grid.four-col,.option-grid.three-col{grid-template-columns:repeat(2,1fr)}}.option-btn{min-height:38px;padding:7px;border-radius:11px;border:1px solid #dfe6df;background:#fff;color:#465248;font-size:9px;font-weight:700;transition:.2s}.option-btn:hover,.option-btn.active{color:var(--g800);border-color:var(--g400);background:var(--g50)}
-.option-btn{position:relative;overflow:hidden}
-.option-btn.rich{min-height:auto;display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px;padding:14px 8px 12px;border-radius:14px;border:1.5px solid #e3eae4}
-.option-btn.rich .opt-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--g100);transition:.25s}
-.option-btn.rich.active .opt-icon{background:var(--g600);transform:scale(1.06)}
-.option-btn.rich .opt-title{font-size:9.5px;font-weight:800;color:#33403a;line-height:1.3}
-.option-btn.rich .opt-desc{font-size:8px;font-weight:500;color:#8a9690;line-height:1.35}
-.option-btn.rich .opt-check{position:absolute;top:7px;right:7px;width:17px;height:17px;border-radius:50%;background:var(--g600);color:#fff;display:none;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(18,103,58,.35)}
-.option-btn.rich .opt-check svg{width:11px;height:11px}
-.option-btn.rich.active{border-color:var(--g500);background:var(--g50);box-shadow:0 0 0 3px rgba(36,150,85,.10)}
-.option-btn.rich.active .opt-check{display:flex}
-.option-btn.rich:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(14,74,39,.14);border-color:var(--g400)}
-.option-btn.chip{display:inline-flex;align-items:center;justify-content:center;gap:6px;flex-direction:row}
-.option-btn.chip .opt-icon-sm{font-size:15px;line-height:1}
-.option-btn.chip:hover{transform:translateY(-2px)}
-.family-selector{display:grid;gap:8px}.member-check{padding:9px;border-radius:12px;border:1px solid #e1e7e1;background:#fff;display:flex;align-items:center;gap:9px;font-size:9px;font-weight:700}.member-check input{accent-color:var(--g600)}.member-avatar{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:var(--g100);font-size:16px}.nutrition-summary{margin-top:12px;padding:12px;border-radius:14px;background:linear-gradient(135deg,#edf7ef,#fbfdfb);font-size:9px;line-height:1.6;color:#456050}.builder-side{display:grid;gap:16px}.guard-panel,.score-explain{padding:17px}.guard-line{margin-top:9px;display:flex;gap:8px;align-items:flex-start;font-size:9px;line-height:1.55;color:#516157}.guard-line svg{width:15px;height:15px;color:var(--g700);flex:none}.weight-row{margin-top:9px;display:grid;grid-template-columns:1fr 35px;gap:8px;align-items:center;font-size:8px}.weight-row div:first-child{display:grid;gap:5px}.weight-track{height:6px;border-radius:999px;background:#edf1ed;overflow:hidden}.weight-track span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#6ac188,#1d834b)}
-    .result-summary{padding:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}.summary-stat{padding:12px;border-radius:13px;background:#f6faf7;text-align:center}.summary-stat strong{display:block;color:var(--g800);font-size:16px}.summary-stat small{color:var(--muted);font-size:8px}.recipe-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.recipe-card{overflow:hidden;position:relative;background:#fff;border-radius:19px;border:1px solid #e4eae5;box-shadow:0 8px 24px rgba(22,71,40,.06);transition:.25s}.recipe-card:hover{transform:translateY(-4px);box-shadow:0 15px 36px rgba(22,71,40,.13)}.recipe-card img{height:205px;object-fit:cover}.recipe-badge{position:absolute;left:11px;top:11px;z-index:2;padding:7px 10px;border-radius:999px;color:var(--g800);background:rgba(237,249,240,.95);border:1px solid #8dcba2;font-size:9px;font-weight:800;backdrop-filter:blur(8px)}.recipe-badge.fast{color:#d97900;background:rgba(255,247,227,.96);border-color:#f0b44d}.recipe-body{padding:14px}.recipe-body h3{font-size:15px;letter-spacing:-.4px;margin-bottom:7px}.recipe-desc{min-height:44px;color:var(--muted);font-size:8px;line-height:1.55}.recipe-meta{margin:10px 0;display:flex;flex-wrap:wrap;gap:9px;color:#68756c;font-size:8px}.recipe-meta span{display:flex;align-items:center;gap:4px}.recipe-meta svg{width:12px;height:12px}.recipe-score-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.recipe-score-head strong{color:var(--g800);font-size:19px}.recipe-score-head small{color:var(--muted);font-size:8px}.score-list{display:grid;gap:8px}.score-row{display:grid;grid-template-columns:72px minmax(0,1fr) 29px;gap:7px;align-items:center;font-size:8px}.score-track{height:6px;border-radius:999px;background:#edf1ed;overflow:hidden}.score-track span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#65bd83,#20844b)}.score-row strong{text-align:right;font-size:8px}.missing-note{margin-top:10px;padding:9px;border-radius:11px;background:#fff9ec;color:#9a681c;font-size:8px;line-height:1.5}.recipe-actions{margin-top:12px;display:grid;grid-template-columns:1fr 39px;gap:7px}
-    .planner-layout,.shopping-layout,.family-layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:16px;align-items:start}.planner-panel,.shopping-panel,.family-panel{padding:18px;overflow:auto}.planner-table{min-width:880px;display:grid;grid-template-columns:84px repeat(7,1fr);gap:7px;align-items:stretch}.planner-table .head{min-height:43px;display:grid;place-items:center;color:#57645b;font-size:9px;font-weight:800}.meal-label{display:flex;align-items:center;font-size:9px;font-weight:800;color:#4b5a50}.plan-cell{min-height:102px;padding:7px;border-radius:13px;border:1px dashed #cfdad1;background:#fbfdfb;position:relative}.plan-cell.empty{display:grid;place-items:center;color:#9ba59e;font-size:20px}.plan-meal{height:100%;display:grid;grid-template-rows:49px auto;gap:6px}.plan-meal img{height:49px;object-fit:cover;border-radius:9px}.plan-meal strong{display:block;font-size:8px;line-height:1.35}.plan-meal small{color:var(--muted);font-size:7px}.plan-remove{position:absolute;right:4px;top:4px;width:20px;height:20px;border-radius:50%;color:#fff;background:rgba(19,52,31,.65);font-size:12px}.planner-side{display:grid;gap:16px}.planner-summary{padding:17px}.planner-stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.planner-stat{padding:12px 8px;border-radius:13px;background:#f4f9f5;text-align:center}.planner-stat strong{display:block;color:var(--g800);font-size:15px}.planner-stat small{color:var(--muted);font-size:8px}.prep-list{display:grid;gap:8px}.prep-item{padding:9px;border-radius:11px;background:#fafcf9;border:1px solid #e5ebe5;font-size:8px;line-height:1.55}
-    .shopping-list{display:grid;gap:9px}.shopping-item{padding:11px;display:grid;grid-template-columns:28px 42px 1fr auto;gap:10px;align-items:center;border-radius:13px;background:#fcfdfc;border:1px solid #e5eae5}.shopping-item.done{opacity:.55}.shopping-item input{accent-color:var(--g600)}.shopping-item .food-icon{width:42px;height:42px;font-size:25px}.shopping-item strong{display:block;font-size:10px}.shopping-item small{color:var(--muted);font-size:8px}.shopping-price{color:var(--g800);font-size:10px;font-weight:800}.category-label{margin:13px 0 8px;color:#667369;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px}.budget-card{padding:18px}.budget-number{margin:8px 0 13px;color:var(--g800);font-size:30px;font-weight:800;letter-spacing:-1.2px}.budget-row{margin-top:9px;display:flex;justify-content:space-between;color:#56635a;font-size:9px}
-    .family-layout{grid-template-columns:minmax(0,1fr) 330px}.family-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.family-card{padding:15px;border-radius:16px;background:#fff;border:1px solid #e4eae5;box-shadow:0 5px 17px rgba(25,75,43,.04)}.family-card-top{display:flex;align-items:center;gap:10px;margin-bottom:11px}.family-card .member-avatar{width:43px;height:43px;font-size:23px}.family-card h4{font-size:11px}.family-card p{color:var(--muted);font-size:8px}.tag-wrap{display:flex;gap:5px;flex-wrap:wrap}.mini-tag{padding:5px 7px;border-radius:999px;background:var(--g100);color:var(--g800);font-size:7px;font-weight:800}.mini-tag.warn{background:var(--r100);color:var(--red)}.family-card-actions{margin-top:12px;display:flex;gap:7px}.household-fit{padding:18px}.fit-result{margin-top:11px;padding:13px;border-radius:14px;background:linear-gradient(135deg,#eaf7ee,#fbfdfb);font-size:9px;line-height:1.6;color:#486052}
-    .progress-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}.progress-stat{padding:18px}.progress-stat strong{display:block;margin:9px 0 3px;color:var(--g800);font-size:24px;letter-spacing:-.7px}.progress-stat small{color:var(--muted);font-size:8px}.progress-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.chart-panel,.history-panel{padding:19px}.bar-chart{display:grid;gap:11px}.bar-row{display:grid;grid-template-columns:92px minmax(0,1fr) 42px;gap:9px;align-items:center;font-size:9px}.bar-track{height:11px;border-radius:999px;background:#edf1ed;overflow:hidden}.bar-track span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#67bd83,#1f844a)}.history-list{display:grid;gap:9px}.history-item{padding:10px;display:grid;grid-template-columns:43px 1fr auto;gap:9px;align-items:center;border-radius:12px;background:#fafcf9;border:1px solid #e5ebe5}.history-item img{width:43px;height:43px;border-radius:10px;object-fit:cover}.history-item strong{display:block;font-size:9px}.history-item small{color:var(--muted);font-size:7px}.history-item span{color:var(--g800);font-size:8px;font-weight:800}
-    .vision-hero{padding:30px;display:grid;grid-template-columns:1.1fr .9fr;gap:26px;align-items:center;background:radial-gradient(circle at 90% 15%,rgba(159,213,84,.26),transparent 32%),linear-gradient(135deg,#f6fbf6,#fffaf0)}.vision-hero h2{max-width:680px;font-size:36px;letter-spacing:-1.5px;line-height:1.15}.vision-hero p{margin-top:13px;color:var(--muted);font-size:11px;line-height:1.75}.pitch-card{padding:18px;border-radius:18px;color:#fff;background:linear-gradient(145deg,#1c814b,#0d512e);box-shadow:0 16px 40px rgba(15,81,48,.22)}.pitch-card small{opacity:.75;font-size:8px;text-transform:uppercase;letter-spacing:1.2px}.pitch-card p{color:#fff;margin-top:9px;font-size:11px}.vision-section{margin-top:16px}.vision-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.vision-card{padding:17px}.vision-card-icon{width:39px;height:39px;border-radius:12px;display:grid;place-items:center;color:var(--g800);background:var(--g100);margin-bottom:11px}.vision-card h4{font-size:11px;margin-bottom:6px}.vision-card p{color:var(--muted);font-size:8px;line-height:1.6}.roadmap{padding:20px}.roadmap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.roadmap-item{padding:14px;border-radius:14px;background:#fafcf9;border:1px solid #e5ebe5}.roadmap-item span{display:inline-grid;place-items:center;width:27px;height:27px;border-radius:50%;color:#fff;background:var(--g700);font-size:9px;font-weight:800;margin-bottom:9px}.roadmap-item h4{font-size:10px;margin-bottom:5px}.roadmap-item p{color:var(--muted);font-size:8px;line-height:1.55}.business-grid,.risk-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.business-card,.risk-card{padding:18px}.business-card h4,.risk-card strong{font-size:11px;margin-bottom:9px}.business-card ul{padding-left:16px;display:grid;gap:7px;color:#526158;font-size:8px;line-height:1.5}.risk-card p{color:var(--muted);font-size:8px;line-height:1.55}
-    .modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(6,35,19,.58);backdrop-filter:blur(8px)}.modal.show{display:flex}.modal-card{width:min(850px,100%);max-height:92vh;overflow:auto;border-radius:24px;background:#fff;box-shadow:0 30px 90px rgba(0,0,0,.28)}.modal-head{position:sticky;top:0;z-index:2;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.modal-head h3{font-size:16px}.close-btn{width:37px;height:37px;border-radius:50%;background:#f2f6f3;color:#3e4e43;font-size:20px}.modal-body{padding:18px}.recipe-modal-hero{display:grid;grid-template-columns:280px 1fr;gap:18px;align-items:start}.recipe-modal-hero img{height:220px;object-fit:cover;border-radius:17px}.recipe-modal-hero h2{font-size:24px;letter-spacing:-.8px;margin-bottom:8px}.recipe-modal-hero p{color:var(--muted);font-size:9px;line-height:1.6}.nutrition-grid{margin-top:14px;display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.nutrition-box{padding:10px 6px;border-radius:11px;text-align:center;background:#f5faf6}.nutrition-box strong{display:block;color:var(--g800);font-size:13px}.nutrition-box small{color:var(--muted);font-size:7px}.modal-detail-grid{margin-top:18px;display:grid;grid-template-columns:.9fr 1.1fr;gap:15px}.detail-box{padding:15px;border-radius:15px;background:#f8fbf8}.detail-box h4{margin-bottom:10px;font-size:11px}.detail-box ul,.detail-box ol{padding-left:17px;display:grid;gap:8px;color:#4f5f54;font-size:9px;line-height:1.55}.modal-actions{margin-top:17px;display:flex;gap:8px;flex-wrap:wrap}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:9px;font-weight:800;color:#4c5a50}.field input,.field select{height:43px;padding:0 11px}.field textarea{min-height:80px;padding:11px;resize:vertical}.toast{position:fixed;right:20px;bottom:20px;z-index:300;min-width:290px;max-width:390px;padding:14px 16px;border-radius:15px;color:#fff;background:#174c2d;box-shadow:0 16px 45px rgba(0,0,0,.24);display:flex;align-items:center;gap:10px;font-size:10px;font-weight:700;transform:translateY(110px);opacity:0;transition:.3s}.toast.show{transform:none;opacity:1}footer{margin-top:27px;padding:20px 4px 2px;display:flex;justify-content:space-between;gap:15px;color:#7c887f;font-size:9px}
-    @media print{.topbar,.page-head .page-actions,footer,.modal-actions,.recipe-actions,button{display:none!important}body{background:#fff}.app{width:100%;padding:0}.view{display:none!important}#recipesView.active,#plannerView.active{display:block!important}.panel{box-shadow:none}}
-    @media(max-width:1320px){.nav-btn span{display:none}.nav-btn{padding:0 10px}.builder-layout{grid-template-columns:200px minmax(0,1fr)}.builder-side{grid-column:1/-1;grid-template-columns:1fr 1fr}.pantry-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.family-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media(max-width:1020px){.header-chip,.profile-name{display:none}.hero-copy{width:72%;padding:48px 35px}.hero-card{right:24px}.home-grid,.progress-layout,.vision-hero{grid-template-columns:1fr}.home-stats,.progress-grid{grid-template-columns:repeat(2,1fr)}.pantry-layout,.planner-layout,.shopping-layout,.family-layout{grid-template-columns:1fr}.pantry-side,.planner-side{grid-template-columns:1fr 1fr}.recipe-grid{grid-template-columns:repeat(2,1fr)}.vision-grid,.roadmap-grid{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:760px){.app{padding:0 10px 30px}.topbar{margin:0 -10px;padding:0 12px}.main-nav{position:fixed;top:68px;left:10px;right:10px;display:none;flex-direction:column;align-items:stretch;padding:10px;border-radius:17px;background:#fff;box-shadow:var(--shadow)}.main-nav.show{display:flex}.nav-btn span{display:inline}.menu-btn{display:grid;place-items:center}.header-actions{margin-left:auto}.hero{min-height:690px;align-items:flex-start;background:linear-gradient(180deg,rgba(255,251,240,.99) 0%,rgba(255,248,229,.94) 62%,rgba(255,255,255,.04) 100%),url("https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=1100&q=82") center bottom/cover}.hero-copy{width:100%;padding:38px 24px}.hero h1{font-size:42px;letter-spacing:-1.8px}.hero p{font-size:13px}.hero-card{display:none}.hero-benefits{grid-template-columns:1fr}.page-head{align-items:flex-start;flex-direction:column}.quick-steps,.ingredients-preview{grid-template-columns:repeat(2,1fr)}.builder-layout{grid-template-columns:1fr}.steps-panel{position:static;display:grid;grid-template-columns:repeat(4,1fr)}.step-item{min-height:92px;padding:48px 6px 8px;text-align:center}.step-number{left:50%;transform:translateX(-50%)}.step-item:not(:last-child):after{left:calc(50% + 22px);top:29px;width:calc(100% - 44px);height:1px;border-left:0;border-top:1px dashed #8cc89e}.control-grid{grid-template-columns:1fr}.builder-side,.pantry-side,.planner-side{grid-template-columns:1fr}.recipe-grid,.family-grid{grid-template-columns:1fr}.recipe-card img{height:230px}.result-summary{grid-template-columns:repeat(2,1fr)}.business-grid,.risk-grid{grid-template-columns:1fr}.recipe-modal-hero,.modal-detail-grid{grid-template-columns:1fr}.recipe-modal-hero img{height:240px}.nutrition-grid{grid-template-columns:repeat(3,1fr)}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}}
-    @media(max-width:520px){.brand-copy small{display:none}.brand{min-width:130px}.brand-copy strong{font-size:19px}.hero{min-height:720px}.hero h1{font-size:36px}.hero-actions{display:grid;grid-template-columns:1fr}.home-stats,.progress-grid,.quick-steps,.ingredients-preview,.steps-panel,.vision-grid,.roadmap-grid{grid-template-columns:1fr}.step-item:not(:last-child):after{display:none}.pantry-grid{grid-template-columns:1fr}.option-grid{grid-template-columns:1fr 1fr}.result-summary{grid-template-columns:1fr}.nutrition-grid{grid-template-columns:repeat(2,1fr)}footer{flex-direction:column}}
-  
-.music-widget{position:fixed;right:20px;bottom:20px;z-index:300}
-.music-fab{width:56px;height:56px;border-radius:50%;background:linear-gradient(145deg,var(--g600),var(--g900));color:#fff;box-shadow:0 12px 28px rgba(15,81,48,.4);display:flex;align-items:center;justify-content:center;transition:.25s;animation:musicPulse 2.6s ease-in-out infinite}
-.music-fab svg{width:24px;height:24px}
-.music-fab:hover{transform:scale(1.08) rotate(6deg)}
-@keyframes musicPulse{0%,100%{box-shadow:0 12px 28px rgba(15,81,48,.4)}50%{box-shadow:0 12px 28px rgba(15,81,48,.4),0 0 0 8px rgba(36,150,85,.14)}}
-.music-panel{position:absolute;right:0;bottom:70px;width:320px;background:#fff;border-radius:20px;box-shadow:0 24px 60px rgba(14,74,39,.28);border:1px solid var(--line);overflow:hidden;display:none;flex-direction:column;transform-origin:bottom right;animation:musicPop .28s cubic-bezier(.22,1,.36,1)}
-.music-panel.show{display:flex}
-@keyframes musicPop{from{opacity:0;transform:scale(.9) translateY(10px)}to{opacity:1;transform:none}}
-.music-panel-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:linear-gradient(135deg,var(--g700),var(--g900));color:#fff}
-.music-panel-head strong{display:flex;align-items:center;gap:7px;font-size:12.5px}
-.music-panel-head svg{width:17px;height:17px}
-.music-close{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;display:flex;align-items:center;justify-content:center}
-.music-close svg{width:14px;height:14px}
-.music-close:hover{background:rgba(255,255,255,.3)}
-.music-tabs{display:flex;gap:6px;padding:10px 12px 0}
-.music-tab{flex:1;padding:7px 4px;border-radius:9px;background:var(--g50);color:#425047;font-size:9.5px;font-weight:800;transition:.2s}
-.music-tab:hover{background:var(--g100)}
-.music-tab.active{background:var(--g600);color:#fff;box-shadow:0 6px 14px rgba(18,103,58,.3)}
-.music-frame-wrap{padding:10px 12px 0}
-.music-frame-wrap iframe{width:100%;height:170px;border-radius:12px;background:#0b1210}
-.music-hint{font-size:8.5px;color:#8a9690;text-align:center;padding:8px 12px 12px;margin:0}
-@media(max-width:640px){.music-panel{width:min(88vw,320px);right:-8px}.music-widget{right:14px;bottom:14px}}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReMeal - Ứng dụng gợi ý bữa ăn</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
 
-/* ===== PREMIUM ACCOUNTS & PRICING ===== */
-:root{--gold:#e6a53a;--gold100:#fff5de;--navy:#243047}
-body{font-size:15px}.nav-btn{font-size:12px}.header-chip{font-size:11px}.page-head h1,.page-head h2{font-size:34px}.page-head p{font-size:14px}.panel-title h3{font-size:17px}.panel-title small{font-size:10px}.primary-btn,.secondary-btn,.soft-btn,.danger-btn{font-size:13px}.small-btn{font-size:11px}.quick-step strong,.pantry-card h4,.family-card h4{font-size:13px}.quick-step p,.pantry-card p,.family-card p{font-size:10px}.recipe-body h3{font-size:17px}.recipe-desc{font-size:10px}.recipe-meta{font-size:9.5px}.score-row{font-size:9.5px}.score-row strong{font-size:9.5px}
-.current-plan-chip{border-color:#d8b45a;background:linear-gradient(135deg,#fffaf0,#fff1c9);color:#7a5712}.current-plan-chip svg{color:#c48716}.account-trigger{min-height:46px;padding:4px 10px 4px 5px;border-radius:15px;background:#f3f9f2;display:flex;align-items:center;gap:8px;color:#25352b}.account-trigger:hover{background:#e8f4e6}.account-trigger strong{font-size:11px}.account-trigger small{display:block;color:var(--muted);font-size:8px;text-align:left;margin-top:2px}.plan-mini-badge{padding:4px 7px;border-radius:999px;background:#fff;color:var(--g800);font-size:7px;font-weight:800;border:1px solid var(--g200)}
-.upgrade-strip{margin-top:16px;padding:20px 22px;display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;overflow:hidden;position:relative;background:linear-gradient(115deg,#103f27,#197b46 58%,#7cad3e);color:#fff}.upgrade-strip:after{content:"";position:absolute;right:-55px;top:-95px;width:230px;height:230px;border-radius:50%;border:38px solid rgba(255,255,255,.10)}.upgrade-icon{width:54px;height:54px;border-radius:17px;display:grid;place-items:center;background:rgba(255,255,255,.16);position:relative;z-index:1}.upgrade-icon svg{width:27px;height:27px}.upgrade-strip h3{font-size:18px;margin-bottom:5px}.upgrade-strip p{font-size:11px;line-height:1.55;opacity:.85}.upgrade-strip .upgrade-action{position:relative;z-index:1;background:#fff;color:var(--g800);min-width:155px}
-.plans-hero{margin-top:18px;padding:44px 36px;text-align:center;overflow:hidden;position:relative;background:radial-gradient(circle at 50% -15%,rgba(145,203,76,.24),transparent 42%),linear-gradient(135deg,#f9fcf8,#fffaf0)}.plans-hero:before,.plans-hero:after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(53,143,79,.15)}.plans-hero:before{width:260px;height:260px;left:-120px;bottom:-160px}.plans-hero:after{width:210px;height:210px;right:-70px;top:-120px}.plans-hero h1{font-size:42px;letter-spacing:-1.7px;color:#173b25}.plans-hero p{max-width:760px;margin:12px auto 0;color:var(--muted);font-size:14px;line-height:1.75}.plans-hero .hero-plan-badge{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:999px;background:#fff;color:var(--g700);box-shadow:0 8px 22px rgba(14,74,39,.09);font-size:10px;font-weight:800;margin-bottom:14px}
-.plan-toolbar{margin:18px 0;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}.billing-switch{display:flex;padding:5px;border-radius:999px;background:#eaf2eb;border:1px solid #d9e7db}.billing-btn{min-height:38px;padding:0 15px;border-radius:999px;background:transparent;color:#637067;font-size:11px;font-weight:800}.billing-btn.active{background:#fff;color:var(--g800);box-shadow:0 5px 14px rgba(20,83,44,.12)}.save-label{color:#d37600;background:var(--o100);padding:4px 7px;border-radius:999px;font-size:8px;margin-left:4px}
-.account-type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.account-type-card{padding:18px;border-radius:18px;background:#fff;border:1.5px solid #e3ebe4;text-align:left;position:relative;transition:.22s}.account-type-card:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(14,74,39,.11)}.account-type-card.active{border-color:var(--g500);background:linear-gradient(145deg,#f5fbf6,#fff);box-shadow:0 0 0 4px rgba(36,150,85,.08)}.account-type-card .type-icon{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:var(--g100);font-size:24px;margin-bottom:11px}.account-type-card:nth-child(2) .type-icon{background:var(--o100)}.account-type-card:nth-child(3) .type-icon{background:var(--b100)}.account-type-card:nth-child(4) .type-icon{background:var(--p100)}.account-type-card h3{font-size:15px;margin-bottom:5px}.account-type-card p{font-size:9.5px;line-height:1.55;color:var(--muted)}.type-check{position:absolute;right:12px;top:12px;width:23px;height:23px;border-radius:50%;display:none;place-items:center;color:#fff;background:var(--g600)}.account-type-card.active .type-check{display:grid}.type-check svg{width:13px;height:13px}
-.pricing-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.pricing-card{padding:22px;position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:470px}.pricing-card.recommended{border:2px solid var(--g500);box-shadow:0 18px 45px rgba(22,115,59,.16)}.pricing-card.health{border-color:#9dbce7;background:linear-gradient(155deg,#fff,#f4f8ff)}.pricing-card.pro{border-color:#cabff0;background:linear-gradient(155deg,#fff,#f7f4ff)}.pricing-card.business{border-color:#f0d39b;background:linear-gradient(155deg,#fff,#fff9ea)}.recommended-ribbon{position:absolute;right:-37px;top:21px;width:145px;padding:6px 0;transform:rotate(38deg);background:var(--g600);color:#fff;text-align:center;font-size:8px;font-weight:800}.pricing-top{min-height:150px}.plan-icon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--g100);color:var(--g800);margin-bottom:13px}.pricing-card.health .plan-icon{background:var(--b100);color:var(--blue)}.pricing-card.pro .plan-icon{background:var(--p100);color:var(--purple)}.pricing-card.business .plan-icon{background:var(--gold100);color:#c17e10}.pricing-card h3{font-size:19px;margin-bottom:4px}.plan-subtitle{min-height:35px;color:var(--muted);font-size:10px;line-height:1.5}.plan-price{margin:13px 0 4px;display:flex;align-items:flex-end;gap:5px}.plan-price strong{font-size:31px;letter-spacing:-1.2px;color:#163e25}.plan-price span{font-size:9px;color:var(--muted);padding-bottom:5px}.plan-year-note{color:#7a866f;font-size:8px}.plan-features{display:grid;gap:9px;margin:18px 0;flex:1}.plan-feature{display:flex;gap:8px;align-items:flex-start;color:#47554c;font-size:9.5px;line-height:1.45}.plan-feature svg{width:15px;height:15px;color:var(--g600);flex:none;margin-top:1px}.plan-feature.muted{color:#9aa49d}.plan-feature.muted svg{color:#bbc3bd}.plan-cta{width:100%;min-height:46px}.current-plan-btn{background:#edf3ee;color:#6b766e;border:1px solid #dce6de;cursor:default}.plan-audience-note{grid-column:1/-1;padding:13px 15px;border-radius:14px;background:#fff9eb;border:1px solid #f0dfb7;color:#8a6723;font-size:10px;line-height:1.55}
-.feature-showcase{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.feature-showcase-card{padding:18px;position:relative;min-height:175px}.feature-showcase-card .feature-icon{width:41px;height:41px;border-radius:13px;display:grid;place-items:center;background:var(--g100);color:var(--g800);margin-bottom:10px}.feature-showcase-card h4{font-size:13px;margin-bottom:6px}.feature-showcase-card p{color:var(--muted);font-size:9px;line-height:1.55}.premium-tag{position:absolute;right:11px;top:11px;padding:5px 7px;border-radius:999px;background:linear-gradient(135deg,#fff4c9,#ffd66d);color:#7b5610;font-size:7px;font-weight:900}
-.compare-wrap{padding:18px;overflow:auto}.compare-table{width:100%;min-width:980px;border-collapse:separate;border-spacing:0;font-size:10px}.compare-table th,.compare-table td{padding:13px 11px;border-bottom:1px solid #e8ede8;text-align:center}.compare-table th:first-child,.compare-table td:first-child{text-align:left;position:sticky;left:0;background:#fff;z-index:1}.compare-table thead th{color:#24402f;background:#f5faf6;font-size:11px}.compare-table thead th:first-child{border-radius:13px 0 0 0}.compare-table thead th:last-child{border-radius:0 13px 0 0}.compare-check{color:var(--g600);font-weight:900}.compare-no{color:#b1bbb4}.compare-limited{color:#d37b00;font-weight:800}
-.account-layout{display:grid;grid-template-columns:360px minmax(0,1fr);gap:16px;align-items:start}.subscription-card{padding:22px;position:sticky;top:88px;overflow:hidden}.subscription-card:after{content:"";position:absolute;width:160px;height:160px;border-radius:50%;right:-65px;top:-65px;background:rgba(134,191,74,.13)}.sub-plan-logo{width:55px;height:55px;border-radius:17px;display:grid;place-items:center;background:linear-gradient(145deg,var(--g100),#fff4c9);color:var(--g800);margin-bottom:15px}.subscription-card h2{font-size:23px}.subscription-card>p{font-size:10px;line-height:1.55;color:var(--muted);margin-top:6px}.subscription-price{margin:17px 0;padding:14px;border-radius:14px;background:#f5faf6}.subscription-price strong{font-size:24px;color:var(--g800)}.subscription-price small{font-size:9px;color:var(--muted)}.account-main{display:grid;gap:16px}.account-panel{padding:20px}.usage-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.usage-card{padding:13px;border-radius:14px;background:#f7faf7}.usage-card-head{display:flex;justify-content:space-between;gap:8px;font-size:9px;margin-bottom:7px}.usage-track{height:8px;border-radius:999px;background:#e5ece6;overflow:hidden}.usage-track span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#64bd83,#20844b)}.subscription-feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.sub-feature{padding:13px;border-radius:13px;border:1px solid #e3eae4;background:#fff;display:flex;gap:8px;align-items:flex-start}.sub-feature svg{width:17px;height:17px;color:var(--g600);flex:none}.sub-feature.locked{opacity:.62;background:#f7f8f7}.sub-feature.locked svg{color:#8b958e}.sub-feature strong{display:block;font-size:9px;margin-bottom:3px}.sub-feature small{font-size:7.5px;line-height:1.4;color:var(--muted)}.billing-history{display:grid;gap:8px}.billing-item{display:grid;grid-template-columns:1fr auto auto;gap:14px;padding:11px;border-radius:12px;background:#fafcf9;font-size:9px;align-items:center}.billing-item strong{font-size:10px}.billing-item span{color:var(--muted)}
-.lock-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 6px;border-radius:999px;background:var(--gold100);color:#9a6814;font-size:7px;font-weight:900;margin-left:5px}.premium-locked{position:relative}.premium-locked:after{content:"PRO";position:absolute;right:5px;top:4px;padding:3px 5px;border-radius:999px;background:#fff1c9;color:#966314;font-size:6px;font-weight:900;box-shadow:0 2px 7px rgba(142,91,8,.15)}
-.checkout-card{width:min(760px,100%)}.checkout-layout{display:grid;grid-template-columns:.9fr 1.1fr;gap:18px}.checkout-summary{padding:18px;border-radius:17px;background:linear-gradient(145deg,#f2f9f3,#fffaf0)}.checkout-summary h2{font-size:24px;margin:9px 0 5px}.checkout-summary p{color:var(--muted);font-size:9px;line-height:1.55}.checkout-price{font-size:29px;font-weight:900;color:var(--g800);margin:15px 0}.checkout-features{display:grid;gap:8px}.checkout-feature{display:flex;gap:7px;font-size:9px;color:#45544a}.checkout-feature svg{width:14px;color:var(--g600)}.checkout-form{display:grid;gap:12px}.checkout-form h3{font-size:16px}.payment-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.payment-method{min-height:52px;border:1px solid #dfe7e1;border-radius:12px;background:#fff;font-size:9px;font-weight:800}.payment-method.active{border-color:var(--g500);background:var(--g50)}.checkout-disclaimer{padding:10px;border-radius:12px;background:#fff8e8;color:#876322;font-size:8px;line-height:1.5}.upgrade-lock-content{text-align:center;padding:12px 10px 20px}.upgrade-lock-icon{width:68px;height:68px;border-radius:22px;display:grid;place-items:center;margin:0 auto 15px;background:linear-gradient(145deg,#fff1c7,#ffe099);color:#a46d10}.upgrade-lock-icon svg{width:31px;height:31px}.upgrade-lock-content h2{font-size:24px}.upgrade-lock-content p{max-width:500px;margin:9px auto 16px;color:var(--muted);font-size:11px;line-height:1.65}.upgrade-lock-benefits{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:15px 0}.upgrade-lock-benefit{padding:11px;border-radius:12px;background:#f5faf6;font-size:8.5px;color:#46544b}.upgrade-lock-benefit strong{display:block;font-size:9.5px;margin-bottom:3px;color:#264432}
-@media(max-width:1120px){.account-type-grid{grid-template-columns:repeat(2,1fr)}.pricing-grid{grid-template-columns:repeat(2,1fr)}.feature-showcase{grid-template-columns:repeat(2,1fr)}.account-layout{grid-template-columns:1fr}.subscription-card{position:static}.subscription-feature-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:700px){.upgrade-strip{grid-template-columns:auto 1fr}.upgrade-strip .upgrade-action{grid-column:1/-1;width:100%}.plans-hero{padding:34px 20px}.plans-hero h1{font-size:32px}.pricing-grid,.account-type-grid,.feature-showcase{grid-template-columns:1fr}.usage-grid,.subscription-feature-grid{grid-template-columns:1fr}.checkout-layout{grid-template-columns:1fr}.upgrade-lock-benefits{grid-template-columns:1fr}.payment-methods{grid-template-columns:1fr}.account-trigger .account-copy{display:none}.current-plan-chip{display:none}.billing-item{grid-template-columns:1fr auto}.billing-item span:last-child{display:none}}
+        /* HERO SECTION */
+        .hero {
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+            padding: 60px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
 
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 200, 124, 0.1);
+            border-radius: 50%;
+        }
 
-/* ==== HOME LANDING REDESIGN ==== */
-#homeView{display:grid;gap:28px}
-.landing-hero{position:relative;overflow:hidden;padding:38px;border-radius:36px;background:linear-gradient(135deg,#f4fbe7 0%,#fcfff8 38%,#eef8d8 100%);border:1px solid rgba(98,150,64,.12);box-shadow:0 24px 70px rgba(68,115,31,.10)}
-.landing-hero:before{content:"";position:absolute;inset:-120px auto auto -120px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(167,217,96,.22),transparent 65%)}
-.landing-hero:after{content:"";position:absolute;right:-80px;bottom:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(193,226,134,.22),transparent 68%)}
-.landing-grid{position:relative;z-index:1;display:grid;grid-template-columns:330px minmax(0,1fr) 360px;gap:30px;align-items:center}
-.hero-side-brand strong{display:block;font-size:58px;line-height:.95;letter-spacing:-2px;color:#28843e}
-.hero-side-brand .subbrand{margin-top:14px;font-size:26px;line-height:1.25;color:#4f8e2a;font-weight:800}
-.hero-side-brand p{margin-top:18px;max-width:280px;font-size:17px;line-height:1.75;color:#567060}
-.mascot-wrap{margin-top:28px;position:relative;display:flex;align-items:flex-end;gap:16px}
-.speech-bubble{position:absolute;left:10px;top:-14px;padding:18px 18px;border-radius:22px;background:rgba(255,253,236,.95);box-shadow:0 18px 32px rgba(98,132,64,.12);font-size:16px;line-height:1.45;color:#638144;max-width:190px}
-.speech-bubble strong{display:block;font-size:19px;color:#5d982d;margin-bottom:8px}
-.mascot{margin-top:30px;position:relative;width:260px;height:340px;display:flex;align-items:center;justify-content:center}
-.mascot .hood{position:absolute;inset:34px 34px 66px 34px;border-radius:42% 42% 46% 46%;background:linear-gradient(180deg,#9ad748,#5ba32c);box-shadow:inset 0 -18px 34px rgba(34,92,18,.18),0 18px 28px rgba(72,111,33,.18)}
-.mascot .leafA,.mascot .leafB{position:absolute;top:2px;width:52px;height:84px;background:linear-gradient(180deg,#98d960,#5eae32);border-radius:60% 0 60% 0}
-.mascot .leafA{left:100px;transform:rotate(-35deg)}
-.mascot .leafB{left:136px;transform:scaleX(-1) rotate(-35deg)}
-.mascot .face{position:absolute;left:64px;right:64px;top:72px;bottom:122px;border-radius:44% 44% 42% 42%;background:linear-gradient(180deg,#fff8f0,#fffef8);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 -8px 16px rgba(237,221,190,.45)}
-.mascot .eye{position:absolute;top:84px;width:24px;height:34px;background:#2b251e;border-radius:50%}
-.mascot .eye.left{left:92px}.mascot .eye.right{right:92px}
-.mascot .eye.right:after{content:"";position:absolute;inset:8px 0 auto auto;width:22px;height:8px;border-radius:999px;background:#2b251e;transform:rotate(-18deg)}
-.mascot .eye:before{content:"";position:absolute;left:5px;top:6px;width:9px;height:9px;border-radius:50%;background:#fff}
-.mascot .blush{position:absolute;top:122px;width:30px;height:18px;border-radius:50%;background:rgba(255,152,132,.55)}
-.mascot .blush.left{left:78px}.mascot .blush.right{right:78px}
-.mascot .mouth{position:absolute;left:50%;top:126px;transform:translateX(-50%);width:54px;height:36px;border-radius:0 0 60px 60px;background:linear-gradient(180deg,#ff854d,#f04a22)}
-.mascot .mouth:after{content:"";position:absolute;left:15px;right:15px;bottom:4px;height:12px;border-radius:12px 12px 30px 30px;background:#ffd1c3}
-.mascot .apron{position:absolute;left:58px;right:58px;bottom:26px;height:84px;border-radius:22px;background:linear-gradient(180deg,#5ea132,#3a7d25);display:flex;align-items:center;justify-content:center;color:#fff;font-size:30px;font-weight:800;letter-spacing:-1px}
-.mascot .hand{position:absolute;left:16px;bottom:92px;width:64px;height:64px;border-radius:22px 28px 30px 24px;background:#8dd53b;transform:rotate(-24deg)}
-.mascot .spoon{position:absolute;right:18px;bottom:70px;width:22px;height:112px;border-radius:999px;background:linear-gradient(180deg,#d9a868,#bf8745);transform:rotate(12deg)}
-.mascot .spoon:before{content:"";position:absolute;left:-8px;top:-34px;width:40px;height:54px;border-radius:48% 48% 45% 45%;background:linear-gradient(180deg,#e4bb81,#c98c4d)}
-.motto-note{margin-left:22px;margin-bottom:8px;padding:16px 18px;background:#fffbe0;border-radius:8px 20px 8px 8px;box-shadow:0 12px 20px rgba(74,112,32,.08);font-size:15px;line-height:1.5;color:#6b9637;transform:rotate(-3deg)}
-.motto-note strong{display:block;color:#5b8c2b}
-.hero-main{text-align:center}
-.hero-kicker{display:inline-flex;align-items:center;gap:10px;padding:10px 16px;border-radius:999px;background:#eff7d8;color:#5d8f2e;font-size:17px;font-weight:800;box-shadow:inset 0 0 0 1px rgba(102,150,55,.12)}
-.hero-title{margin-top:20px;font-size:72px;line-height:1.05;letter-spacing:-2.5px;color:#2f8a24;text-shadow:0 8px 0 rgba(255,255,255,.65)}
-.hero-title span{display:block;margin-top:10px;font-size:64px;color:#2d7d21}
-.hero-benefits-row{margin:28px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:720px}
-.hero-benefit-card{padding:20px 16px;border-radius:26px;background:rgba(255,255,255,.82);box-shadow:0 18px 30px rgba(65,104,30,.08);border:1px dashed rgba(110,165,60,.28)}
-.hero-benefit-card i{width:34px;height:34px;margin-bottom:10px;color:#5d8f2e}
-.hero-benefit-card strong{display:block;font-size:22px;line-height:1.2;color:#2e7f23}
-.hero-cta-wrap{margin-top:28px;display:flex;justify-content:center}
-.hero-cta-large{min-height:84px;padding:0 38px;border-radius:999px;background:linear-gradient(180deg,#86ca1c,#4b9c19);box-shadow:0 22px 36px rgba(87,148,28,.28), inset 0 -8px 0 rgba(40,92,18,.16);display:inline-flex;align-items:center;gap:18px;color:#fff;font-size:34px;font-weight:800;letter-spacing:-1px}
-.hero-cta-large .arrow-badge{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#fff;color:#3b8a1e;box-shadow:0 10px 18px rgba(22,64,13,.14)}
-.hero-right{display:grid;gap:18px}
-.dish-card{position:relative;overflow:hidden;border-radius:30px;background:#fff;box-shadow:0 18px 28px rgba(76,112,39,.12);min-height:200px;padding:12px 12px 16px}
-.dish-card.large{min-height:235px}
-.dish-card img{width:100%;height:100%;object-fit:cover;border-radius:24px}
-.dish-card .dish-label{position:absolute;left:22px;bottom:18px;padding:10px 16px;border-radius:999px;background:rgba(255,255,255,.92);font-size:18px;font-weight:800;color:#2f7e24;box-shadow:0 10px 20px rgba(0,0,0,.08)}
-.dish-card.small-grid{display:grid;grid-template-columns:1fr;gap:0}
-.home-marketing-section{padding:34px 30px;border-radius:34px;background:linear-gradient(180deg,#fbfcfb,#f5faf3)}
-.marketing-head{text-align:center;margin-bottom:26px}
-.marketing-head .eyebrow-title{display:inline-flex;align-items:center;gap:10px;color:#5e8f32;font-size:20px;font-weight:800;margin-bottom:8px}
-.marketing-head h2{font-size:56px;line-height:1.12;letter-spacing:-2px;color:#214f33}
-.marketing-head p{margin:10px auto 0;max-width:900px;font-size:24px;line-height:1.6;color:#637066}
-.step-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;align-items:stretch}
-.step-card{padding:28px 24px;border-radius:28px;background:#fff;box-shadow:0 18px 30px rgba(59,94,47,.08);position:relative;text-align:center}
-.step-num{position:absolute;left:18px;top:18px;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#83bf49;color:#fff;font-size:24px;font-weight:900}
-.step-art{height:142px;display:grid;place-items:center;font-size:76px;filter:drop-shadow(0 8px 12px rgba(130,170,94,.18))}
-.step-card h3{font-size:34px;line-height:1.2;color:#295e2c;margin-top:4px}
-.step-card p{margin-top:12px;font-size:21px;line-height:1.6;color:#6a756d}
-.step-arrow{display:none}
-.recipe-showcase{margin-top:28px;background:#f8fcf6;border-radius:34px;padding:24px 18px 16px}
-.recipe-showcase-title{text-align:center;font-size:46px;line-height:1.2;color:#295a2b;font-weight:800;margin-bottom:18px}
-.recipe-picks{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.recipe-pick{display:grid;grid-template-columns:220px 1fr;gap:18px;align-items:center;padding:16px;border-radius:28px;background:#fff;box-shadow:0 16px 28px rgba(61,95,43,.08)}
-.recipe-pick img{height:200px;border-radius:22px;object-fit:cover}
-.recipe-pick h4{font-size:36px;line-height:1.15;color:#13251a}
-.recipe-meta{display:flex;gap:20px;flex-wrap:wrap;margin:14px 0;color:#45654d;font-size:20px;font-weight:700}
-.match-pill{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;background:#edf7e4;color:#418132;font-size:22px;font-weight:800}
-.more-recipes{margin-top:20px;text-align:center}
-.more-recipes .secondary-btn{min-height:64px;padding:0 28px;font-size:24px;border-radius:999px}
-.feature-grid-large{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.feature-card-large{padding:28px;border-radius:28px;background:#fff;box-shadow:0 18px 30px rgba(59,94,47,.08);display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:center}
-.feature-card-large .feature-serial{position:absolute}
-.feature-icon-bubble{width:142px;height:142px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#f2f9ea,#fff8e9);font-size:78px;box-shadow:inset 0 0 0 1px rgba(114,161,59,.08)}
-.feature-card-large:nth-child(2) .feature-icon-bubble{background:linear-gradient(180deg,#eef8ee,#f8ffef)}
-.feature-card-large:nth-child(5) .feature-icon-bubble{background:linear-gradient(180deg,#f2efff,#fff7fb)}
-.feature-card-large:nth-child(6) .feature-icon-bubble{background:linear-gradient(180deg,#eff7ff,#fff6ea)}
-.feature-copy-wrap{position:relative}
-.feature-index{position:absolute;left:0;top:-46px;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#7cad52;color:#fff;font-size:22px;font-weight:900}
-.feature-copy-wrap h3{font-size:38px;line-height:1.2;color:#1e5c2a}
-.feature-copy-wrap p{margin-top:12px;font-size:22px;line-height:1.7;color:#67756b}
-.home-bottom-motto{margin-top:26px;padding:16px 20px;text-align:center;border-radius:999px;background:#edf7df;color:#5e8a38;font-size:28px;font-weight:800}
-.home-bottom-motto strong{color:#2a6b39}
-.home-upgrade-cta{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:24px 26px;border-radius:26px;background:linear-gradient(135deg,#f4fae8,#fffef7);border:1px solid rgba(118,168,65,.18)}
-.home-upgrade-cta h3{font-size:34px;color:#214f32}.home-upgrade-cta p{font-size:20px;line-height:1.6;color:#647166;max-width:760px}
-.home-upgrade-cta .primary-btn{font-size:20px;min-height:58px;padding:0 24px}
-@media(max-width:1450px){.landing-grid{grid-template-columns:280px minmax(0,1fr) 300px}.hero-title{font-size:60px}.hero-title span{font-size:54px}.recipe-pick{grid-template-columns:180px 1fr}.feature-card-large{grid-template-columns:120px 1fr}.feature-icon-bubble{width:120px;height:120px;font-size:64px}}
-@media(max-width:1180px){.landing-grid{grid-template-columns:1fr;gap:26px}.hero-side-brand{text-align:center}.hero-side-brand p{margin-left:auto;margin-right:auto;max-width:700px}.mascot-wrap{justify-content:center}.speech-bubble{left:50%;transform:translateX(-50%)}.hero-right{grid-template-columns:repeat(3,1fr)}.hero-main{order:-1}.hero-benefits-row,.step-grid,.feature-grid-large,.recipe-picks{grid-template-columns:1fr}.recipe-pick{grid-template-columns:220px 1fr}.home-upgrade-cta{flex-direction:column;align-items:flex-start}.marketing-head h2{font-size:44px}.marketing-head p{font-size:20px}}
-@media(max-width:760px){.landing-hero{padding:24px 18px;border-radius:24px}.hero-side-brand strong{font-size:46px}.hero-side-brand .subbrand{font-size:22px}.hero-side-brand p{font-size:15px}.hero-kicker{font-size:14px}.hero-title{font-size:40px;letter-spacing:-1.2px}.hero-title span{font-size:36px}.hero-benefit-card strong{font-size:18px}.hero-cta-large{width:100%;justify-content:center;font-size:22px;min-height:64px;padding:0 20px}.hero-cta-large .arrow-badge{width:46px;height:46px}.hero-right{grid-template-columns:1fr}.dish-card,.dish-card.large{min-height:210px}.step-card h3{font-size:26px}.step-card p,.recipe-meta,.match-pill,.home-upgrade-cta p{font-size:16px}.marketing-head h2{font-size:34px}.marketing-head p{font-size:17px}.recipe-pick{grid-template-columns:1fr}.recipe-pick img{height:220px}.recipe-pick h4,.feature-copy-wrap h3{font-size:28px}.feature-card-large{grid-template-columns:1fr;text-align:center}.feature-icon-bubble{margin:0 auto}.feature-copy-wrap{padding-top:14px}.feature-index{left:50%;transform:translateX(-50%);top:-20px}.feature-copy-wrap p{font-size:17px}.recipe-showcase-title{font-size:32px}.home-bottom-motto{font-size:20px}}
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: -50px;
+            width: 250px;
+            height: 250px;
+            background: rgba(76, 175, 80, 0.05);
+            border-radius: 50%;
+        }
 
-</style>
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-left {
+            text-align: left;
+        }
+
+        .hero-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2d5016;
+        }
+
+        .logo-icon {
+            font-size: 24px;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            color: #1b5e20;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .features-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: white;
+            border-color: #4caf50;
+        }
+
+        .feature-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .feature-item h3 {
+            font-size: 14px;
+            color: #1b5e20;
+            font-weight: 600;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .hero-right {
+            position: relative;
+        }
+
+        .dish-image {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        /* FEATURES SECTION */
+        .features-section {
+            background: white;
+            padding: 80px 20px;
+            margin-top: 60px;
+        }
+
+        .features-section-header {
+            text-align: center;
+            margin-bottom: 60px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .section-label {
+            color: #4caf50;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .section-label::before {
+            content: '🍃';
+        }
+
+        .features-section h2 {
+            font-size: 36px;
+            color: #1b5e20;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .features-section-header p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-top: 4px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.15);
+            border-top-color: #4caf50;
+        }
+
+        .feature-number {
+            width: 50px;
+            height: 50px;
+            background: #4caf50;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            color: #1b5e20;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .feature-card-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        /* HOW IT WORKS SECTION */
+        .how-it-works {
+            background: white;
+            padding: 80px 20px;
+            margin-top: 60px;
+        }
+
+        .how-it-works-header {
+            text-align: center;
+            margin-bottom: 60px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .how-it-works h2 {
+            font-size: 36px;
+            color: #1b5e20;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .how-it-works-header p {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto 60px;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: #4caf50;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 24px;
+            margin: 0 auto 20px;
+        }
+
+        .step h3 {
+            font-size: 18px;
+            color: #1b5e20;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .step p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* DISHES SECTION */
+        .dishes-section {
+            background: #f9f9f9;
+            padding: 60px 20px;
+        }
+
+        .dishes-header {
+            text-align: center;
+            margin-bottom: 40px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .dishes-header h2 {
+            font-size: 28px;
+            color: #1b5e20;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .dishes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dish-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .dish-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .dish-image-container {
+            position: relative;
+            height: 200px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+            overflow: hidden;
+        }
+
+        .dish-image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+        }
+
+        .dish-heart {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .dish-heart:hover {
+            background: #ffebee;
+            transform: scale(1.1);
+        }
+
+        .dish-info {
+            padding: 20px;
+        }
+
+        .dish-name {
+            font-size: 18px;
+            color: #1b5e20;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .dish-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .dish-match {
+            background: rgba(76, 175, 80, 0.1);
+            color: #2d5016;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .dishes-button {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .explore-button {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .explore-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .features-row {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps-container {
+                grid-template-columns: 1fr;
+            }
+
+            .dishes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="app">
-  <header class="topbar">
-    <a href="#" class="brand" data-view="home"><div class="brand-logo"><span></span></div><div class="brand-copy"><strong>ReMeal</strong><small>Trợ lý bữa ăn thông minh</small></div></a>
-    <nav class="main-nav" id="mainNav">
-      <button class="nav-btn active" data-view="home"><i data-lucide="house"></i><span>Trang chủ</span></button><button class="nav-btn" data-view="pantry"><i data-lucide="refrigerator"></i><span>Tủ lạnh</span></button><button class="nav-btn" data-view="builder"><i data-lucide="sparkles"></i><span>Tạo bữa ăn</span></button><button class="nav-btn" data-view="recipes"><i data-lucide="chef-hat"></i><span>Công thức</span></button><button class="nav-btn" data-view="planner"><i data-lucide="calendar-days"></i><span>Kế hoạch tuần</span></button><button class="nav-btn" data-view="shopping"><i data-lucide="shopping-cart"></i><span>Mua sắm</span></button><button class="nav-btn" data-view="family"><i data-lucide="users"></i><span>Gia đình</span></button><button class="nav-btn" data-view="progress"><i data-lucide="chart-no-axes-combined"></i><span>Tiến độ</span></button><button class="nav-btn" data-view="vision"><i data-lucide="rocket"></i><span>Tiềm năng</span></button><button class="nav-btn" data-view="plans"><i data-lucide="crown"></i><span>Gói dịch vụ</span></button>
-    </nav>
-    <div class="header-actions">
-      <button class="header-chip current-plan-chip" id="currentPlanChip" data-view="plans"><i data-lucide="crown" width="15"></i><span id="currentPlanChipText">Free</span></button>
-      <button class="account-trigger" data-view="account" aria-label="Quản lý tài khoản">
-        <img class="avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" alt="Lan Anh">
-        <span class="account-copy"><strong>Lan Anh</strong><small id="headerAccountType">Tài khoản cá nhân</small></span>
-        <i data-lucide="chevron-down" width="15"></i>
-      </button>
-      <button class="menu-btn" id="menuBtn"><i data-lucide="menu"></i></button>
-    </div>
-  </header>
-  <main>
-    <section class="view active" id="homeView">
-      <section class="landing-hero">
-        <div class="landing-grid">
-          <div class="hero-side-brand">
-            <strong>ReMeal</strong>
-            <div class="subbrand">Biến đồ ăn có sẵn<br>thành bữa ăn tuyệt vời</div>
-            <p>ReMeal giúp bạn gợi ý món ngon, quản lý nguyên liệu, lên thực đơn và tối ưu chế độ ăn cho cá nhân lẫn gia đình.</p>
-            <div class="mascot-wrap">
-              <div>
-                <div class="speech-bubble"><strong>Xin chào!</strong> Để ReMeal giúp bạn chăm sóc bữa ăn mỗi ngày nhé.</div>
-                <div class="mascot">
-                  <div class="leafA"></div><div class="leafB"></div>
-                  <div class="hood"></div><div class="face"></div>
-                  <div class="eye left"></div><div class="eye right"></div>
-                  <div class="blush left"></div><div class="blush right"></div>
-                  <div class="mouth"></div>
-                  <div class="apron">ReMeal</div>
-                  <div class="hand"></div>
-                  <div class="spoon"></div>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-left">
+                <div class="hero-logo">
+                    <span class="logo-icon">🍃</span>
+                    <span>ReMeal</span>
                 </div>
-              </div>
-              <div class="motto-note"><strong>Ăn ngon hơn</strong>Sống xanh hơn<br>Mỗi ngày!</div>
+                <h1>Có gì trong tủ?</h1>
+                <p>Hãy biến chúng thành một bữa ăn phù hợp với bạn</p>
+
+                <div class="features-row">
+                    <div class="feature-item">
+                        <div class="feature-icon">⏱️</div>
+                        <h3>Tiết kiệm thời gian</h3>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🍃</div>
+                        <h3>Giảm lãng phí</h3>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🥗</div>
+                        <h3>Ăn uống cân bằng</h3>
+                    </div>
+                </div>
+
+                <button class="cta-button" onclick="scrollToFeatures()">
+                    🍃 Tạo bữa ăn ngay
+                </button>
             </div>
-          </div>
 
-          <div class="hero-main">
-            <div class="hero-kicker"><i data-lucide="leaf"></i> Trợ lý bữa ăn thông minh</div>
-            <h1 class="hero-title">Có gì trong tủ?<span>Hãy biến chúng thành một bữa ăn phù hợp với bạn</span></h1>
-            <div class="hero-benefits-row">
-              <div class="hero-benefit-card"><i data-lucide="clock-3"></i><strong>Tiết kiệm<br>thời gian</strong></div>
-              <div class="hero-benefit-card"><i data-lucide="sprout"></i><strong>Giảm<br>lãng phí</strong></div>
-              <div class="hero-benefit-card"><i data-lucide="salad"></i><strong>Ăn uống<br>cân bằng</strong></div>
+            <div class="hero-right">
+                <div class="dish-image-placeholder">🥗</div>
             </div>
-            <div class="hero-cta-wrap">
-              <button class="hero-cta-large" data-view="builder"><i data-lucide="sparkles"></i> Tạo bữa ăn ngay <span class="arrow-badge"><i data-lucide="arrow-right"></i></span></button>
-            </div>
-          </div>
-
-          <div class="hero-right">
-            <div class="dish-card large"><img src="https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=80" alt="Món rau và gà"><div class="dish-label">Món nhanh giàu rau</div></div>
-            <div class="dish-card"><img src="https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=900&q=80" alt="Cơm rang"><div class="dish-label">Cơm chiên rau củ</div></div>
-            <div class="dish-card"><img src="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=900&q=80" alt="Cá hồi"><div class="dish-label">Cá hồi healthy</div></div>
-          </div>
         </div>
-      </section>
-
-      <section class="home-marketing-section panel">
-        <div class="marketing-head">
-          <div class="eyebrow-title"><i data-lucide="leaf"></i> ReMeal</div>
-          <h2>ReMeal hoạt động như thế nào?</h2>
-          <p>Chỉ với vài bước đơn giản, bạn có thể nhập nguyên liệu, đặt mục tiêu và nhận ngay những món ăn phù hợp nhất với tủ lạnh của mình.</p>
-        </div>
-        <div class="step-grid">
-          <article class="step-card"><div class="step-num">1</div><div class="step-art">🥗</div><h3>Nhập nguyên liệu</h3><p>Thêm các nguyên liệu bạn đang có vào ứng dụng để bắt đầu tạo bữa ăn.</p></article>
-          <article class="step-card"><div class="step-num">2</div><div class="step-art">🎯</div><h3>Chọn mục tiêu</h3><p>Thiết lập mục tiêu như ăn lành mạnh, giảm cân, tăng cơ hoặc ăn cho gia đình.</p></article>
-          <article class="step-card"><div class="step-num">3</div><div class="step-art">💡</div><h3>Nhận gợi ý</h3><p>ReMeal đề xuất công thức dựa trên nguyên liệu, thời gian và nhu cầu dinh dưỡng của bạn.</p></article>
-          <article class="step-card"><div class="step-num">4</div><div class="step-art">🍲</div><h3>Nấu ngay</h3><p>Xem hướng dẫn chi tiết, điều chỉnh khẩu phần và bắt đầu nấu thật dễ dàng.</p></article>
-        </div>
-
-        <div class="recipe-showcase">
-          <div class="recipe-showcase-title">Gợi ý món ăn dành cho bạn</div>
-          <div class="recipe-picks">
-            <article class="recipe-pick">
-              <img src="https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=80" alt="Ức gà xào bông cải xanh">
-              <div>
-                <h4>Ức gà xào<br>bông cải xanh</h4>
-                <div class="recipe-meta"><span><i data-lucide="clock-3" width="20"></i> 20 phút</span><span><i data-lucide="bar-chart-3" width="20"></i> Dễ</span></div>
-                <span class="match-pill"><i data-lucide="leaf"></i> Phù hợp 95%</span>
-              </div>
-            </article>
-            <article class="recipe-pick">
-              <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=900&q=80" alt="Tôm xào rau củ">
-              <div>
-                <h4>Tôm xào<br>rau củ</h4>
-                <div class="recipe-meta"><span><i data-lucide="clock-3" width="20"></i> 18 phút</span><span><i data-lucide="bar-chart-3" width="20"></i> Dễ</span></div>
-                <span class="match-pill"><i data-lucide="leaf"></i> Phù hợp 92%</span>
-              </div>
-            </article>
-            <article class="recipe-pick">
-              <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=900&q=80" alt="Cá hồi nướng với quinoa">
-              <div>
-                <h4>Cá hồi nướng<br>với quinoa</h4>
-                <div class="recipe-meta"><span><i data-lucide="clock-3" width="20"></i> 25 phút</span><span><i data-lucide="bar-chart-3" width="20"></i> Trung bình</span></div>
-                <span class="match-pill"><i data-lucide="leaf"></i> Phù hợp 90%</span>
-              </div>
-            </article>
-          </div>
-          <div class="more-recipes"><button class="secondary-btn" data-view="recipes"><i data-lucide="chef-hat" width="22"></i> Khám phá thêm món ngon</button></div>
-        </div>
-      </section>
-
-      <section class="home-marketing-section panel">
-        <div class="marketing-head">
-          <div class="eyebrow-title"><i data-lucide="sparkles"></i> Tính năng nổi bật</div>
-          <h2>Tất cả những gì bạn cần cho bữa ăn hoàn hảo</h2>
-          <p>ReMeal giúp bạn lên kế hoạch bữa ăn, quản lý nguyên liệu, theo dõi dinh dưỡng và phối hợp ăn uống cho cả gia đình một cách đơn giản hơn.</p>
-        </div>
-        <div class="feature-grid-large">
-          <article class="feature-card-large"><div class="feature-icon-bubble">📗</div><div class="feature-copy-wrap"><div class="feature-index">01</div><h3>Gợi ý công thức thông minh</h3><p>Đề xuất công thức dựa trên nguyên liệu bạn đang có, sở thích, mục tiêu và mức độ nấu ăn của bạn.</p></div></article>
-          <article class="feature-card-large"><div class="feature-icon-bubble">🧊</div><div class="feature-copy-wrap"><div class="feature-index">02</div><h3>Quản lý tủ lạnh</h3><p>Theo dõi nguyên liệu trong tủ lạnh, biết món nào sắp hết hạn và ưu tiên dùng trước để tránh lãng phí.</p></div></article>
-          <article class="feature-card-large"><div class="feature-icon-bubble">🗓️</div><div class="feature-copy-wrap"><div class="feature-index">03</div><h3>Kế hoạch bữa ăn tuần</h3><p>Lên thực đơn cho cả tuần nhanh chóng, cân đối dinh dưỡng và phù hợp với ngân sách gia đình.</p></div></article>
-          <article class="feature-card-large"><div class="feature-icon-bubble">🛒</div><div class="feature-copy-wrap"><div class="feature-index">04</div><h3>Danh sách mua sắm</h3><p>Tự động tạo danh sách nguyên liệu còn thiếu từ kế hoạch bữa ăn để đi chợ hiệu quả và tiết kiệm hơn.</p></div></article>
-          <article class="feature-card-large"><div class="feature-icon-bubble">👨‍👩‍👧</div><div class="feature-copy-wrap"><div class="feature-index">05</div><h3>Tài khoản gia đình</h3><p>Chia sẻ kế hoạch, công thức, dị ứng và sở thích ăn uống với các thành viên để cùng chăm sóc bữa ăn tại nhà.</p></div></article>
-          <article class="feature-card-large"><div class="feature-icon-bubble">📊</div><div class="feature-copy-wrap"><div class="feature-index">06</div><h3>Theo dõi dinh dưỡng</h3><p>Theo dõi calorie, protein, chất xơ và các chỉ số thiết yếu để hiểu rõ hơn chế độ ăn hằng ngày.</p></div></article>
-        </div>
-        <div class="home-bottom-motto"><strong>ReMeal</strong> – Ăn ngon hơn, sống khỏe hơn, mỗi ngày.</div>
-      </section>
-
-      <section class="home-upgrade-cta panel">
-        <div>
-          <h3>Mở khóa các gói trả phí để đi xa hơn</h3>
-          <p>Nâng cấp lên Personal Plus, Family Premium hoặc Health Pro để nhận kế hoạch tuần tự động, nhiều hồ sơ thành viên, theo dõi macro, quét tủ lạnh và báo cáo tiến độ chi tiết.</p>
-        </div>
-        <button class="primary-btn" data-view="plans"><i data-lucide="crown" width="18"></i> Xem gói dịch vụ</button>
-      </section>
-    </section>
-<section class="view" id="pantryView"><div class="page-head"><div><div class="eyebrow">Pantry Intelligence</div><h1>Tủ lạnh thông minh của bạn</h1><p>Theo dõi số lượng, trạng thái, hạn sử dụng và ưu tiên các nguyên liệu cần dùng trước.</p></div><div class="page-actions"><button class="secondary-btn" id="exportJsonBtn"><i data-lucide="download" width="16"></i> Xuất JSON</button><button class="primary-btn" id="openPantryModal"><i data-lucide="plus" width="16"></i> Thêm nguyên liệu</button></div></div><div class="pantry-layout"><section class="panel pantry-main"><div class="toolbar"><div class="search-box"><i data-lucide="search"></i><input id="pantrySearch" placeholder="Tìm nguyên liệu..."></div><select class="filter-select" id="pantryFilter"><option value="all">Tất cả trạng thái</option><option value="urgent">Cần dùng ngay</option><option value="soon">Sắp hết hạn</option><option value="fresh">Còn tươi</option><option value="cooked">Đã nấu chín</option><option value="frozen">Đông lạnh</option></select><select class="filter-select" id="pantryCategory"><option value="all">Tất cả nhóm</option><option value="protein">Chất đạm</option><option value="vegetable">Rau củ</option><option value="grain">Tinh bột</option><option value="other">Khác</option></select></div><div class="pantry-grid" id="pantryGrid"></div></section><aside class="pantry-side"><section class="panel side-card"><div class="panel-title"><h3>Tổng quan tủ lạnh</h3><span class="pill" id="pantryCountPill">0 mục</span></div><div class="status-list" id="pantryStatusList"></div></section><section class="panel side-card"><div class="panel-title"><h3>Biến đồ ăn thừa thành món mới</h3><span class="pill orange">Leftover</span></div><div class="leftover-box"><select class="filter-select" id="leftoverSelect" style="width:100%"><option value="rice">Cơm nguội</option><option value="chicken">Gà đã nấu</option><option value="vegetables">Rau củ đã chín</option><option value="bread">Bánh mì cũ</option><option value="broth">Nước dùng còn thừa</option></select><div class="leftover-result" id="leftoverResult"></div></div></section><div class="health-notice"><strong style="display:block;margin-bottom:5px;color:#2f5d72">Lưu ý an toàn thực phẩm</strong>ReMeal hỗ trợ sắp xếp và gợi ý, nhưng không thể xác định thực phẩm còn an toàn chỉ qua ngày nhập. Hãy kiểm tra mùi, màu sắc, nhiệt độ bảo quản và hướng dẫn an toàn trước khi sử dụng.</div></aside></div></section>
-    <section class="view" id="builderView"><div class="page-head"><div><div class="eyebrow">Smart Meal Builder</div><h1>Tạo bữa ăn cá nhân hóa</h1><p>Kết hợp nguyên liệu, thành viên, mục tiêu, thời gian và thiết bị bếp để xếp hạng công thức phù hợp.</p></div><button class="secondary-btn" id="resetBuilderBtn"><i data-lucide="rotate-ccw" width="16"></i> Đặt lại lựa chọn</button></div><div class="builder-layout"><aside class="panel steps-panel"><div class="step-item active"><div class="step-number">1</div><strong>Nguyên liệu</strong><small id="stepIngredients">Đang chọn 0 nguyên liệu</small></div><div class="step-item"><div class="step-number">2</div><strong>Bữa ăn</strong><small id="stepMeal">Bữa tối · 2 người</small></div><div class="step-item"><div class="step-number">3</div><strong>Mục tiêu</strong><small id="stepGoal">Ăn cân bằng</small></div><div class="step-item"><div class="step-number">4</div><strong>Kết quả</strong><small>Ba lựa chọn nổi bật</small></div></aside><div class="builder-center"><section class="panel builder-panel"><div class="panel-title"><div><h3>1. Chọn nguyên liệu muốn sử dụng</h3><small>Nguyên liệu sắp hết hạn sẽ được cộng điểm ưu tiên.</small></div><button class="small-btn soft-btn" id="selectAllPantry">Chọn tất cả</button></div><div class="ingredients-preview" id="builderIngredients"></div></section><section class="panel builder-panel"><div class="panel-title"><div><h3>2. Thiết lập bữa ăn</h3><small>Điều chỉnh theo thời gian, khẩu phần và khả năng nấu nướng.</small></div></div><div class="control-grid"><div class="control-block"><h4>Loại bữa ăn</h4><div class="option-grid four-col" id="mealTypeOptions"><button class="option-btn rich" data-value="breakfast"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">🌅</span><span class="opt-title">Bữa sáng</span><span class="opt-desc"></span></button><button class="option-btn rich" data-value="lunch"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">☀️</span><span class="opt-title">Bữa trưa</span><span class="opt-desc"></span></button><button class="option-btn rich active" data-value="dinner"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">🌙</span><span class="opt-title">Bữa tối</span><span class="opt-desc"></span></button><button class="option-btn rich" data-value="snack"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">🧁</span><span class="opt-title">Ăn nhẹ</span><span class="opt-desc"></span></button></div></div><div class="control-block"><h4>Số người ăn</h4><label><span>Khẩu phần</span><strong><span id="servingValue">2</span> người</strong></label><input id="servingRange" type="range" min="1" max="10" value="2"></div><div class="control-block"><h4>Thời gian tối đa</h4><div class="option-grid" id="timeOptions"><button class="option-btn" data-value="15">≤ 15 phút</button><button class="option-btn active" data-value="30">≤ 30 phút</button><button class="option-btn" data-value="45">≤ 45 phút</button><button class="option-btn" data-value="90">Không giới hạn</button></div></div><div class="control-block"><h4>Mức độ nấu ăn</h4><div class="option-grid four-col" id="difficultyOptions"><button class="option-btn rich active" data-value="easy"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">🍳</span><span class="opt-title">Dễ</span><span class="opt-desc">Công thức đơn giản, dễ làm</span></button><button class="option-btn rich" data-value="medium"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">👨‍🍳</span><span class="opt-title">Trung bình</span><span class="opt-desc">Cần một vài kỹ thuật cơ bản</span></button><button class="option-btn rich" data-value="hard"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">🏆</span><span class="opt-title">Khó</span><span class="opt-desc">Yêu cầu kỹ năng nấu tốt</span></button><button class="option-btn rich" data-value="any"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">🎲</span><span class="opt-title">Bất kỳ</span><span class="opt-desc">Không giới hạn độ khó</span></button></div></div><div class="control-block"><h4>Thiết bị bếp có sẵn</h4><div class="option-grid three-col" id="equipmentOptions"><button class="option-btn chip multi active" data-value="stove"><span class="opt-icon-sm">🔥</span>Bếp ga/điện</button><button class="option-btn chip multi active" data-value="pan"><span class="opt-icon-sm">🍳</span>Chảo</button><button class="option-btn chip multi active" data-value="pot"><span class="opt-icon-sm">🥘</span>Nồi</button><button class="option-btn chip multi" data-value="oven"><span class="opt-icon-sm">🔲</span>Lò nướng</button><button class="option-btn chip multi" data-value="airfryer"><span class="opt-icon-sm">🌀</span>Nồi chiên</button><button class="option-btn chip multi" data-value="microwave"><span class="opt-icon-sm">📻</span>Lò vi sóng</button></div></div><div class="control-block"><h4>Ngân sách mua thêm</h4><label><span>Chi phí tối đa</span><strong><span id="budgetValue">50.000</span>đ</strong></label><input id="budgetRange" type="range" min="0" max="200000" step="10000" value="50000"></div></div></section><section class="panel builder-panel"><div class="panel-title"><div><h3>3. Mục tiêu dinh dưỡng và giới hạn</h3><small>Thông tin này dùng để xếp hạng, không thay thế tư vấn y tế.</small></div></div><div class="control-grid"><div class="control-block"><h4>Mục tiêu chính</h4><div class="option-grid three-col" id="goalOptions"><button class="option-btn rich active" data-value="balanced"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">🥗</span><span class="opt-title">Ăn cân bằng</span><span class="opt-desc">Đầy đủ dinh dưỡng, phù hợp hằng ngày</span></button><button class="option-btn rich" data-value="weightloss"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">⚖️</span><span class="opt-title">Giảm cân</span><span class="opt-desc">Kiểm soát calo, hỗ trợ giảm cân</span></button><button class="option-btn rich" data-value="protein"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">💪</span><span class="opt-title">Tăng protein</span><span class="opt-desc">Hỗ trợ tăng cơ và phục hồi</span></button><button class="option-btn rich" data-value="fiber"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">🌾</span><span class="opt-title">Tăng chất xơ</span><span class="opt-desc">Tốt cho tiêu hóa, thanh lọc</span></button><button class="option-btn rich" data-value="vegetables"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">🥬</span><span class="opt-title">Ăn nhiều rau</span><span class="opt-desc">Tăng rau xanh trong bữa ăn</span></button><button class="option-btn rich" data-value="lowfat"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">🫒</span><span class="opt-title">Giảm dầu mỡ</span><span class="opt-desc">Hạn chế dầu mỡ, tốt cho tim mạch</span></button></div></div><div class="control-block"><h4>Chế độ ăn và giới hạn</h4><div class="option-grid" id="restrictionOptions"><button class="option-btn multi" data-value="vegetarian">Ăn chay</button><button class="option-btn multi active" data-value="nospicy">Không ăn cay</button><button class="option-btn multi" data-value="dairyfree">Không sữa</button><button class="option-btn multi" data-value="glutenfree">Không gluten</button><button class="option-btn multi" data-value="seafoodallergy">Dị ứng hải sản</button><button class="option-btn multi" data-value="nutallergy">Dị ứng hạt</button></div></div><div class="control-block"><h4>Ai sẽ tham gia bữa ăn?</h4><div class="family-selector" id="builderFamily"></div></div><div class="control-block"><h4>Health Guard</h4><div class="nutrition-summary" id="healthGuardSummary">Không phát hiện xung đột nghiêm trọng.</div></div></div></section><button class="primary-btn" id="generateRecipesBtn" style="min-height:54px;font-size:12px"><i data-lucide="sparkles" width="18"></i> Phân tích và tạo 3 gợi ý tốt nhất</button></div><aside class="builder-side"><section class="panel guard-panel"><div class="panel-title"><h3>Bộ lọc an toàn</h3><span class="pill">Health Guard</span></div><div class="guard-line"><i data-lucide="shield-check"></i><span>Dị ứng và nguyên liệu “không được sử dụng” là điều kiện loại trừ tuyệt đối.</span></div><div class="guard-line"><i data-lucide="scale"></i><span>Mục tiêu dinh dưỡng chỉ ảnh hưởng điểm xếp hạng, không phải chẩn đoán.</span></div><div class="guard-line"><i data-lucide="user-round-check"></i><span>Yêu cầu của các thành viên được hợp nhất để tìm phần giao phù hợp.</span></div></section><section class="panel score-explain"><div class="panel-title"><h3>Cách chấm điểm</h3><small>Tổng 100 điểm</small></div><div class="weight-row"><div><span>Khớp nguyên liệu</span><div class="weight-track"><span style="width:100%"></span></div></div><strong>35%</strong></div><div class="weight-row"><div><span>Giải cứu thực phẩm</span><div class="weight-track"><span style="width:57%"></span></div></div><strong>20%</strong></div><div class="weight-row"><div><span>Dinh dưỡng</span><div class="weight-track"><span style="width:43%"></span></div></div><strong>15%</strong></div><div class="weight-row"><div><span>Mục tiêu cá nhân</span><div class="weight-track"><span style="width:29%"></span></div></div><strong>10%</strong></div><div class="weight-row"><div><span>Thời gian & độ khó</span><div class="weight-track"><span style="width:29%"></span></div></div><strong>10%</strong></div><div class="weight-row"><div><span>Thiết bị</span><div class="weight-track"><span style="width:15%"></span></div></div><strong>5%</strong></div><div class="weight-row"><div><span>Khẩu vị</span><div class="weight-track"><span style="width:15%"></span></div></div><strong>5%</strong></div></section></aside></div></section>
-    <section class="view" id="recipesView"><div class="page-head"><div><div class="eyebrow">Smart Recommendations</div><h1>Ba công thức phù hợp nhất</h1><p>Mỗi kết quả được giải thích bằng điểm nguyên liệu, dinh dưỡng, độ dễ, thời gian và khả năng giảm lãng phí.</p></div><div class="page-actions"><button class="secondary-btn" onclick="window.print()"><i data-lucide="printer" width="16"></i> In kết quả</button><button class="primary-btn" data-view="builder"><i data-lucide="sliders-horizontal" width="16"></i> Điều chỉnh</button></div></div><div class="panel result-summary"><div class="summary-stat"><strong id="summaryIngredients">0</strong><small>Nguyên liệu đang dùng</small></div><div class="summary-stat"><strong id="summaryServing">2</strong><small>Khẩu phần</small></div><div class="summary-stat"><strong id="summarySpend">0đ</strong><small>Chi phí mua thêm</small></div><div class="summary-stat"><strong id="summaryWaste">0%</strong><small>Điểm giảm lãng phí</small></div></div><div class="recipe-grid" id="recipeGrid"></div></section>
-    <section class="view" id="plannerView"><div class="page-head"><div><div class="eyebrow">Weekly Meal Planner</div><h1>Kế hoạch bữa ăn trong tuần</h1><p>Ưu tiên thực phẩm nhanh hỏng trước, tận dụng một lần sơ chế cho nhiều món và tự động tạo danh sách mua.</p></div><div class="page-actions"><button class="secondary-btn" id="clearPlanBtn"><i data-lucide="trash-2" width="16"></i> Xóa kế hoạch</button><button class="primary-btn" id="autoPlanBtn"><i data-lucide="wand-sparkles" width="16"></i> Tạo kế hoạch tự động</button></div></div><div class="planner-layout"><section class="panel planner-panel"><div class="planner-table" id="plannerTable"></div></section><aside class="planner-side"><section class="panel planner-summary"><div class="panel-title"><h3>Tổng quan tuần</h3><span class="pill">7 ngày</span></div><div class="planner-stat-grid"><div class="planner-stat"><strong id="planMealsCount">0</strong><small>Bữa đã lên lịch</small></div><div class="planner-stat"><strong id="planSpend">0đ</strong><small>Cần mua thêm</small></div><div class="planner-stat"><strong id="planProtein">0g</strong><small>Protein/ngày</small></div><div class="planner-stat"><strong id="planWaste">0%</strong><small>Giảm lãng phí</small></div></div></section><section class="panel planner-summary"><div class="panel-title"><h3>Chuẩn bị thông minh</h3><span class="pill orange">Meal prep</span></div><div class="prep-list"><div class="prep-item"><strong>Chủ nhật:</strong> Luộc 500g thịt gà để dùng cho salad, cơm trộn và cháo.</div><div class="prep-item"><strong>Thứ hai:</strong> Rửa và chia rau xanh thành ba phần, bảo quản kín.</div><div class="prep-item"><strong>Giữa tuần:</strong> Nấu thêm cơm để tái sử dụng cho món cơm chiên ngày hôm sau.</div></div></section></aside></div></section>
-    <section class="view" id="shoppingView"><div class="page-head"><div><div class="eyebrow">Shopping Gap</div><h1>Danh sách mua tối thiểu</h1><p>Chỉ mua những nguyên liệu còn thiếu cho công thức và kế hoạch tuần, có ước tính chi phí theo nhóm.</p></div><div class="page-actions"><button class="secondary-btn" id="addCustomShoppingBtn"><i data-lucide="plus" width="16"></i> Thêm mục</button><button class="primary-btn" id="shareShoppingBtn"><i data-lucide="share-2" width="16"></i> Chia sẻ danh sách</button></div></div><div class="shopping-layout"><section class="panel shopping-panel"><div class="panel-title"><div><h3>Nguyên liệu cần mua</h3><small>Đánh dấu khi đã mua hoặc thêm vào tủ lạnh.</small></div><button class="small-btn soft-btn" id="moveBoughtToPantry">Đưa mục đã mua vào tủ</button></div><div id="shoppingList"></div></section><aside class="panel budget-card"><div class="panel-title"><h3>Ngân sách dự kiến</h3><span class="pill blue">Tuần này</span></div><div class="budget-number" id="shoppingTotal">0đ</div><div class="budget-row"><span>Nguyên liệu thiết yếu</span><strong id="shoppingEssential">0đ</strong></div><div class="budget-row"><span>Nguyên liệu tùy chọn</span><strong id="shoppingOptional">0đ</strong></div><div class="budget-row"><span>Đã mua</span><strong id="shoppingDone">0 mục</strong></div><div class="health-notice" style="margin-top:15px">Giá chỉ là dữ liệu mô phỏng cho prototype. Phiên bản thương mại có thể kết nối siêu thị và nền tảng giao thực phẩm.</div></aside></div></section>
-    <section class="view" id="familyView"><div class="page-head"><div><div class="eyebrow">Household Profile</div><h1>Hồ sơ ăn uống gia đình</h1><p>Lưu khẩu vị, dị ứng, mục tiêu và khẩu phần của từng thành viên để tìm món phù hợp cho cả nhà.</p></div><button class="primary-btn" id="openFamilyModal"><i data-lucide="user-round-plus" width="16"></i> Thêm thành viên</button></div><div class="family-layout"><section class="panel family-panel"><div class="family-grid" id="familyGrid"></div></section><aside class="panel household-fit"><div class="panel-title"><h3>Phần giao yêu cầu</h3><span class="pill purple">Household fit</span></div><p style="font-size:9px;line-height:1.6;color:var(--muted)">Hệ thống hợp nhất các giới hạn của thành viên đang chọn và loại công thức có xung đột.</p><div class="fit-result" id="householdFit"></div><button class="primary-btn" data-view="builder" style="width:100%;margin-top:12px">Tạo bữa ăn cho cả nhà</button></aside></div></section>
-    <section class="view" id="progressView"><div class="page-head"><div><div class="eyebrow">Impact Dashboard</div><h1>Tiến độ ăn uống và giảm lãng phí</h1><p>Theo dõi bữa đã nấu, chi phí tiết kiệm, thực phẩm được dùng trước khi hết hạn và mức độ cân bằng dinh dưỡng.</p></div><button class="secondary-btn" id="resetDemoData"><i data-lucide="database-backup" width="16"></i> Khôi phục dữ liệu demo</button></div><div class="progress-grid"><div class="panel progress-stat"><span class="pill">Bữa ăn</span><strong id="progressMeals">12</strong><small>Đã đánh dấu hoàn thành</small></div><div class="panel progress-stat"><span class="pill orange">Tiết kiệm</span><strong id="progressMoney">185.000đ</strong><small>So với mua bữa ăn bên ngoài</small></div><div class="panel progress-stat"><span class="pill blue">Giải cứu</span><strong id="progressFood">8,4kg</strong><small>Thực phẩm dùng trước khi hết hạn</small></div><div class="panel progress-stat"><span class="pill purple">Chuỗi ngày</span><strong id="progressStreak">6 ngày</strong><small>Duy trì kế hoạch ăn tại nhà</small></div></div><div class="progress-layout"><section class="panel chart-panel"><div class="panel-title"><h3>Cân bằng dinh dưỡng 7 ngày</h3><small>Mục tiêu cá nhân: Ăn cân bằng</small></div><div class="bar-chart"><div class="bar-row"><span>Protein</span><div class="bar-track"><span style="width:86%"></span></div><strong>86%</strong></div><div class="bar-row"><span>Chất xơ</span><div class="bar-track"><span style="width:74%"></span></div><strong>74%</strong></div><div class="bar-row"><span>Rau xanh</span><div class="bar-track"><span style="width:91%"></span></div><strong>91%</strong></div><div class="bar-row"><span>Đường</span><div class="bar-track"><span style="width:68%"></span></div><strong>68%</strong></div><div class="bar-row"><span>Dầu mỡ</span><div class="bar-track"><span style="width:79%"></span></div><strong>79%</strong></div></div></section><section class="panel history-panel"><div class="panel-title"><h3>Lịch sử gần đây</h3><small>Nhấn “Đã nấu” trong công thức để cập nhật.</small></div><div class="history-list" id="historyList"></div></section></div></section>
-    <section class="view" id="visionView"><div class="page-head"><div><div class="eyebrow">Product Vision</div><h1>ReMeal không chỉ là ứng dụng công thức</h1><p>Đây là nền tảng quản lý bữa ăn cá nhân hóa, kết nối tủ lạnh, sức khỏe, kế hoạch tuần, mua sắm và dữ liệu tiêu dùng.</p></div></div><section class="panel vision-hero"><div><h2>Hệ điều hành bữa ăn cho cá nhân và gia đình.</h2><p>ReMeal giúp người dùng biến những gì đang có thành bữa ăn phù hợp, theo dõi nguyên liệu sắp hết hạn, điều chỉnh khẩu phần, hợp nhất nhu cầu gia đình và tạo danh sách mua tối thiểu.</p></div><div class="pitch-card"><small>Elevator pitch</small><p>ReMeal là trợ lý bữa ăn thông minh giúp người dùng biến nguyên liệu sẵn có thành những bữa ăn phù hợp với số người, thời gian, khẩu vị và mục tiêu dinh dưỡng. Khác với ứng dụng công thức truyền thống, ReMeal hiểu trạng thái tủ lạnh, ưu tiên thực phẩm sắp hết hạn và tối ưu lượng cần mua thêm.</p></div></section><div class="vision-section"><div class="page-head" style="margin-top:0"><div><h2>Lợi thế cạnh tranh</h2><p>Bốn lớp giá trị giúp sản phẩm khó bị sao chép hơn một website công thức đơn thuần.</p></div></div><div class="vision-grid"><div class="panel vision-card"><div class="vision-card-icon"><i data-lucide="refrigerator"></i></div><h4>Pantry Intelligence</h4><p>Biết người dùng đang có gì, số lượng bao nhiêu, trạng thái và thời điểm nên sử dụng.</p></div><div class="panel vision-card"><div class="vision-card-icon"><i data-lucide="heart-pulse"></i></div><h4>Personal Nutrition</h4><p>Xếp hạng theo mục tiêu dinh dưỡng, khẩu phần, giới hạn và lịch sử lựa chọn.</p></div><div class="panel vision-card"><div class="vision-card-icon"><i data-lucide="users"></i></div><h4>Household Optimization</h4><p>Tìm phần giao giữa nhu cầu của nhiều thành viên trong cùng một bữa ăn.</p></div><div class="panel vision-card"><div class="vision-card-icon"><i data-lucide="leaf"></i></div><h4>Waste Reduction Data</h4><p>Đo lượng thực phẩm được giải cứu, tiền tiết kiệm và thói quen mua dư.</p></div></div></div><div class="vision-section panel roadmap"><div class="panel-title"><div><h3>Lộ trình phát triển</h3><small>Từ MVP đến hệ sinh thái bữa ăn thông minh</small></div></div><div class="roadmap-grid"><div class="roadmap-item"><span>1</span><h4>MVP</h4><p>Nhập nguyên liệu, xếp hạng công thức, khẩu phần, mục tiêu cơ bản và local storage.</p></div><div class="roadmap-item"><span>2</span><h4>Product–Market Fit</h4><p>Hồ sơ gia đình, kế hoạch tuần, theo dõi món đã nấu và số tiền tiết kiệm.</p></div><div class="roadmap-item"><span>3</span><h4>AI & Computer Vision</h4><p>Nhận diện tủ lạnh, hóa đơn, mã vạch, nhập giọng nói và trợ lý nấu ăn.</p></div><div class="roadmap-item"><span>4</span><h4>Hệ sinh thái</h4><p>Kết nối siêu thị, giao thực phẩm, thiết bị bếp và ứng dụng sức khỏe.</p></div></div></div><div class="vision-section"><div class="page-head" style="margin-top:0"><div><h2>Mô hình doanh thu</h2><p>Kết hợp B2C, thương mại và B2B.</p></div></div><div class="business-grid"><div class="panel business-card"><h4>Freemium</h4><ul><li>Gợi ý món và tính khẩu phần miễn phí.</li><li>Premium cho kế hoạch tuần, nhiều hồ sơ và phân tích chuyên sâu.</li><li>Gói gia đình và gói chuyên gia dinh dưỡng.</li></ul></div><div class="panel business-card"><h4>Affiliate & Commerce</h4><ul><li>Hoa hồng khi mua nguyên liệu còn thiếu.</li><li>Combo nguyên liệu theo công thức.</li><li>Nội dung tài trợ được đánh dấu rõ ràng.</li></ul></div><div class="panel business-card"><h4>B2B</h4><ul><li>Tích hợp cho siêu thị và ứng dụng giao hàng.</li><li>Công cụ thực đơn cho căng tin, trường học và doanh nghiệp.</li><li>Bảng phân tích hành vi tiêu dùng thực phẩm ẩn danh.</li></ul></div></div></div><div class="vision-section"><div class="page-head" style="margin-top:0"><div><h2>Chỉ số nhà đầu tư cần theo dõi</h2><p>Tập trung vào thói quen sử dụng, giá trị tạo ra và khả năng kiếm tiền.</p></div></div><div class="vision-grid"><div class="panel vision-card"><h4>Retention</h4><p>Tỷ lệ quay lại sau 7 ngày, 30 ngày và số lần tạo bữa ăn mỗi tuần.</p></div><div class="panel vision-card"><h4>Cooking conversion</h4><p>Tỷ lệ người dùng mở công thức và đánh dấu thực sự đã nấu.</p></div><div class="panel vision-card"><h4>Value creation</h4><p>Tiền tiết kiệm, số nguyên liệu dùng trước hạn và tỷ lệ không cần mua thêm.</p></div><div class="panel vision-card"><h4>Revenue</h4><p>Tỷ lệ nâng cấp Premium, ARPU và giá trị đơn hàng từ đối tác.</p></div></div></div><div class="vision-section"><div class="page-head" style="margin-top:0"><div><h2>Rủi ro và cách xử lý</h2></div></div><div class="risk-grid"><div class="panel risk-card"><strong>Dữ liệu dinh dưỡng không chính xác</strong><p>Hiển thị là số liệu ước tính, cho phép chỉnh khẩu phần và dùng nguồn dữ liệu có kiểm chứng ở bản chính thức.</p></div><div class="panel risk-card"><strong>Người dùng ngại nhập nguyên liệu</strong><p>Hỗ trợ gợi ý nhanh, lưu tủ gần nhất, quét hóa đơn, giọng nói và nhận diện hình ảnh ở giai đoạn sau.</p></div><div class="panel risk-card"><strong>Công thức không thực tế</strong><p>Dùng dataset đã kiểm duyệt và học từ tỷ lệ “Đã nấu”, đánh giá và nguyên liệu thay thế được chấp nhận.</p></div></div></div></section>
-
-    <!-- PLANS & ACCOUNT TYPES -->
-    <section class="view" id="plansView">
-      <section class="panel plans-hero">
-        <div class="hero-plan-badge"><i data-lucide="sparkles" width="15"></i> Dùng thử các gói trả phí trong prototype</div>
-        <h1>Chọn gói ReMeal phù hợp với cách bạn ăn uống</h1>
-        <p>Từ người sống một mình, gia đình, người tập luyện đến chuyên gia và doanh nghiệp. Mỗi loại tài khoản có bộ công cụ riêng, nhưng vẫn dùng chung trải nghiệm ReMeal đơn giản và dễ hiểu.</p>
-      </section>
-
-      <div class="page-head">
-        <div><div class="eyebrow">Loại tài khoản</div><h2>Bạn đang sử dụng ReMeal cho ai?</h2><p>Chọn nhóm phù hợp để hệ thống làm nổi bật những gói nên dùng. Bạn vẫn có thể xem và chuyển đổi bất kỳ lúc nào.</p></div>
-      </div>
-      <div class="account-type-grid" id="pricingAccountTypes">
-        <button class="account-type-card" data-audience="personal"><span class="type-check"><i data-lucide="check"></i></span><div class="type-icon">👤</div><h3>Cá nhân</h3><p>Người sống một mình, nhân viên văn phòng hoặc muốn quản lý bữa ăn riêng.</p></button>
-        <button class="account-type-card" data-audience="family"><span class="type-check"><i data-lucide="check"></i></span><div class="type-icon">👨‍👩‍👧</div><h3>Gia đình</h3><p>Nhiều thành viên dùng chung tủ lạnh, kế hoạch và danh sách mua sắm.</p></button>
-        <button class="account-type-card" data-audience="professional"><span class="type-check"><i data-lucide="check"></i></span><div class="type-icon">🧑‍⚕️</div><h3>Chuyên gia</h3><p>Chuyên gia dinh dưỡng hoặc huấn luyện viên quản lý nhiều khách hàng.</p></button>
-        <button class="account-type-card" data-audience="business"><span class="type-check"><i data-lucide="check"></i></span><div class="type-icon">🏢</div><h3>Doanh nghiệp</h3><p>Bếp ăn, trường học, văn phòng, siêu thị hoặc nền tảng thực phẩm.</p></button>
-      </div>
-
-      <div class="plan-toolbar">
-        <div><strong style="font-size:16px">Các gói được đề xuất</strong><p style="font-size:10px;color:var(--muted);margin-top:4px" id="audienceHint">Dành cho tài khoản cá nhân</p></div>
-        <div class="billing-switch"><button class="billing-btn active" data-billing="monthly">Theo tháng</button><button class="billing-btn" data-billing="yearly">Theo năm <span class="save-label">Tiết kiệm 20%</span></button></div>
-      </div>
-      <div class="pricing-grid" id="pricingGrid"></div>
-
-      <div class="page-head">
-        <div><div class="eyebrow">Tính năng trả phí nổi bật</div><h2>Những lý do người dùng nâng cấp</h2><p>Tập trung vào những giá trị có thể cảm nhận hằng ngày, thay vì chỉ tăng giới hạn kỹ thuật.</p></div>
-      </div>
-      <div class="feature-showcase">
-        <article class="panel feature-showcase-card"><span class="premium-tag">PLUS</span><div class="feature-icon"><i data-lucide="calendar-range"></i></div><h4>Kế hoạch tuần tự động</h4><p>Tạo thực đơn 7–14 ngày theo nguyên liệu đang có, ưu tiên thực phẩm nhanh hỏng.</p></article>
-        <article class="panel feature-showcase-card"><span class="premium-tag">FAMILY</span><div class="feature-icon"><i data-lucide="users-round"></i></div><h4>Hồ sơ nhiều thành viên</h4><p>Kết hợp khẩu phần, sở thích và dị ứng riêng để tìm món phù hợp với cả nhà.</p></article>
-        <article class="panel feature-showcase-card"><span class="premium-tag">HEALTH</span><div class="feature-icon"><i data-lucide="activity"></i></div><h4>Theo dõi macro và mục tiêu</h4><p>Kiểm soát calorie, protein, carbohydrate, chất béo và tiến độ cân nặng.</p></article>
-        <article class="panel feature-showcase-card"><span class="premium-tag">AI</span><div class="feature-icon"><i data-lucide="scan-line"></i></div><h4>Quét tủ lạnh và hóa đơn</h4><p>Giảm thời gian nhập liệu bằng nhận diện hình ảnh, mã vạch và giọng nói.</p></article>
-      </div>
-
-      <div class="page-head">
-        <div><div class="eyebrow">So sánh gói phổ thông</div><h2>Free, Personal, Family hay Health?</h2><p>Bảng bên dưới giúp người dùng nhìn rõ sự khác biệt trước khi nâng cấp.</p></div>
-      </div>
-      <section class="panel compare-wrap">
-        <table class="compare-table">
-          <thead><tr><th>Tính năng</th><th>Free</th><th>Personal Plus</th><th>Family Premium</th><th>Health Pro</th></tr></thead>
-          <tbody>
-            <tr><td>Gợi ý công thức</td><td class="compare-limited">3/ngày</td><td class="compare-check">Không giới hạn</td><td class="compare-check">Không giới hạn</td><td class="compare-check">Không giới hạn</td></tr>
-            <tr><td>Quản lý tủ lạnh</td><td class="compare-limited">20 nguyên liệu</td><td class="compare-check">Không giới hạn</td><td class="compare-check">Tủ dùng chung</td><td class="compare-check">Không giới hạn</td></tr>
-            <tr><td>Hồ sơ thành viên</td><td>1</td><td>1</td><td class="compare-check">Tối đa 8</td><td>1</td></tr>
-            <tr><td>Kế hoạch bữa ăn</td><td class="compare-limited">3 ngày</td><td class="compare-check">14 ngày</td><td class="compare-check">14 ngày cho cả nhà</td><td class="compare-check">Theo mục tiêu</td></tr>
-            <tr><td>Dinh dưỡng chi tiết</td><td>Cơ bản</td><td class="compare-check">Có</td><td class="compare-check">Có</td><td class="compare-check">Chuyên sâu</td></tr>
-            <tr><td>Danh sách mua tự động</td><td class="compare-no">—</td><td class="compare-check">Có</td><td class="compare-check">Đồng bộ gia đình</td><td class="compare-check">Có</td></tr>
-            <tr><td>Báo cáo tiến độ</td><td class="compare-no">—</td><td class="compare-check">Cá nhân</td><td class="compare-check">Gia đình</td><td class="compare-check">Chuyên sâu</td></tr>
-            <tr><td>Quét ảnh tủ lạnh</td><td class="compare-no">—</td><td class="compare-check">Có</td><td class="compare-check">Có</td><td class="compare-check">Có</td></tr>
-            <tr><td>AI điều chỉnh công thức</td><td class="compare-limited">Giới hạn</td><td class="compare-check">Có</td><td class="compare-check">Có</td><td class="compare-check">Theo macro</td></tr>
-          </tbody>
-        </table>
-      </section>
     </section>
 
-    <!-- ACCOUNT & SUBSCRIPTION CENTER -->
-    <section class="view" id="accountView">
-      <div class="page-head">
-        <div><div class="eyebrow">Tài khoản & thanh toán</div><h1>Trung tâm tài khoản ReMeal</h1><p>Quản lý loại tài khoản, gói đăng ký, mức sử dụng và các tính năng đang được mở khóa.</p></div>
-        <button class="primary-btn" data-view="plans"><i data-lucide="crown" width="16"></i> Xem các gói</button>
-      </div>
-      <div class="account-layout">
-        <aside class="panel subscription-card">
-          <div class="sub-plan-logo"><i data-lucide="crown" width="27"></i></div>
-          <span class="pill" id="accountTypeBadge">Tài khoản cá nhân</span>
-          <h2 id="accountPlanName">Free</h2>
-          <p id="accountPlanDescription">Khám phá các tính năng cơ bản của ReMeal.</p>
-          <div class="subscription-price"><strong id="accountPlanPrice">0đ</strong><small id="accountBillingNote"> / tháng</small></div>
-          <button class="primary-btn" style="width:100%" data-view="plans" id="accountUpgradeBtn">Nâng cấp gói</button>
-          <button class="secondary-btn" style="width:100%;margin-top:8px" id="changeAccountTypeBtn">Đổi loại tài khoản</button>
-          <div class="health-notice" style="margin-top:14px">Đây là prototype thanh toán. Việc nâng cấp chỉ thay đổi dữ liệu trong trình duyệt và không thực hiện giao dịch thật.</div>
-        </aside>
-        <div class="account-main">
-          <section class="panel account-panel">
-            <div class="panel-title"><div><h3>Mức sử dụng hiện tại</h3><small id="usageResetText">Giới hạn sẽ làm mới vào đầu tháng sau.</small></div><span class="pill" id="usagePlanPill">Free</span></div>
-            <div class="usage-grid" id="usageGrid"></div>
-          </section>
-          <section class="panel account-panel">
-            <div class="panel-title"><div><h3>Quyền lợi đang mở khóa</h3><small>Các mục bị khóa sẽ được mở sau khi nâng cấp đúng gói.</small></div></div>
-            <div class="subscription-feature-grid" id="subscriptionFeatureGrid"></div>
-          </section>
-          <section class="panel account-panel">
-            <div class="panel-title"><div><h3>Loại tài khoản</h3><small>Loại tài khoản quyết định cách tổ chức dữ liệu, không nhất thiết quyết định giá.</small></div></div>
-            <div class="account-type-grid" id="accountTypeManager"></div>
-          </section>
-          <section class="panel account-panel">
-            <div class="panel-title"><div><h3>Lịch sử thanh toán</h3><small>Dữ liệu minh họa trong prototype.</small></div></div>
-            <div class="billing-history" id="billingHistory"></div>
-          </section>
+    <!-- FEATURES SECTION -->
+    <section class="features-section">
+        <div class="features-section-header">
+            <div class="section-label">TÍNH NĂNG NỔI BẬT</div>
+            <h2>Tất cả những gì bạn cần cho bữa ăn hoàn hảo</h2>
+            <p>ReMeal giúp bạn lên kế hoạch bữa ăn, quản lý nguyên liệu và chăm sóc sức khỏe gia đình một cách dễ dàng.</p>
         </div>
-      </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-number">01</div>
+                <div class="feature-card-icon">📖</div>
+                <h3>Gợi ý công thức thông minh</h3>
+                <p>Để xuất công thức phù hợp với nguyên liệu bạn có, số lượng và mục tiêu định dưỡng.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-number">02</div>
+                <div class="feature-card-icon">🧊</div>
+                <h3>Quản lý tủ lạnh</h3>
+                <p>Theo dõi nguyên liệu trong tủ lạnh, biết rõ gì đang có, gì sắp hết hạn để trảnh lãng phí.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-number">03</div>
+                <div class="feature-card-icon">📅</div>
+                <h3>Kế hoạch bữa ăn tuần</h3>
+                <p>Lên kế hoạch bữa ăn cho cả tuần nhanh chóng, cần đổi và linh hoạt theo nhu cầu gia đình.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-number">04</div>
+                <div class="feature-card-icon">🛒</div>
+                <h3>Danh sách mua sắm</h3>
+                <p>Tự động tạo danh sách mua sắm từ kế hoạch bữa ăn, giúp bạn mua sắm hiệu quả và tiết kiệm.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-number">05</div>
+                <div class="feature-card-icon">👨‍👩‍👧‍👦</div>
+                <h3>Tài khoản gia đình</h3>
+                <p>Chia sẻ kế hoạch, danh sách và công thức với các thành viên, cùng nhau xây dựng thói quen ăn uống lành mạnh.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-number">06</div>
+                <div class="feature-card-icon">📊</div>
+                <h3>Theo dõi dinh dưỡng</h3>
+                <p>Theo dõi lương định dưỡng hàng ngày, hiểu rõ hơn về chế độ ăn để sống khỏe mỗi ngày.</p>
+            </div>
+        </div>
     </section>
 
-  </main>
-  <footer><span>© 2026 ReMeal. Thông tin dinh dưỡng và sức khỏe trong prototype chỉ mang tính tham khảo.</span><span>Single-file HTML · Responsive · LocalStorage · Rule-based recommendation engine</span></footer>
-</div>
-<div class="modal" id="recipeModal"><div class="modal-card"><div class="modal-head"><h3>Chi tiết công thức</h3><button class="close-btn" data-close="recipeModal">×</button></div><div class="modal-body" id="recipeModalBody"></div></div></div>
-<div class="modal" id="pantryModal"><div class="modal-card" style="width:min(620px,100%)"><div class="modal-head"><h3>Thêm nguyên liệu vào tủ</h3><button class="close-btn" data-close="pantryModal">×</button></div><div class="modal-body"><form id="pantryForm" class="form-grid"><div class="field full"><label>Tên nguyên liệu</label><input name="name" required placeholder="Ví dụ: Cà chua"></div><div class="field"><label>Số lượng</label><input name="qty" type="number" min="0" step="0.1" value="1" required></div><div class="field"><label>Đơn vị</label><select name="unit"><option>g</option><option>kg</option><option>quả</option><option>củ</option><option>bó</option><option>hộp</option><option>phần</option></select></div><div class="field"><label>Hạn sử dụng</label><input name="expiry" type="date" required></div><div class="field"><label>Trạng thái</label><select name="condition"><option value="fresh">Tươi</option><option value="cooked">Đã nấu chín</option><option value="frozen">Đông lạnh</option></select></div><div class="field"><label>Nhóm nguyên liệu</label><select name="category"><option value="protein">Chất đạm</option><option value="vegetable">Rau củ</option><option value="grain">Tinh bột</option><option value="other">Khác</option></select></div><div class="field"><label>Biểu tượng</label><input name="emoji" value="🥣"></div><div class="field full"><button class="primary-btn" type="submit">Thêm vào tủ lạnh</button></div></form></div></div></div>
-<div class="modal" id="familyModal"><div class="modal-card" style="width:min(620px,100%)"><div class="modal-head"><h3>Thêm thành viên gia đình</h3><button class="close-btn" data-close="familyModal">×</button></div><div class="modal-body"><form id="familyForm" class="form-grid"><div class="field"><label>Tên</label><input name="name" required placeholder="Ví dụ: Minh"></div><div class="field"><label>Vai trò</label><input name="role" placeholder="Ví dụ: Con trai"></div><div class="field"><label>Biểu tượng</label><input name="avatar" value="🙂"></div><div class="field"><label>Mục tiêu</label><select name="goal"><option value="balanced">Ăn cân bằng</option><option value="weightloss">Giảm cân</option><option value="protein">Tăng protein</option><option value="fiber">Tăng chất xơ</option></select></div><div class="field full"><label>Giới hạn, ngăn cách bằng dấu phẩy</label><input name="restrictions" placeholder="Ví dụ: Không cay, Dị ứng hạt"></div><div class="field full"><label>Ghi chú khẩu vị</label><textarea name="note" placeholder="Ví dụ: thích món mềm, không thích nấm"></textarea></div><div class="field full"><button class="primary-btn" type="submit">Lưu thành viên</button></div></form></div></div></div>
+    <!-- HOW IT WORKS SECTION -->
+    <section class="how-it-works">
+        <div class="how-it-works-header">
+            <h2>ReMeal hoạt động như thế nào?</h2>
+            <p>4 bước đơn giản để khám phá món ngon phù hợp với bạn</p>
+        </div>
 
-<div class="modal" id="upgradeLockModal"><div class="modal-card" style="width:min(640px,100%)"><div class="modal-head"><h3>Tính năng dành cho gói trả phí</h3><button class="close-btn" data-close="upgradeLockModal">×</button></div><div class="modal-body"><div class="upgrade-lock-content"><div class="upgrade-lock-icon"><i data-lucide="lock-keyhole"></i></div><h2 id="lockedFeatureTitle">Mở khóa tính năng này</h2><p id="lockedFeatureDescription">Nâng cấp để sử dụng tính năng nâng cao của ReMeal.</p><div class="upgrade-lock-benefits" id="lockedFeatureBenefits"></div><button class="primary-btn" id="lockedFeatureUpgradeBtn"><i data-lucide="crown" width="16"></i> Xem gói được đề xuất</button><button class="secondary-btn" data-close="upgradeLockModal" style="margin-left:7px">Để sau</button></div></div></div></div>
-<div class="modal" id="checkoutModal"><div class="modal-card checkout-card"><div class="modal-head"><h3>Nâng cấp ReMeal</h3><button class="close-btn" data-close="checkoutModal">×</button></div><div class="modal-body"><div class="checkout-layout"><div class="checkout-summary" id="checkoutSummary"></div><form class="checkout-form" id="checkoutForm"><div><h3>Thông tin thanh toán</h3><p style="font-size:9px;color:var(--muted);margin-top:4px">Chỉ là mô phỏng giao diện, không thu tiền thật.</p></div><div class="field"><label>Họ và tên</label><input required value="Lan Anh"></div><div class="field"><label>Email nhận hóa đơn</label><input type="email" required value="lananh@example.com"></div><div class="field"><label>Phương thức thanh toán</label><div class="payment-methods" id="paymentMethods"><button type="button" class="payment-method active">💳 Thẻ</button><button type="button" class="payment-method">🏦 Chuyển khoản</button><button type="button" class="payment-method">📱 Ví điện tử</button></div></div><div class="checkout-disclaimer">Bằng cách xác nhận, bạn đồng ý mô phỏng nâng cấp gói trong trình duyệt. Có thể khôi phục về Free trong Trung tâm tài khoản.</div><button class="primary-btn" type="submit" style="width:100%;min-height:50px" id="checkoutConfirmBtn">Xác nhận nâng cấp</button></form></div></div></div></div>
+        <div class="steps-container">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-icon">🥗</div>
+                <h3>Nhập nguyên liệu</h3>
+                <p>Thêm các nguyên liệu bạn đang có ở nhà vào ứng dụng</p>
+            </div>
 
-<div class="toast" id="toast"><i data-lucide="check-circle-2" width="18"></i><span id="toastText">Đã cập nhật.</span></div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-icon">🎯</div>
+                <h3>Chọn mục tiêu</h3>
+                <p>Chọn mục tiêu định dưỡng phù hợp với bạn</p>
+            </div>
 
-<div class="music-widget" id="musicWidget">
-  <button class="music-fab" id="musicFabBtn" aria-label="Mở playlist nhạc"><i data-lucide="music-4"></i></button>
-  <div class="music-panel" id="musicPanel">
-    <div class="music-panel-head">
-      <strong><i data-lucide="disc-3"></i> Playlist Cho Bạn</strong>
-      <button class="music-close" id="musicCloseBtn" aria-label="Đóng"><i data-lucide="x"></i></button>
-    </div>
-    <div class="music-tabs" id="musicTabs">
-      <button class="music-tab active" data-genre="vpop">🇻🇳 Việt</button>
-      <button class="music-tab" data-genre="kpop">🇰🇷 Hàn</button>
-      <button class="music-tab" data-genre="cpop">🇨🇳 Trung</button>
-      <button class="music-tab" data-genre="lofi">🎧 Lofi</button>
-    </div>
-    <div class="music-frame-wrap">
-      <iframe id="musicFrame" src="" title="Trình phát nhạc" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe>
-    </div>
-    <p class="music-hint">🎵 Nhạc phát qua YouTube — bấm ▶ trong khung để nghe.</p>
-  </div>
-</div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-icon">💡</div>
+                <h3>Nhận gợi ý</h3>
+                <p>ReMeal gợi ý những món ăn phù hợp với nguyên liệu và mục tiêu của bạn</p>
+            </div>
 
-<script>
-const $=(s,p=document)=>p.querySelector(s),$$=(s,p=document)=>[...p.querySelectorAll(s)];const currency=v=>new Intl.NumberFormat("vi-VN").format(Math.round(v))+"đ";const todayIso=()=>new Date().toISOString().slice(0,10);const addDays=d=>{const x=new Date();x.setDate(x.getDate()+d);return x.toISOString().slice(0,10)};
-const catalog={chicken:{name:"Thịt gà",emoji:"🍗",category:"protein",price:65000},egg:{name:"Trứng gà",emoji:"🥚",category:"protein",price:4000},carrot:{name:"Cà rốt",emoji:"🥕",category:"vegetable",price:5000},greens:{name:"Rau cải xanh",emoji:"🥬",category:"vegetable",price:12000},rice:{name:"Cơm",emoji:"🍚",category:"grain",price:7000},mushroom:{name:"Nấm rơm",emoji:"🍄",category:"vegetable",price:18000},tofu:{name:"Đậu hũ",emoji:"🧈",category:"protein",price:8000},tomato:{name:"Cà chua",emoji:"🍅",category:"vegetable",price:6000},beef:{name:"Thịt bò",emoji:"🥩",category:"protein",price:95000},potato:{name:"Khoai tây",emoji:"🥔",category:"vegetable",price:7000},onion:{name:"Hành tây",emoji:"🧅",category:"vegetable",price:6000},scallion:{name:"Hành lá",emoji:"🌿",category:"vegetable",price:5000},garlic:{name:"Tỏi",emoji:"🧄",category:"other",price:3000},pumpkin:{name:"Bí đỏ",emoji:"🎃",category:"vegetable",price:12000},bread:{name:"Bánh mì",emoji:"🍞",category:"grain",price:6000},noodles:{name:"Mì",emoji:"🍜",category:"grain",price:10000},milk:{name:"Sữa",emoji:"🥛",category:"other",price:28000},yogurt:{name:"Sữa chua",emoji:"🥣",category:"other",price:8000},cucumber:{name:"Dưa chuột",emoji:"🥒",category:"vegetable",price:7000}};
-const defaultPantry=()=>[{id:crypto.randomUUID(),key:"chicken",name:"Thịt gà",emoji:"🍗",qty:350,unit:"g",expiry:addDays(1),condition:"fresh",category:"protein"},{id:crypto.randomUUID(),key:"egg",name:"Trứng gà",emoji:"🥚",qty:6,unit:"quả",expiry:addDays(8),condition:"fresh",category:"protein"},{id:crypto.randomUUID(),key:"carrot",name:"Cà rốt",emoji:"🥕",qty:2,unit:"củ",expiry:addDays(2),condition:"fresh",category:"vegetable"},{id:crypto.randomUUID(),key:"greens",name:"Rau cải xanh",emoji:"🥬",qty:1,unit:"bó",expiry:addDays(3),condition:"fresh",category:"vegetable"},{id:crypto.randomUUID(),key:"rice",name:"Cơm nguội",emoji:"🍚",qty:2,unit:"chén",expiry:addDays(1),condition:"cooked",category:"grain"},{id:crypto.randomUUID(),key:"mushroom",name:"Nấm rơm",emoji:"🍄",qty:150,unit:"g",expiry:addDays(2),condition:"fresh",category:"vegetable"},{id:crypto.randomUUID(),key:"tofu",name:"Đậu hũ",emoji:"🧈",qty:1,unit:"miếng",expiry:addDays(4),condition:"frozen",category:"protein"},{id:crypto.randomUUID(),key:"garlic",name:"Tỏi",emoji:"🧄",qty:5,unit:"tép",expiry:addDays(14),condition:"fresh",category:"other"}];
-const defaultMembers=()=>[{id:crypto.randomUUID(),name:"Lan Anh",role:"Bạn",avatar:"👩🏻",goal:"balanced",restrictions:["Không ăn cay"],note:"Ưu tiên món nhiều rau",selected:true},{id:crypto.randomUUID(),name:"Minh",role:"Chồng",avatar:"👨🏻",goal:"protein",restrictions:[],note:"Đang tập gym",selected:true},{id:crypto.randomUUID(),name:"Bé An",role:"Con",avatar:"👧🏻",goal:"balanced",restrictions:["Dị ứng hạt"],note:"Thích món mềm, ít gia vị",selected:false}];
-const R=(id,title,image,desc,mealTypes,servings,time,difficulty,equipment,diet,allergens,ingredients,nutrition,steps)=>({id,title,image,desc,mealTypes,servings,time,difficulty,equipment,diet,allergens,spicy:false,ingredients,nutrition,steps});
-const recipes=[R("fried-rice-chicken","Cơm chiên gà rau củ","https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=900&q=86","Tận dụng cơm nguội, thịt gà và rau củ thành bữa ăn đủ chất, dễ nấu.",["lunch","dinner"],2,25,"easy",["stove","pan"],["dairyfree"],[],[{key:"rice",amount:300,unit:"g",role:"main",required:true},{key:"chicken",amount:180,unit:"g",role:"main",required:true,substitutes:["tofu"]},{key:"egg",amount:2,unit:"quả",role:"secondary",required:false},{key:"carrot",amount:1,unit:"củ",role:"secondary",required:false},{key:"greens",amount:.5,unit:"bó",role:"secondary",required:false},{key:"scallion",amount:.5,unit:"bó",role:"seasoning",required:false}],{calories:520,protein:36,carbs:62,fat:14,fiber:7},["Cắt nhỏ thịt gà và rau củ.","Áp chảo thịt gà đến khi vừa chín.","Cho trứng và cơm nguội vào đảo đều.","Thêm rau củ, nêm gia vị và xào thêm 3–4 phút."]),R("egg-greens","Trứng xào rau cải","https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=86","Món nhanh cho ngày bận rộn, giàu đạm từ trứng và chất xơ từ rau.",["breakfast","lunch","dinner"],2,15,"easy",["stove","pan"],["vegetarian","dairyfree","glutenfree"],[],[{key:"egg",amount:3,unit:"quả",role:"main",required:true},{key:"greens",amount:1,unit:"bó",role:"main",required:true},{key:"carrot",amount:.5,unit:"củ",role:"secondary",required:false},{key:"garlic",amount:1,unit:"tép",role:"seasoning",required:false}],{calories:270,protein:21,carbs:13,fat:15,fiber:5},["Rửa sạch và cắt rau vừa ăn.","Đánh đều trứng với một ít gia vị.","Xào rau nhanh trên lửa lớn.","Cho trứng vào, đảo đến khi vừa chín mềm."]),R("chicken-mushroom-soup","Canh gà nấm rau xanh","https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=86","Canh thanh nhẹ, nhiều rau và protein nạc, phù hợp bữa tối ít dầu mỡ.",["lunch","dinner"],2,30,"easy",["stove","pot"],["dairyfree","glutenfree"],[],[{key:"chicken",amount:220,unit:"g",role:"main",required:true,substitutes:["tofu"]},{key:"mushroom",amount:100,unit:"g",role:"main",required:true},{key:"greens",amount:.5,unit:"bó",role:"secondary",required:false},{key:"carrot",amount:1,unit:"củ",role:"secondary",required:false}],{calories:330,protein:39,carbs:22,fat:9,fiber:8},["Sơ chế gà, nấm và rau củ.","Đun nước, cho thịt gà vào nấu chín.","Thêm cà rốt và nấm, nấu 8 phút.","Cho rau cải vào cuối cùng, nêm vừa ăn rồi tắt bếp."]),R("tofu-tomato","Đậu hũ sốt cà chua","https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=86","Món chay dễ ăn, chi phí thấp, có thể dùng cùng cơm hoặc rau luộc.",["lunch","dinner"],2,22,"easy",["stove","pan"],["vegetarian","dairyfree","glutenfree"],[],[{key:"tofu",amount:2,unit:"miếng",role:"main",required:true},{key:"tomato",amount:3,unit:"quả",role:"main",required:true},{key:"scallion",amount:.5,unit:"bó",role:"seasoning",required:false},{key:"garlic",amount:1,unit:"tép",role:"seasoning",required:false}],{calories:310,protein:22,carbs:24,fat:16,fiber:7},["Cắt đậu hũ thành miếng vừa ăn.","Áp chảo đậu hũ đến khi vàng nhẹ.","Nấu cà chua thành sốt sệt.","Cho đậu hũ vào rim 5 phút rồi thêm hành lá."]),R("chicken-egg-salad","Salad gà trứng","https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=900&q=86","Bữa ăn nhiều protein, nhiều rau và dễ điều chỉnh cho mục tiêu giảm cân.",["lunch","dinner"],2,20,"easy",["stove","pot"],["glutenfree"],["dairy"],[{key:"chicken",amount:180,unit:"g",role:"main",required:true},{key:"egg",amount:2,unit:"quả",role:"secondary",required:false},{key:"greens",amount:1,unit:"bó",role:"main",required:true},{key:"carrot",amount:1,unit:"củ",role:"secondary",required:false},{key:"cucumber",amount:1,unit:"quả",role:"secondary",required:false},{key:"yogurt",amount:1,unit:"hộp",role:"seasoning",required:false}],{calories:360,protein:43,carbs:19,fat:13,fiber:8},["Luộc hoặc áp chảo thịt gà.","Luộc trứng và cắt đôi.","Rửa rau, thái cà rốt và dưa chuột.","Trộn tất cả với sốt sữa chua hoặc dầu giấm."]),R("chicken-congee","Cháo gà nấm","https://images.unsplash.com/photo-1625944525533-473f1a3d54e7?auto=format&fit=crop&w=900&q=86","Món mềm, dễ ăn, phù hợp trẻ em hoặc khi cần bữa nhẹ bụng.",["breakfast","dinner"],3,42,"medium",["stove","pot"],["dairyfree","glutenfree"],[],[{key:"rice",amount:180,unit:"g",role:"main",required:true},{key:"chicken",amount:220,unit:"g",role:"main",required:true},{key:"mushroom",amount:100,unit:"g",role:"secondary",required:false},{key:"carrot",amount:.5,unit:"củ",role:"secondary",required:false},{key:"scallion",amount:.5,unit:"bó",role:"seasoning",required:false}],{calories:390,protein:31,carbs:55,fat:7,fiber:5},["Vo gạo và nấu với nhiều nước.","Luộc gà, xé nhỏ và giữ lại nước dùng.","Cho nấm, cà rốt và gà vào cháo.","Nấu đến khi mềm, nêm nhẹ và thêm hành."]),R("beef-noodles","Mì xào bò rau củ","https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=900&q=86","Món no lâu, giàu protein, phù hợp bữa trưa hoặc tối cần nhiều năng lượng.",["lunch","dinner"],2,28,"medium",["stove","pan"],["dairyfree"],["gluten"],[{key:"beef",amount:200,unit:"g",role:"main",required:true},{key:"noodles",amount:250,unit:"g",role:"main",required:true},{key:"carrot",amount:1,unit:"củ",role:"secondary",required:false},{key:"greens",amount:.5,unit:"bó",role:"secondary",required:false},{key:"onion",amount:.5,unit:"củ",role:"secondary",required:false}],{calories:610,protein:39,carbs:77,fat:17,fiber:7},["Luộc mì vừa chín rồi để ráo.","Ướp bò nhẹ và xào nhanh trên lửa lớn.","Xào rau củ, cho mì vào đảo đều.","Thêm bò trở lại, nêm vừa ăn."]),R("pumpkin-soup","Súp bí đỏ","https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=900&q=86","Súp ấm, nhiều chất xơ, phù hợp bữa sáng hoặc bữa tối nhẹ.",["breakfast","dinner"],2,35,"easy",["stove","pot"],["vegetarian","glutenfree"],["dairy"],[{key:"pumpkin",amount:350,unit:"g",role:"main",required:true},{key:"milk",amount:200,unit:"ml",role:"secondary",required:false},{key:"onion",amount:.5,unit:"củ",role:"secondary",required:false}],{calories:260,protein:8,carbs:42,fat:9,fiber:9},["Cắt bí đỏ và hành tây.","Nấu mềm bí với một ít nước.","Xay hoặc nghiền nhuyễn.","Thêm sữa, nêm nhẹ và đun thêm 3 phút."]),R("tofu-rice-bowl","Cơm bowl đậu hũ rau củ","https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=86","Bowl chay cân bằng, nhiều màu sắc, dễ thay đổi theo rau đang có.",["lunch","dinner"],2,25,"easy",["stove","pan"],["vegetarian","dairyfree","glutenfree"],["soy"],[{key:"rice",amount:300,unit:"g",role:"main",required:true},{key:"tofu",amount:2,unit:"miếng",role:"main",required:true},{key:"carrot",amount:1,unit:"củ",role:"secondary",required:false},{key:"greens",amount:.5,unit:"bó",role:"secondary",required:false},{key:"mushroom",amount:100,unit:"g",role:"secondary",required:false}],{calories:500,protein:26,carbs:68,fat:15,fiber:11},["Áp chảo đậu hũ đến khi vàng.","Xào nhanh nấm và rau củ.","Cho cơm vào tô.","Xếp đậu hũ, rau lên trên và thêm sốt tùy chọn."]),R("potato-egg","Khoai tây trứng áp chảo","https://images.unsplash.com/photo-1510693206972-df098062cb71?auto=format&fit=crop&w=900&q=86","Món ít nguyên liệu, no lâu, phù hợp bữa sáng hoặc bữa nhẹ.",["breakfast","lunch"],2,24,"easy",["stove","pan"],["vegetarian","dairyfree","glutenfree"],[],[{key:"potato",amount:3,unit:"củ",role:"main",required:true},{key:"egg",amount:3,unit:"quả",role:"main",required:true},{key:"onion",amount:.5,unit:"củ",role:"secondary",required:false}],{calories:440,protein:20,carbs:54,fat:17,fiber:6},["Thái khoai tây lát mỏng.","Áp chảo khoai đến khi mềm và vàng.","Đổ trứng đánh lên trên.","Đậy nắp đến khi trứng chín."]),R("chicken-sandwich","Sandwich gà rau xanh","https://images.unsplash.com/photo-1553909489-cd47e0907980?auto=format&fit=crop&w=900&q=86","Tận dụng gà đã nấu thành bữa sáng hoặc trưa mang đi.",["breakfast","lunch","snack"],2,12,"easy",["pan"],["dairyfree"],["gluten"],[{key:"bread",amount:4,unit:"lát",role:"main",required:true},{key:"chicken",amount:150,unit:"g",role:"main",required:true},{key:"greens",amount:.5,unit:"bó",role:"secondary",required:false},{key:"tomato",amount:1,unit:"quả",role:"secondary",required:false}],{calories:420,protein:35,carbs:49,fat:10,fiber:6},["Xé nhỏ thịt gà đã nấu.","Rửa và để ráo rau.","Xếp gà, rau và cà chua vào bánh mì.","Áp chảo nhẹ hai mặt nếu muốn ăn nóng."]),R("vegetable-stirfry","Rau củ nấm áp chảo","https://images.unsplash.com/photo-1543353071-087092ec393a?auto=format&fit=crop&w=900&q=86","Món phụ nhiều rau, ít năng lượng, dùng tốt cho mục tiêu giảm cân.",["lunch","dinner"],2,18,"easy",["stove","pan"],["vegetarian","dairyfree","glutenfree"],[],[{key:"mushroom",amount:150,unit:"g",role:"main",required:true},{key:"carrot",amount:1,unit:"củ",role:"secondary",required:false},{key:"greens",amount:1,unit:"bó",role:"main",required:true},{key:"garlic",amount:1,unit:"tép",role:"seasoning",required:false}],{calories:180,protein:9,carbs:25,fat:6,fiber:10},["Rửa sạch và cắt rau củ.","Làm nóng chảo với lượng dầu nhỏ.","Cho nấm và cà rốt vào trước.","Thêm rau xanh, nêm nhẹ và đảo nhanh."])];
-const leftoverMap={rice:["Cơm chiên rau củ|Thêm trứng và rau còn lại, hoàn thành trong khoảng 15 phút.","Cháo nhanh|Nấu cơm nguội với nước dùng, thêm nấm hoặc thịt xé.","Cơm nắm áp chảo|Trộn cơm với rau băm, tạo viên và áp chảo hai mặt."],chicken:["Salad gà|Xé gà, trộn rau xanh và sốt nhẹ.","Sandwich gà|Kẹp gà cùng cà chua và rau để làm bữa sáng.","Cháo gà|Tận dụng gà và nước dùng cho bữa nhẹ bụng."],vegetables:["Trứng cuộn rau|Băm rau đã chín và cuộn cùng trứng.","Súp rau củ|Xay rau với nước dùng để tạo món súp nhanh.","Mì xào rau|Cho rau vào cuối cùng để tránh bị quá mềm."],bread:["Bánh mì trứng nướng|Nhúng bánh vào trứng và áp chảo.","Crouton giòn|Cắt nhỏ, nướng hoặc áp chảo làm topping salad.","Pudding bánh mì|Trộn bánh với sữa, trứng rồi nướng."],broth:["Súp nấm|Thêm nấm, rau và đậu hũ vào nước dùng.","Cháo rau củ|Nấu cơm hoặc gạo cùng nước dùng còn thừa.","Mì nước nhanh|Thêm mì, trứng và rau để có bữa 15 phút."]};
-const defaultHistory=()=>[{id:crypto.randomUUID(),recipeId:"fried-rice-chicken",date:addDays(-1),saved:35000,rescued:.6},{id:crypto.randomUUID(),recipeId:"egg-greens",date:addDays(-2),saved:26000,rescued:.3},{id:crypto.randomUUID(),recipeId:"chicken-mushroom-soup",date:addDays(-4),saved:42000,rescued:.7}];
-const state={pantry:JSON.parse(localStorage.getItem("remeal_pantry")||"null")||defaultPantry(),members:JSON.parse(localStorage.getItem("remeal_members")||"null")||defaultMembers(),planner:JSON.parse(localStorage.getItem("remeal_planner")||"{}"),shopping:JSON.parse(localStorage.getItem("remeal_shopping")||"[]"),history:JSON.parse(localStorage.getItem("remeal_history")||"null")||defaultHistory(),builder:{selectedPantry:[],mealType:"dinner",servings:2,maxTime:30,difficulty:"easy",equipment:["stove","pan","pot"],budget:50000,goal:"balanced",restrictions:["nospicy"]},results:[]};
-function save(){localStorage.setItem("remeal_pantry",JSON.stringify(state.pantry));localStorage.setItem("remeal_members",JSON.stringify(state.members));localStorage.setItem("remeal_planner",JSON.stringify(state.planner));localStorage.setItem("remeal_shopping",JSON.stringify(state.shopping));localStorage.setItem("remeal_history",JSON.stringify(state.history))}function daysUntil(d){return Math.ceil((new Date(d+"T00:00:00")-new Date(todayIso()+"T00:00:00"))/86400000)}function pStatus(i){const d=daysUntil(i.expiry);if(i.condition==="frozen")return{key:"frozen",label:"Đông lạnh",cls:"blue"};if(i.condition==="cooked")return{key:"cooked",label:"Đã nấu chín",cls:"blue"};if(d<=1)return{key:"urgent",label:"Cần dùng ngay",cls:"red"};if(d<=3)return{key:"soon",label:"Sắp hết hạn",cls:"orange"};return{key:"fresh",label:"Còn tươi",cls:""}}function showToast(m){$("#toastText").textContent=m;$("#toast").classList.add("show");clearTimeout(window.__t);window.__t=setTimeout(()=>$("#toast").classList.remove("show"),2500)}function showView(n){$$('.view').forEach(v=>v.classList.remove('active'));$$('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===n));const v=$("#"+n+"View");if(v)v.classList.add('active');$("#mainNav").classList.remove('show');scrollTo({top:0,behavior:'smooth'});({pantry:renderPantry,builder:renderBuilder,recipes:renderResults,planner:renderPlanner,shopping:renderShopping,family:renderFamily,progress:renderProgress}[n]||(()=>{}))()}
-function renderHome(){const x=[...state.pantry].sort((a,b)=>daysUntil(a.expiry)-daysUntil(b.expiry)).slice(0,3);$("#homeRescueList").innerHTML=x.map(i=>`<div class="rescue-item"><div class="food-icon">${i.emoji}</div><div><strong>${i.name}</strong><small>${i.qty}${i.unit} · ${pStatus(i).label}</small></div><span class="days-left">${daysUntil(i.expiry)<=0?'Hôm nay':daysUntil(i.expiry)+' ngày'}</span></div>`).join('');const money=82000+state.history.reduce((s,h)=>s+h.saved,0),food=6.8+state.history.reduce((s,h)=>s+h.rescued,0);$("#homeMealCount").textContent=9+state.history.length;$("#homeSavedMoney").textContent=Math.round(money/1000)+'K';$("#homeRescued").textContent=food.toFixed(1)+'kg'}
-function renderPantry(){const q=($("#pantrySearch")?.value||'').toLowerCase(),f=$("#pantryFilter")?.value||'all',c=$("#pantryCategory")?.value||'all';const list=state.pantry.filter(i=>i.name.toLowerCase().includes(q)&&(f==='all'||pStatus(i).key===f)&&(c==='all'||i.category===c));$("#pantryGrid").innerHTML=list.map(i=>{const s=pStatus(i),d=daysUntil(i.expiry),cls=s.key==='urgent'?'urgent':s.key==='soon'?'soon':'',w=i.condition==='frozen'?100:Math.max(8,Math.min(100,d/12*100));return`<article class="pantry-card"><div class="pantry-card-top"><div class="food-icon">${i.emoji}</div><div><h4>${i.name}</h4><p>${i.qty}${i.unit} · ${s.label}</p></div></div><div class="pantry-card-meta"><div class="meta-line"><span>Hạn sử dụng</span><strong>${i.expiry}</strong></div><div class="expiry-track ${cls}"><span style="width:${w}%"></span></div><div class="meta-line"><span>Còn lại</span><strong>${i.condition==='frozen'?'Đang đông lạnh':d<=0?'Dùng ngay':d+' ngày'}</strong></div></div><div class="pantry-card-actions"><button class="icon-btn" onclick="adjustPantry('${i.id}',-1)"><i data-lucide="minus"></i></button><button class="icon-btn" onclick="adjustPantry('${i.id}',1)"><i data-lucide="plus"></i></button><button class="icon-btn" onclick="usePantry('${i.id}')"><i data-lucide="check"></i></button><button class="icon-btn" onclick="removePantry('${i.id}')"><i data-lucide="trash-2"></i></button></div></article>`}).join('')||`<div class="health-notice" style="grid-column:1/-1">Không tìm thấy nguyên liệu phù hợp bộ lọc.</div>`;const counts={urgent:0,soon:0,fresh:0,cooked:0,frozen:0};state.pantry.forEach(i=>counts[pStatus(i).key]++);$("#pantryCountPill").textContent=state.pantry.length+' mục';$("#pantryStatusList").innerHTML=`<div class="status-row"><span>Cần dùng ngay</span><strong>${counts.urgent}</strong></div><div class="status-row"><span>Sắp hết hạn</span><strong>${counts.soon}</strong></div><div class="status-row"><span>Còn tươi</span><strong>${counts.fresh}</strong></div><div class="status-row"><span>Đã nấu chín</span><strong>${counts.cooked}</strong></div><div class="status-row"><span>Đông lạnh</span><strong>${counts.frozen}</strong></div>`;renderHome();lucide.createIcons()}window.adjustPantry=(id,d)=>{const i=state.pantry.find(x=>x.id===id);if(!i)return;i.qty=Math.max(0,+i.qty+d);if(i.qty<=0)state.pantry=state.pantry.filter(x=>x.id!==id);save();renderPantry();renderBuilder()};window.usePantry=id=>{const i=state.pantry.find(x=>x.id===id);if(!i)return;i.qty=Math.max(0,+i.qty-1);if(i.qty<=0)state.pantry=state.pantry.filter(x=>x.id!==id);save();renderPantry();renderBuilder();showToast('Đã cập nhật lượng nguyên liệu còn lại.')};window.removePantry=id=>{state.pantry=state.pantry.filter(x=>x.id!==id);save();renderPantry();renderBuilder();showToast('Đã xóa nguyên liệu khỏi tủ.')};function renderLeftovers(){const k=$("#leftoverSelect").value;$("#leftoverResult").innerHTML=leftoverMap[k].map(s=>{const[a,b]=s.split('|');return`<div class="leftover-suggestion"><strong>${a}</strong>${b}</div>`}).join('')}
-function goalName(g){return{balanced:'Ăn cân bằng',weightloss:'Giảm cân',protein:'Tăng protein',fiber:'Tăng chất xơ',vegetables:'Ăn nhiều rau',lowfat:'Giảm dầu mỡ'}[g]||g}function syncOne(sel,v){$$('.option-btn',$(sel)).forEach(b=>b.classList.toggle('active',b.dataset.value===v))}function syncMulti(sel,v){$$('.option-btn',$(sel)).forEach(b=>b.classList.toggle('active',v.includes(b.dataset.value)))}function updateSteps(){$("#stepIngredients").textContent=`Đang chọn ${state.builder.selectedPantry.length} nguyên liệu`;const m={breakfast:'Bữa sáng',lunch:'Bữa trưa',dinner:'Bữa tối',snack:'Ăn nhẹ'}[state.builder.mealType];$("#stepMeal").textContent=`${m} · ${state.builder.servings} người`;$("#stepGoal").textContent=goalName(state.builder.goal)}function updateGuard(){const ms=state.members.filter(m=>m.selected),all=[...new Set([...state.builder.restrictions,...ms.flatMap(m=>m.restrictions)])];$("#healthGuardSummary").innerHTML=all.length?`<strong>Đang áp dụng:</strong> ${all.join(', ')}. Công thức có xung đột sẽ bị loại hoặc hạ điểm.`:'Không có giới hạn đặc biệt.'}
-function renderBuilder(){if(!state.builder.selectedPantry.length)state.builder.selectedPantry=state.pantry.map(x=>x.id);$("#builderIngredients").innerHTML=state.pantry.map(i=>`<label class="ingredient-select"><input type="checkbox" data-pantry-select="${i.id}" ${state.builder.selectedPantry.includes(i.id)?'checked':''}><div class="food-icon">${i.emoji}</div><strong>${i.name}</strong><small>${i.qty}${i.unit}</small></label>`).join('');$("#builderFamily").innerHTML=state.members.map(m=>`<label class="member-check"><input type="checkbox" data-member-select="${m.id}" ${m.selected?'checked':''}><span class="member-avatar">${m.avatar}</span><span>${m.name}<small style="display:block;color:var(--muted);font-size:7px">${m.role}</small></span></label>`).join('');$("#servingRange").value=state.builder.servings;$("#servingValue").textContent=state.builder.servings;$("#budgetRange").value=state.builder.budget;$("#budgetValue").textContent=new Intl.NumberFormat('vi-VN').format(state.builder.budget);syncOne('#mealTypeOptions',state.builder.mealType);syncOne('#timeOptions',String(state.builder.maxTime));syncOne('#difficultyOptions',state.builder.difficulty);syncOne('#goalOptions',state.builder.goal);syncMulti('#equipmentOptions',state.builder.equipment);syncMulti('#restrictionOptions',state.builder.restrictions);updateSteps();updateGuard();lucide.createIcons()}
-function mergedRestrictions(){const t=state.members.filter(m=>m.selected).flatMap(m=>m.restrictions).map(x=>x.toLowerCase()),r=[...state.builder.restrictions];if(t.some(x=>x.includes('không cay')))r.push('nospicy');if(t.some(x=>x.includes('dị ứng hạt')))r.push('nutallergy');if(t.some(x=>x.includes('hải sản')))r.push('seafoodallergy');if(t.some(x=>x.includes('không sữa')))r.push('dairyfree');if(t.some(x=>x.includes('gluten')))r.push('glutenfree');if(t.some(x=>x.includes('ăn chay')))r.push('vegetarian');return[...new Set(r)]}function roleWeight(r){return{main:5,secondary:2,seasoning:1,optional:.5}[r]||1}function goalScore(r,g){const n=r.nutrition;if(g==='weightloss')return Math.max(35,100-Math.max(0,n.calories-300)/4+n.fiber*2);if(g==='protein')return Math.min(100,35+n.protein*1.6);if(g==='fiber')return Math.min(100,35+n.fiber*6);if(g==='vegetables')return Math.min(100,40+r.ingredients.filter(x=>catalog[x.key]?.category==='vegetable').length*15);if(g==='lowfat')return Math.max(35,100-n.fat*2.5);return Math.max(45,100-(Math.abs(n.protein-30)*.8+Math.abs(n.fiber-8)*2+Math.max(0,n.calories-600)/5))}
-function evaluate(r){const p=state.pantry.filter(i=>state.builder.selectedPantry.includes(i.id)),keys=new Set(p.map(x=>x.key)),res=mergedRestrictions();if(res.includes('vegetarian')&&!r.diet.includes('vegetarian'))return null;if(res.includes('dairyfree')&&r.allergens.includes('dairy'))return null;if(res.includes('glutenfree')&&r.allergens.includes('gluten'))return null;if(!r.mealTypes.includes(state.builder.mealType))return null;if(r.time>state.builder.maxTime&&state.builder.maxTime<90)return null;const order={easy:1,medium:2,hard:3};if(state.builder.difficulty!=='any'&&order[r.difficulty]>order[state.builder.difficulty])return null;if(r.equipment.some(e=>!state.builder.equipment.includes(e)))return null;let total=0,matched=0,urgent=0;const missing=[];r.ingredients.forEach(i=>{const w=roleWeight(i.role);total+=w;if(keys.has(i.key))matched+=w;else if(i.required)missing.push(i);const pi=p.find(x=>x.key===i.key);if(pi&&(daysUntil(pi.expiry)<=3||pi.condition==='cooked'))urgent++});const relevant=p.filter(x=>daysUntil(x.expiry)<=3||x.condition==='cooked').length,match=Math.round(matched/total*100),waste=relevant?Math.min(100,Math.round(urgent/relevant*100+35)):70,nutrition=Math.round(goalScore(r,'balanced')),goal=Math.round(goalScore(r,state.builder.goal)),timeScore=Math.max(40,100-Math.max(0,r.time-15)*2),cost=missing.reduce((s,i)=>s+(catalog[i.key]?.price||12000),0);let score=match*.35+waste*.2+nutrition*.15+goal*.1+timeScore*.1+100*.05+95*.05-missing.length*7-(cost>state.builder.budget?18:0);return{...r,score:Math.max(0,Math.min(99,Math.round(score))),match,waste,nutrition,goalScore:goal,timeScore,missing,missingCost:cost}}
-function generate(){const a=recipes.map(evaluate).filter(Boolean).sort((x,y)=>y.score-x.score);if(!a.length){showToast('Không có công thức đáp ứng toàn bộ giới hạn. Hãy nới thời gian hoặc bộ lọc.');return}const best=a[0],fast=[...a].sort((x,y)=>x.time-y.time||y.score-x.score).find(x=>x.id!==best.id)||a[1]||best,healthy=[...a].sort((x,y)=>y.goalScore-x.goalScore).find(x=>x.id!==best.id&&x.id!==fast.id)||a.find(x=>x.id!==best.id)||best;state.results=[{...best,resultLabel:'Phù hợp nhất',badgeClass:''},{...fast,resultLabel:'Nhanh nhất',badgeClass:'fast'},{...healthy,resultLabel:'Lành mạnh nhất',badgeClass:'healthy'}];const map={};state.results.flatMap(r=>r.missing).forEach(i=>{if(!map[i.key]){const c=catalog[i.key]||{name:i.key,emoji:'🥣',category:'other',price:12000};map[i.key]={id:crypto.randomUUID(),key:i.key,name:c.name,emoji:c.emoji,qty:i.amount,unit:i.unit,category:c.category,price:c.price,done:false,essential:true}}});state.shopping=Object.values(map);save();renderResults();renderShopping();showView('recipes');showToast('Đã phân tích và tạo ba gợi ý phù hợp nhất.')}
-function scoreRow(n,v){return`<div class="score-row"><span>${n}</span><div class="score-track"><span style="width:${v}%"></span></div><strong>${v}%</strong></div>`}function renderResults(){if(!state.results.length)state.results=recipes.slice(0,3).map((r,i)=>({...r,score:[92,86,88][i],match:[92,85,88][i],waste:[84,70,85][i],nutrition:[88,75,92][i],goalScore:[88,75,94][i],missing:[],missingCost:0,resultLabel:['Phù hợp nhất','Nhanh nhất','Lành mạnh nhất'][i],badgeClass:['','fast','healthy'][i]}));$("#summaryIngredients").textContent=state.builder.selectedPantry.length||state.pantry.length;$("#summaryServing").textContent=state.builder.servings;$("#summarySpend").textContent=currency(state.results.reduce((s,r)=>s+r.missingCost,0));$("#summaryWaste").textContent=Math.round(state.results.reduce((s,r)=>s+r.waste,0)/state.results.length)+'%';$("#recipeGrid").innerHTML=state.results.map(r=>`<article class="recipe-card"><div class="recipe-badge ${r.badgeClass}">${r.resultLabel}</div><img src="${r.image}" alt="${r.title}"><div class="recipe-body"><h3>${r.title}</h3><p class="recipe-desc">${r.desc}</p><div class="recipe-meta"><span><i data-lucide="clock-3"></i>${r.time} phút</span><span><i data-lucide="bar-chart-3"></i>${r.difficulty==='easy'?'Dễ':'Trung bình'}</span><span><i data-lucide="users"></i>${state.builder.servings} người</span></div><div class="recipe-score-head"><small>Điểm phù hợp tổng</small><strong>${r.score}%</strong></div><div class="score-list">${scoreRow('Nguyên liệu',r.match)}${scoreRow('Dinh dưỡng',r.nutrition)}${scoreRow('Mục tiêu',r.goalScore)}${scoreRow('Giảm lãng phí',r.waste)}</div>${r.missing.length?`<div class="missing-note">Cần mua thêm: ${r.missing.map(x=>catalog[x.key]?.name||x.key).join(', ')} · ${currency(r.missingCost)}</div>`:`<div class="missing-note" style="background:#edf8ef;color:#35704a">Có thể nấu bằng nguyên liệu đang có.</div>`}<div class="recipe-actions"><button class="primary-btn small-btn" onclick="openRecipe('${r.id}')">Xem chi tiết</button><button class="secondary-btn small-btn" onclick="showToast('Đã lưu công thức yêu thích.')"><i data-lucide="heart" width="14"></i></button></div></div></article>`).join('');lucide.createIcons()}
-window.openRecipe=id=>{const r=recipes.find(x=>x.id===id),e=evaluate(r)||{...r,missing:[],missingCost:0,score:90},scale=state.builder.servings/r.servings,missing=new Set(e.missing.map(x=>x.key));$("#recipeModalBody").innerHTML=`<div class="recipe-modal-hero"><img src="${r.image}" alt="${r.title}"><div><span class="pill">${e.score||90}% phù hợp</span><h2>${r.title}</h2><p>${r.desc}</p><div class="recipe-meta" style="font-size:9px;margin-top:12px"><span><i data-lucide="clock-3"></i>${r.time} phút</span><span><i data-lucide="users"></i>${state.builder.servings} người</span><span><i data-lucide="wallet-cards"></i>Mua thêm ${currency(e.missingCost||0)}</span></div><div class="nutrition-grid"><div class="nutrition-box"><strong>${Math.round(r.nutrition.calories*scale)}</strong><small>kcal tổng</small></div><div class="nutrition-box"><strong>${Math.round(r.nutrition.protein*scale)}g</strong><small>Protein</small></div><div class="nutrition-box"><strong>${Math.round(r.nutrition.carbs*scale)}g</strong><small>Carb</small></div><div class="nutrition-box"><strong>${Math.round(r.nutrition.fat*scale)}g</strong><small>Chất béo</small></div><div class="nutrition-box"><strong>${Math.round(r.nutrition.fiber*scale)}g</strong><small>Chất xơ</small></div></div></div></div><div class="modal-detail-grid"><div class="detail-box"><h4>Nguyên liệu cho ${state.builder.servings} người</h4><ul>${r.ingredients.map(i=>`<li style="${missing.has(i.key)?'color:#d87a00;font-weight:700':''}">${catalog[i.key]?.name||i.key}: ${Math.round(i.amount*scale*10)/10}${i.unit}${missing.has(i.key)?' — cần mua':''}</li>`).join('')}</ul></div><div class="detail-box"><h4>Các bước thực hiện</h4><ol>${r.steps.map(s=>`<li>${s}</li>`).join('')}</ol></div></div><div class="health-notice" style="margin-top:15px">Dinh dưỡng được ước tính theo dữ liệu mẫu. Với dị ứng hoặc tình trạng sức khỏe cần kiểm soát nghiêm ngặt, hãy xác nhận nguyên liệu và khẩu phần với chuyên gia phù hợp.</div><div class="modal-actions"><button class="primary-btn" onclick="markCooked('${r.id}')"><i data-lucide="circle-check" width="16"></i> Đã nấu món này</button><button class="secondary-btn" onclick="addRecipeToPlan('${r.id}')"><i data-lucide="calendar-plus" width="16"></i> Thêm vào kế hoạch</button><button class="secondary-btn" onclick="addMissingToShopping('${r.id}')"><i data-lucide="shopping-basket" width="16"></i> Thêm đồ còn thiếu</button><button class="secondary-btn" onclick="shareRecipe('${r.id}')"><i data-lucide="share-2" width="16"></i> Chia sẻ</button></div>`;openModal('recipeModal');lucide.createIcons()};window.markCooked=id=>{state.history.unshift({id:crypto.randomUUID(),recipeId:id,date:todayIso(),saved:32000,rescued:.5});save();closeModal('recipeModal');renderProgress();renderHome();showToast('Đã ghi nhận món ăn và cập nhật tiến độ.')};window.addRecipeToPlan=id=>{const days=['mon','tue','wed','thu','fri','sat','sun'],k=days.map(d=>`${d}-dinner`).find(x=>!state.planner[x])||'mon-dinner';state.planner[k]=id;save();closeModal('recipeModal');renderPlanner();showToast('Đã thêm công thức vào kế hoạch tuần.')};window.addMissingToShopping=id=>{const e=evaluate(recipes.find(r=>r.id===id));if(!e)return;e.missing.forEach(i=>{if(!state.shopping.some(x=>x.key===i.key)){const c=catalog[i.key]||{name:i.key,emoji:'🥣',category:'other',price:12000};state.shopping.push({id:crypto.randomUUID(),key:i.key,name:c.name,emoji:c.emoji,qty:i.amount,unit:i.unit,category:c.category,price:c.price,done:false,essential:true})}});save();renderShopping();showToast('Đã thêm nguyên liệu còn thiếu vào danh sách mua.')};window.shareRecipe=async id=>{const r=recipes.find(x=>x.id===id),text=`${r.title} — công thức gợi ý từ ReMeal, ${r.time} phút.`;if(navigator.share)try{await navigator.share({title:r.title,text})}catch(e){}else{await navigator.clipboard.writeText(text);showToast('Đã sao chép nội dung chia sẻ.')}};
-const dayLabels=[['mon','Thứ 2'],['tue','Thứ 3'],['wed','Thứ 4'],['thu','Thứ 5'],['fri','Thứ 6'],['sat','Thứ 7'],['sun','CN']],mealLabels=[['breakfast','Sáng'],['lunch','Trưa'],['dinner','Tối'],['snack','Ăn nhẹ']];function renderPlanner(){let h=`<div></div>${dayLabels.map(x=>`<div class="head">${x[1]}</div>`).join('')}`;mealLabels.forEach(([m,l])=>{h+=`<div class="meal-label">${l}</div>`;dayLabels.forEach(([d])=>{const k=`${d}-${m}`,r=recipes.find(x=>x.id===state.planner[k]);h+=r?`<div class="plan-cell"><button class="plan-remove" onclick="removePlan('${k}')">×</button><div class="plan-meal"><img src="${r.image}" alt="${r.title}"><div><strong>${r.title}</strong><small>${r.time} phút</small></div></div></div>`:`<button class="plan-cell empty" onclick="quickAddPlan('${k}')">+</button>`})});$("#plannerTable").innerHTML=h;const ps=Object.values(state.planner).map(id=>recipes.find(r=>r.id===id)).filter(Boolean);$("#planMealsCount").textContent=ps.length;$("#planSpend").textContent=currency(state.shopping.reduce((s,x)=>s+(x.done?0:x.price),0));$("#planProtein").textContent=ps.length?Math.round(ps.reduce((s,r)=>s+r.nutrition.protein,0)/7)+'g':'0g';$("#planWaste").textContent=ps.length?Math.min(40,15+ps.length*2)+'%':'0%';lucide.createIcons()}window.removePlan=k=>{delete state.planner[k];save();renderPlanner()};window.quickAddPlan=k=>{const m=k.split('-')[1],r=recipes.find(x=>x.mealTypes.includes(m))||recipes[0];state.planner[k]=r.id;save();renderPlanner()};function autoPlan(){let idx=0;mealLabels.forEach(([m])=>dayLabels.forEach(([d])=>{const o=recipes.filter(r=>r.mealTypes.includes(m));if(o.length)state.planner[`${d}-${m}`]=o[idx++%o.length].id}));buildShoppingFromPlan();save();renderPlanner();renderShopping();showToast('Đã tạo kế hoạch bữa ăn 7 ngày.')}function buildShoppingFromPlan(){const pk=new Set(state.pantry.map(x=>x.key)),map={};Object.values(state.planner).forEach(id=>{const r=recipes.find(x=>x.id===id);if(!r)return;r.ingredients.filter(i=>i.required&&!pk.has(i.key)).forEach(i=>{if(!map[i.key]){const c=catalog[i.key]||{name:i.key,emoji:'🥣',category:'other',price:12000};map[i.key]={id:crypto.randomUUID(),key:i.key,name:c.name,emoji:c.emoji,qty:i.amount,unit:i.unit,category:c.category,price:c.price,done:false,essential:true}}else map[i.key].qty+=i.amount})});state.shopping=Object.values(map)}
-function renderShopping(){const g={};state.shopping.forEach(i=>(g[i.category||'other']||(g[i.category||'other']=[])).push(i));const labels={protein:'Chất đạm',vegetable:'Rau củ',grain:'Tinh bột',other:'Khác'};$("#shoppingList").innerHTML=Object.keys(g).length?Object.entries(g).map(([c,items])=>`<div class="category-label">${labels[c]||c}</div><div class="shopping-list">${items.map(i=>`<div class="shopping-item ${i.done?'done':''}"><input type="checkbox" ${i.done?'checked':''} onchange="toggleShopping('${i.id}')"><div class="food-icon">${i.emoji}</div><div><strong>${i.name}</strong><small>${Math.round(i.qty*10)/10}${i.unit} · ${i.essential?'Thiết yếu':'Tùy chọn'}</small></div><span class="shopping-price">${currency(i.price)}</span></div>`).join('')}</div>`).join(''):`<div class="health-notice">Danh sách mua đang trống. Hãy tạo gợi ý hoặc kế hoạch tuần.</div>`;const t=state.shopping.filter(x=>!x.done).reduce((s,x)=>s+x.price,0),e=state.shopping.filter(x=>!x.done&&x.essential).reduce((s,x)=>s+x.price,0),o=state.shopping.filter(x=>!x.done&&!x.essential).reduce((s,x)=>s+x.price,0);$("#shoppingTotal").textContent=currency(t);$("#shoppingEssential").textContent=currency(e);$("#shoppingOptional").textContent=currency(o);$("#shoppingDone").textContent=state.shopping.filter(x=>x.done).length+' mục'}window.toggleShopping=id=>{const i=state.shopping.find(x=>x.id===id);if(i)i.done=!i.done;save();renderShopping()};function addCustomShopping(){const name=prompt('Tên nguyên liệu cần mua:');if(!name)return;const price=+(prompt('Giá dự kiến:','10000')||10000);state.shopping.push({id:crypto.randomUUID(),key:name.toLowerCase(),name,emoji:'🛒',qty:1,unit:'phần',category:'other',price,done:false,essential:false});save();renderShopping()}function moveBought(){const b=state.shopping.filter(x=>x.done);b.forEach(i=>state.pantry.push({id:crypto.randomUUID(),key:i.key,name:i.name,emoji:i.emoji,qty:i.qty,unit:i.unit,expiry:addDays(7),condition:'fresh',category:i.category}));state.shopping=state.shopping.filter(x=>!x.done);save();renderShopping();renderPantry();renderBuilder();showToast(`Đã chuyển ${b.length} mục vào tủ lạnh.`)}async function shareShopping(){const text=state.shopping.filter(x=>!x.done).map(x=>`• ${x.name}: ${x.qty}${x.unit}`).join('\n')||'Danh sách mua đang trống.';if(navigator.share)try{await navigator.share({title:'Danh sách mua ReMeal',text})}catch(e){}else{await navigator.clipboard.writeText(text);showToast('Đã sao chép danh sách mua.')}}
-function renderFamily(){$("#familyGrid").innerHTML=state.members.map(m=>`<article class="family-card"><div class="family-card-top"><div class="member-avatar">${m.avatar}</div><div><h4>${m.name}</h4><p>${m.role}</p></div></div><div class="tag-wrap"><span class="mini-tag">${goalName(m.goal)}</span>${m.restrictions.map(r=>`<span class="mini-tag warn">${r}</span>`).join('')}</div><p style="margin-top:10px;line-height:1.55">${m.note||'Chưa có ghi chú khẩu vị.'}</p><div class="family-card-actions"><button class="small-btn ${m.selected?'soft-btn':'secondary-btn'}" onclick="toggleMember('${m.id}')">${m.selected?'Đang chọn':'Chọn cho bữa ăn'}</button><button class="small-btn danger-btn" onclick="removeMember('${m.id}')">Xóa</button></div></article>`).join('');const s=state.members.filter(m=>m.selected),r=[...new Set(s.flatMap(m=>m.restrictions))];$("#householdFit").innerHTML=s.length?`<strong>${s.map(m=>m.name).join(', ')}</strong><br>Yêu cầu chung: ${r.length?r.join(', '):'Không có giới hạn bắt buộc'}. Hệ thống sẽ ưu tiên mục tiêu ${[...new Set(s.map(m=>goalName(m.goal)))].join(' và ').toLowerCase()}.`:'Chưa chọn thành viên nào cho bữa ăn.';renderBuilder()}window.toggleMember=id=>{const m=state.members.find(x=>x.id===id);if(m)m.selected=!m.selected;save();renderFamily();updateGuard()};window.removeMember=id=>{state.members=state.members.filter(x=>x.id!==id);save();renderFamily()};function renderProgress(){const meals=9+state.history.length,money=82000+state.history.reduce((s,h)=>s+h.saved,0),food=6.8+state.history.reduce((s,h)=>s+h.rescued,0);$("#progressMeals").textContent=meals;$("#progressMoney").textContent=currency(money);$("#progressFood").textContent=food.toFixed(1).replace('.',',')+'kg';$("#progressStreak").textContent=Math.min(14,3+state.history.length)+' ngày';$("#historyList").innerHTML=state.history.slice(0,6).map(h=>{const r=recipes.find(x=>x.id===h.recipeId);return r?`<div class="history-item"><img src="${r.image}" alt="${r.title}"><div><strong>${r.title}</strong><small>${h.date} · Giải cứu ${h.rescued}kg</small></div><span>+${currency(h.saved)}</span></div>`:''}).join('')||`<div class="health-notice">Chưa có lịch sử nấu ăn.</div>`;renderHome()}
-function openModal(id){$("#"+id).classList.add('show');document.body.style.overflow='hidden'}function closeModal(id){$("#"+id).classList.remove('show');document.body.style.overflow=''}window.closeModal=closeModal;$$('.nav-btn,[data-view]').forEach(b=>b.addEventListener('click',e=>{if(b.dataset.view){e.preventDefault();showView(b.dataset.view)}}));$("#menuBtn").onclick=()=>$("#mainNav").classList.toggle('show');$$('[data-close]').forEach(b=>b.onclick=()=>closeModal(b.dataset.close));$$('.modal').forEach(m=>m.onclick=e=>{if(e.target===m)closeModal(m.id)});$("#openPantryModal").onclick=()=>{$("#pantryForm [name=expiry]").value=addDays(7);openModal('pantryModal')};$("#pantryForm").onsubmit=e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target)),key=d.name.toLowerCase().replace(/\s+/g,'-');state.pantry.push({id:crypto.randomUUID(),key,name:d.name,emoji:d.emoji||'🥣',qty:+d.qty,unit:d.unit,expiry:d.expiry,condition:d.condition,category:d.category});save();closeModal('pantryModal');e.target.reset();renderPantry();renderBuilder();showToast('Đã thêm nguyên liệu vào tủ lạnh.')};$("#openFamilyModal").onclick=()=>openModal('familyModal');$("#familyForm").onsubmit=e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));state.members.push({id:crypto.randomUUID(),name:d.name,role:d.role||'Thành viên',avatar:d.avatar||'🙂',goal:d.goal,restrictions:d.restrictions.split(',').map(x=>x.trim()).filter(Boolean),note:d.note,selected:false});save();closeModal('familyModal');e.target.reset();renderFamily();showToast('Đã thêm thành viên gia đình.')};$("#pantrySearch").oninput=renderPantry;$("#pantryFilter").onchange=renderPantry;$("#pantryCategory").onchange=renderPantry;$("#leftoverSelect").onchange=renderLeftovers;$("#selectAllPantry").onclick=()=>{state.builder.selectedPantry=state.builder.selectedPantry.length===state.pantry.length?[]:state.pantry.map(x=>x.id);renderBuilder()};$("#builderIngredients").onchange=e=>{const id=e.target.dataset.pantrySelect;if(!id)return;if(e.target.checked)state.builder.selectedPantry.push(id);else state.builder.selectedPantry=state.builder.selectedPantry.filter(x=>x!==id);state.builder.selectedPantry=[...new Set(state.builder.selectedPantry)];updateSteps()};$("#builderFamily").onchange=e=>{const m=state.members.find(x=>x.id===e.target.dataset.memberSelect);if(m)m.selected=e.target.checked;save();updateGuard()};function bindOne(sel,key,tr=v=>v){$(sel).onclick=e=>{const b=e.target.closest('.option-btn');if(!b)return;$$('.option-btn',$(sel)).forEach(x=>x.classList.remove('active'));b.classList.add('active');state.builder[key]=tr(b.dataset.value);updateSteps()}}function bindMulti(sel,key){$(sel).onclick=e=>{const b=e.target.closest('.option-btn');if(!b)return;b.classList.toggle('active');const v=b.dataset.value,a=state.builder[key];if(b.classList.contains('active'))a.push(v);else state.builder[key]=a.filter(x=>x!==v);state.builder[key]=[...new Set(state.builder[key])];updateGuard()}}bindOne('#mealTypeOptions','mealType');bindOne('#timeOptions','maxTime',Number);bindOne('#difficultyOptions','difficulty');bindOne('#goalOptions','goal');bindMulti('#equipmentOptions','equipment');bindMulti('#restrictionOptions','restrictions');$("#servingRange").oninput=e=>{state.builder.servings=+e.target.value;$("#servingValue").textContent=state.builder.servings;updateSteps()};$("#budgetRange").oninput=e=>{state.builder.budget=+e.target.value;$("#budgetValue").textContent=new Intl.NumberFormat('vi-VN').format(state.builder.budget)};$("#generateRecipesBtn").onclick=generate;$("#resetBuilderBtn").onclick=()=>{state.builder={selectedPantry:state.pantry.map(x=>x.id),mealType:'dinner',servings:2,maxTime:30,difficulty:'easy',equipment:['stove','pan','pot'],budget:50000,goal:'balanced',restrictions:['nospicy']};state.members.forEach((m,i)=>m.selected=i<2);renderBuilder();showToast('Đã đặt lại lựa chọn.')};$("#autoPlanBtn").onclick=autoPlan;$("#clearPlanBtn").onclick=()=>{state.planner={};save();renderPlanner();showToast('Đã xóa kế hoạch tuần.')};$("#addCustomShoppingBtn").onclick=addCustomShopping;$("#moveBoughtToPantry").onclick=moveBought;$("#shareShoppingBtn").onclick=shareShopping;$("#exportJsonBtn").onclick=()=>{const blob=new Blob([JSON.stringify({pantry:state.pantry,members:state.members,planner:state.planner,shopping:state.shopping},null,2)],{type:'application/json'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='remeal-data.json';a.click();URL.revokeObjectURL(u);showToast('Đã xuất dữ liệu JSON.')};$("#resetDemoData").onclick=()=>{if(!confirm('Khôi phục toàn bộ dữ liệu demo?'))return;['remeal_pantry','remeal_members','remeal_planner','remeal_shopping','remeal_history'].forEach(k=>localStorage.removeItem(k));location.reload()};renderHome();renderPantry();renderLeftovers();renderBuilder();renderResults();renderPlanner();renderShopping();renderFamily();renderProgress();lucide.createIcons();
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-icon">🍲</div>
+                <h3>Nấu ngay</h3>
+                <p>Xem hướng dẫn chi tiết và bắt tay vào nấu thôi!</p>
+            </div>
+        </div>
 
+        <!-- DISHES SECTION -->
+        <div class="dishes-section">
+            <div class="dishes-header">
+                <h2>Gợi ý món ăn dành cho bạn</h2>
+            </div>
 
+            <div class="dishes-grid">
+                <div class="dish-card">
+                    <div class="dish-image-container">
+                        <div class="dish-image-placeholder">🍤</div>
+                        <div class="dish-heart" onclick="toggleHeart(this)">🤍</div>
+                    </div>
+                    <div class="dish-info">
+                        <div class="dish-name">Ức gà xào bông cải xanh</div>
+                        <div class="dish-meta">
+                            <div class="meta-item">⏱️ 20 phút</div>
+                            <div class="meta-item">📊 Dễ</div>
+                        </div>
+                        <div class="dish-match">🍃 Phù hợp 95%</div>
+                    </div>
+                </div>
 
-// ===== Premium account, plans and feature gating =====
-const PLAN_DEFINITIONS = {
-  free:{id:'free',name:'Free',audiences:['personal','family'],monthly:0,yearly:0,icon:'sprout',tagline:'Trải nghiệm giá trị cốt lõi của ReMeal.',description:'Phù hợp để bắt đầu quản lý nguyên liệu và nhận gợi ý món cơ bản.',features:['3 gợi ý công thức mỗi ngày','Tối đa 20 nguyên liệu','Kế hoạch tối đa 3 ngày','1 hồ sơ người dùng','10 công thức yêu thích'],missing:['Kế hoạch tuần tự động','Dinh dưỡng và báo cáo nâng cao']},
-  personalPlus:{id:'personalPlus',name:'Personal Plus',audiences:['personal'],monthly:79000,yearly:59000,icon:'sparkles',recommended:true,tagline:'Cho người dùng cá nhân sử dụng ReMeal hằng ngày.',description:'Không giới hạn công thức, quản lý tủ thông minh và kế hoạch dài hạn.',features:['Không giới hạn nguyên liệu và gợi ý','Kế hoạch bữa ăn 7–14 ngày','Dinh dưỡng chi tiết theo khẩu phần','Cảnh báo thực phẩm sắp hết hạn','Danh sách mua và báo cáo tiết kiệm','AI thay thế nguyên liệu'],missing:[]},
-  familyPremium:{id:'familyPremium',name:'Family Premium',audiences:['family'],monthly:129000,yearly:99000,icon:'users-round',recommended:true,tagline:'Một tủ lạnh, một kế hoạch và một danh sách cho cả nhà.',description:'Tối ưu bữa ăn chung dựa trên sở thích và giới hạn của từng thành viên.',features:['Toàn bộ quyền lợi Personal Plus','Tối đa 8 hồ sơ thành viên','Tủ lạnh và danh sách mua dùng chung','Dị ứng riêng cho từng người','Bình chọn món và chế độ có khách','Đồng bộ thay đổi trong gia đình'],missing:[]},
-  healthPro:{id:'healthPro',name:'Health & Fitness Pro',audiences:['personal'],monthly:149000,yearly:119000,icon:'activity',tagline:'Cho người giảm cân, tăng cơ hoặc theo dõi macro.',description:'Tập trung vào mục tiêu calorie, macro, tập luyện và tiến độ cơ thể.',features:['Toàn bộ quyền lợi Personal Plus','Mục tiêu calorie và macro hằng ngày','Bữa ăn trước và sau tập','Theo dõi cân nặng và số đo','Biểu đồ tiến độ chuyên sâu','Xuất dữ liệu cho huấn luyện viên'],missing:[]},
-  proStarter:{id:'proStarter',name:'Professional Starter',audiences:['professional'],monthly:399000,yearly:329000,icon:'briefcase-medical',recommended:true,tagline:'Dành cho chuyên gia bắt đầu quản lý khách hàng.',description:'Bộ công cụ lập thực đơn, theo dõi và xuất báo cáo chuyên nghiệp.',features:['Quản lý tối đa 10 khách hàng','Template thực đơn và nhân bản kế hoạch','Theo dõi mức độ hoàn thành','Ghi chú và phản hồi khách hàng','Xuất báo cáo có thương hiệu'],missing:[]},
-  proGrowth:{id:'proGrowth',name:'Professional Growth',audiences:['professional'],monthly:799000,yearly:659000,icon:'chart-no-axes-combined',tagline:'Cho chuyên gia hoặc studio đang mở rộng.',description:'Tăng số khách hàng, phân quyền trợ lý và báo cáo nâng cao.',features:['Quản lý tối đa 50 khách hàng','Tất cả quyền lợi Starter','Phân quyền trợ lý','Dashboard hiệu suất khách hàng','Thư viện công thức riêng'],missing:[]},
-  business:{id:'business',name:'Business',audiences:['business'],monthly:null,yearly:null,icon:'building-2',tagline:'Giải pháp cho bếp ăn, trường học, văn phòng và đối tác.',description:'Quản lý kho, thực đơn số lượng lớn, nhiều địa điểm và kết nối hệ thống.',features:['Tính nguyên liệu cho hàng trăm khẩu phần','Quản lý nhiều kho và chi nhánh','Báo cáo tồn kho, hao hụt và dự báo','Phân quyền nhân viên và quy trình duyệt','API và hỗ trợ triển khai riêng'],missing:[]}
-};
-const PLAN_FEATURES = {
-  free:['coreRecipes','basicPantry','basicFilters'],
-  personalPlus:['coreRecipes','basicPantry','basicFilters','unlimitedPantry','weeklyPlan','detailedNutrition','smartShopping','expiryAlerts','substitutions','reports','scanPantry'],
-  familyPremium:['coreRecipes','basicPantry','basicFilters','unlimitedPantry','weeklyPlan','detailedNutrition','smartShopping','expiryAlerts','substitutions','reports','scanPantry','familyProfiles','sharedPantry','familySync','guestMode','householdOptimization'],
-  healthPro:['coreRecipes','basicPantry','basicFilters','unlimitedPantry','weeklyPlan','detailedNutrition','smartShopping','expiryAlerts','substitutions','reports','scanPantry','macros','fitnessMeals','weightTracking','advancedCharts'],
-  proStarter:['coreRecipes','basicPantry','basicFilters','unlimitedPantry','weeklyPlan','detailedNutrition','smartShopping','expiryAlerts','substitutions','reports','scanPantry','macros','advancedCharts','clientDashboard','templates','clientReports','whiteLabel'],
-  proGrowth:['coreRecipes','basicPantry','basicFilters','unlimitedPantry','weeklyPlan','detailedNutrition','smartShopping','expiryAlerts','substitutions','reports','scanPantry','macros','advancedCharts','clientDashboard','templates','clientReports','whiteLabel','assistantRoles','clientAnalytics'],
-  business:['coreRecipes','basicPantry','basicFilters','unlimitedPantry','weeklyPlan','detailedNutrition','smartShopping','expiryAlerts','substitutions','reports','scanPantry','familyProfiles','sharedPantry','macros','advancedCharts','clientDashboard','templates','multiLocation','bulkPortions','inventoryForecast','roles','api']
-};
-const FEATURE_INFO = {
-  weeklyPlan:{title:'Kế hoạch bữa ăn tuần tự động',description:'Tạo kế hoạch 7–14 ngày, ưu tiên nguyên liệu sắp hết hạn và tự động tổng hợp danh sách mua.',recommended:'personalPlus',benefits:['Lên lịch 7–14 ngày','Ưu tiên đồ nhanh hỏng','Tạo danh sách mua tự động']},
-  familyProfiles:{title:'Hồ sơ nhiều thành viên',description:'Thêm hồ sơ, dị ứng, khẩu phần và sở thích riêng cho từng người trong gia đình.',recommended:'familyPremium',benefits:['Tối đa 8 thành viên','Dị ứng riêng từng người','Tối ưu món chung']},
-  smartShopping:{title:'Danh sách mua sắm thông minh',description:'Tự động gộp nguyên liệu còn thiếu, dự toán ngân sách và đồng bộ với kế hoạch.',recommended:'personalPlus',benefits:['Gộp đồ còn thiếu','Ước tính chi phí','Chuyển nhanh vào tủ']},
-  reports:{title:'Báo cáo và xuất dữ liệu',description:'Theo dõi tiền tiết kiệm, thực phẩm được giải cứu và xuất dữ liệu để lưu hoặc chia sẻ.',recommended:'personalPlus',benefits:['Báo cáo tiến độ','Xuất dữ liệu','Theo dõi tiết kiệm']},
-  macros:{title:'Theo dõi calorie và macro',description:'Thiết lập mục tiêu protein, carbohydrate, chất béo và calorie theo ngày.',recommended:'healthPro',benefits:['Mục tiêu hằng ngày','Biểu đồ chuyên sâu','Bữa trước và sau tập']}
-};
-const ACCOUNT_TYPE_INFO = {
-  personal:{name:'Tài khoản cá nhân',icon:'👤',description:'Quản lý bữa ăn và mục tiêu của riêng bạn.'},
-  family:{name:'Tài khoản gia đình',icon:'👨‍👩‍👧',description:'Nhiều thành viên dùng chung dữ liệu bữa ăn.'},
-  professional:{name:'Tài khoản chuyên gia',icon:'🧑‍⚕️',description:'Quản lý khách hàng và kế hoạch dinh dưỡng.'},
-  business:{name:'Tài khoản doanh nghiệp',icon:'🏢',description:'Quản lý bếp ăn, kho và nhiều địa điểm.'}
-};
-let subscriptionState = JSON.parse(localStorage.getItem('remeal_subscription') || 'null') || {plan:'free',accountType:'personal',billing:'monthly',startedAt:todayIso()};
-let pricingAudience = subscriptionState.accountType;
-let checkoutPlanId = null;
-function saveSubscription(){localStorage.setItem('remeal_subscription',JSON.stringify(subscriptionState))}
-function hasFeature(feature){return (PLAN_FEATURES[subscriptionState.plan]||[]).includes(feature)}
-function planPrice(plan){if(plan.monthly===null)return 'Liên hệ';const value=subscriptionState.billing==='yearly'?plan.yearly:plan.monthly;return currency(value)}
-function planBillingSuffix(plan){if(plan.monthly===null)return '';return subscriptionState.billing==='yearly'?'/tháng · thanh toán năm':'/tháng'}
-function audienceName(type){return ACCOUNT_TYPE_INFO[type]?.name || type}
-function updateSubscriptionUI(){
-  const plan=PLAN_DEFINITIONS[subscriptionState.plan]||PLAN_DEFINITIONS.free;
-  $('#currentPlanChipText').textContent=plan.name;
-  $('#headerAccountType').textContent=audienceName(subscriptionState.accountType);
-  $('#currentPlanChip').classList.toggle('current-plan-chip',subscriptionState.plan!=='free');
-  const title=$('#homeUpgradeTitle'),copy=$('#homeUpgradeText'),strip=$('#homeUpgradeStrip');
-  if(subscriptionState.plan==='free'){
-    title.textContent='Mở khóa kế hoạch tuần và công cụ thông minh';
-    copy.textContent='Nâng cấp để nhận kế hoạch 7–14 ngày, danh sách mua tự động, nhiều hồ sơ và báo cáo chi tiết.';
-    strip.style.display='grid';
-  }else{
-    title.textContent=`Bạn đang dùng ${plan.name}`;
-    copy.textContent='Các quyền lợi trả phí đã được mở khóa. Bạn có thể quản lý gói và loại tài khoản trong Trung tâm tài khoản.';
-    strip.style.display='grid';
-  }
-  applyFeatureLocks();renderAccount();renderPlans();lucide.createIcons();
-}
-function renderPlans(){
-  $$('.account-type-card',$('#pricingAccountTypes')).forEach(card=>card.classList.toggle('active',card.dataset.audience===pricingAudience));
-  $$('.billing-btn').forEach(btn=>btn.classList.toggle('active',btn.dataset.billing===subscriptionState.billing));
-  const hints={personal:'Dành cho cá nhân: Free, Personal Plus và Health Pro',family:'Dành cho gia đình: Free và Family Premium',professional:'Dành cho chuyên gia dinh dưỡng và huấn luyện viên',business:'Dành cho bếp ăn, doanh nghiệp và đối tác'};
-  $('#audienceHint').textContent=hints[pricingAudience];
-  const plans=Object.values(PLAN_DEFINITIONS).filter(plan=>plan.audiences.includes(pricingAudience));
-  $('#pricingGrid').innerHTML=plans.map(plan=>{
-    const current=subscriptionState.plan===plan.id;
-    const typeClass=plan.id==='healthPro'?'health':plan.id.startsWith('pro')?'pro':plan.id==='business'?'business':'';
-    const yearlySaving=plan.monthly&&plan.yearly?`Tiết kiệm ${currency((plan.monthly-plan.yearly)*12)} mỗi năm`:'';
-    return `<article class="panel pricing-card ${plan.recommended?'recommended':''} ${typeClass}">
-      ${plan.recommended?'<div class="recommended-ribbon">ĐỀ XUẤT</div>':''}
-      <div class="pricing-top"><div class="plan-icon"><i data-lucide="${plan.icon}"></i></div><h3>${plan.name}</h3><p class="plan-subtitle">${plan.tagline}</p><div class="plan-price"><strong>${planPrice(plan)}</strong><span>${planBillingSuffix(plan)}</span></div><div class="plan-year-note">${yearlySaving||'Không yêu cầu thẻ để dùng gói Free'}</div></div>
-      <div class="plan-features">${plan.features.map(f=>`<div class="plan-feature"><i data-lucide="circle-check"></i><span>${f}</span></div>`).join('')}${plan.missing.map(f=>`<div class="plan-feature muted"><i data-lucide="minus-circle"></i><span>${f}</span></div>`).join('')}</div>
-      <button class="${current?'current-plan-btn':'primary-btn'} plan-cta" ${current?'disabled':''} onclick="${current?'void(0)':`openCheckout('${plan.id}')`}">${current?'Gói hiện tại':plan.id==='business'?'Liên hệ tư vấn':'Chọn gói này'}</button>
-    </article>`;
-  }).join('') + (pricingAudience==='professional'?'<div class="plan-audience-note">Professional Clinic dành cho phòng khám hoặc đội ngũ nhiều chuyên gia sẽ được báo giá riêng, có phân quyền nâng cao và triển khai theo thương hiệu.</div>':'');
-  lucide.createIcons();
-}
-function renderAccount(){
-  if(!$('#accountPlanName'))return;
-  const plan=PLAN_DEFINITIONS[subscriptionState.plan]||PLAN_DEFINITIONS.free;
-  $('#accountTypeBadge').textContent=audienceName(subscriptionState.accountType);
-  $('#accountPlanName').textContent=plan.name;
-  $('#accountPlanDescription').textContent=plan.description;
-  $('#accountPlanPrice').textContent=plan.monthly===null?'Liên hệ':planPrice(plan);
-  $('#accountBillingNote').textContent=plan.monthly===null?' để nhận báo giá':` ${planBillingSuffix(plan)}`;
-  $('#usagePlanPill').textContent=plan.name;
-  $('#accountUpgradeBtn').textContent=subscriptionState.plan==='free'?'Nâng cấp gói':'Đổi hoặc quản lý gói';
-  const limits=subscriptionState.plan==='free'?[['Nguyên liệu trong tủ',state.pantry.length,20],['Gợi ý hôm nay',2,3],['Hồ sơ thành viên',1,1],['Ngày kế hoạch',3,3]]:[['Nguyên liệu trong tủ',state.pantry.length,'∞'],['Gợi ý hôm nay',7,'∞'],['Hồ sơ thành viên',state.members.length,subscriptionState.plan==='familyPremium'?8:'∞'],['Ngày kế hoạch',14,14]];
-  $('#usageGrid').innerHTML=limits.map(([label,current,max])=>{const pct=max==='∞'?Math.min(70,current*6):Math.min(100,current/max*100);return `<div class="usage-card"><div class="usage-card-head"><strong>${label}</strong><span>${current}/${max}</span></div><div class="usage-track"><span style="width:${pct}%"></span></div></div>`}).join('');
-  const featureList=[['weeklyPlan','Kế hoạch tuần tự động','Lên lịch 7–14 ngày'],['smartShopping','Danh sách mua thông minh','Gộp đồ còn thiếu'],['familyProfiles','Hồ sơ gia đình','Nhiều thành viên'],['macros','Theo dõi macro','Calorie và dinh dưỡng'],['reports','Báo cáo tiến độ','Tiết kiệm và lãng phí'],['scanPantry','Quét tủ lạnh','Ảnh, hóa đơn, mã vạch']];
-  $('#subscriptionFeatureGrid').innerHTML=featureList.map(([key,title,desc])=>`<div class="sub-feature ${hasFeature(key)?'':'locked'}"><i data-lucide="${hasFeature(key)?'circle-check':'lock-keyhole'}"></i><div><strong>${title}</strong><small>${hasFeature(key)?desc:'Cần nâng cấp gói phù hợp'}</small></div></div>`).join('');
-  $('#accountTypeManager').innerHTML=Object.entries(ACCOUNT_TYPE_INFO).map(([key,item])=>`<button class="account-type-card ${subscriptionState.accountType===key?'active':''}" onclick="changeAccountType('${key}')"><span class="type-check"><i data-lucide="check"></i></span><div class="type-icon">${item.icon}</div><h3>${item.name.replace('Tài khoản ','')}</h3><p>${item.description}</p></button>`).join('');
-  const payments=subscriptionState.plan==='free'?[['Chưa có giao dịch','Gói Free','0đ']]:[[subscriptionState.startedAt,plan.name,planPrice(plan)],['01/07/2026','Hóa đơn minh họa',planPrice(plan)]];
-  $('#billingHistory').innerHTML=payments.map(row=>`<div class="billing-item"><strong>${row[0]}</strong><span>${row[1]}</span><strong>${row[2]}</strong></div>`).join('');
-  lucide.createIcons();
-}
-window.changeAccountType=function(type){
-  if(subscriptionState.accountType===type)return;
-  if(!confirm(`Chuyển sang ${audienceName(type)}? Dữ liệu hiện tại vẫn được giữ trong prototype.`))return;
-  subscriptionState.accountType=type;pricingAudience=type;saveSubscription();updateSubscriptionUI();showToast(`Đã chuyển sang ${audienceName(type)}.`)
-};
-window.openCheckout=function(planId){
-  const plan=PLAN_DEFINITIONS[planId];if(!plan)return;
-  checkoutPlanId=planId;
-  if(planId==='business'){
-    $('#checkoutSummary').innerHTML=`<span class="pill orange">Giải pháp doanh nghiệp</span><h2>${plan.name}</h2><p>${plan.description}</p><div class="checkout-price">Liên hệ</div><div class="checkout-features">${plan.features.map(f=>`<div class="checkout-feature"><i data-lucide="circle-check"></i>${f}</div>`).join('')}</div>`;
-    $('#checkoutConfirmBtn').textContent='Gửi yêu cầu tư vấn';
-  }else{
-    $('#checkoutSummary').innerHTML=`<span class="pill">${audienceName(plan.audiences[0])}</span><h2>${plan.name}</h2><p>${plan.description}</p><div class="checkout-price">${planPrice(plan)} <span style="font-size:10px;font-weight:500;color:var(--muted)">${planBillingSuffix(plan)}</span></div><div class="checkout-features">${plan.features.slice(0,6).map(f=>`<div class="checkout-feature"><i data-lucide="circle-check"></i>${f}</div>`).join('')}</div>`;
-    $('#checkoutConfirmBtn').textContent=planId==='free'?'Chuyển về gói Free':'Xác nhận nâng cấp';
-  }
-  openModal('checkoutModal');lucide.createIcons();
-};
-function showUpgradeLock(feature){
-  const info=FEATURE_INFO[feature]||FEATURE_INFO.weeklyPlan;
-  $('#lockedFeatureTitle').textContent=info.title;
-  $('#lockedFeatureDescription').textContent=info.description;
-  $('#lockedFeatureBenefits').innerHTML=info.benefits.map(b=>`<div class="upgrade-lock-benefit"><strong>✓ ${b}</strong>Được mở ngay sau khi nâng cấp.</div>`).join('');
-  $('#lockedFeatureUpgradeBtn').onclick=()=>{closeModal('upgradeLockModal');pricingAudience=PLAN_DEFINITIONS[info.recommended].audiences[0];showView('plans');renderPlans()};
-  openModal('upgradeLockModal');lucide.createIcons();
-}
-function applyFeatureLocks(){
-  const gated=[['#autoPlanBtn','weeklyPlan'],['#exportJsonBtn','reports'],['#shareShoppingBtn','smartShopping'],['#openFamilyModal','familyProfiles'],['#moveBoughtToPantry','smartShopping']];
-  gated.forEach(([selector,feature])=>{const el=$(selector);if(!el)return;el.dataset.premiumFeature=feature;el.classList.toggle('premium-locked',!hasFeature(feature));});
-}
-document.addEventListener('click',event=>{
-  const gated=event.target.closest('[data-premium-feature]');
-  if(gated&&!hasFeature(gated.dataset.premiumFeature)){event.preventDefault();event.stopImmediatePropagation();showUpgradeLock(gated.dataset.premiumFeature)}
-},true);
-$('#pricingAccountTypes').addEventListener('click',event=>{const card=event.target.closest('[data-audience]');if(!card)return;pricingAudience=card.dataset.audience;renderPlans()});
-$$('.billing-btn').forEach(btn=>btn.addEventListener('click',()=>{subscriptionState.billing=btn.dataset.billing;saveSubscription();renderPlans();renderAccount()}));
-$('#changeAccountTypeBtn').addEventListener('click',()=>{showView('plans');window.scrollTo({top:250,behavior:'smooth'})});
-$('#checkoutForm').addEventListener('submit',event=>{
-  event.preventDefault();const plan=PLAN_DEFINITIONS[checkoutPlanId];if(!plan)return;
-  subscriptionState.plan=checkoutPlanId;
-  if(plan.audiences.length===1)subscriptionState.accountType=plan.audiences[0];
-  subscriptionState.startedAt=todayIso();pricingAudience=subscriptionState.accountType;saveSubscription();closeModal('checkoutModal');updateSubscriptionUI();showView('account');showToast(checkoutPlanId==='business'?'Đã ghi nhận yêu cầu tư vấn.':'Đã cập nhật gói '+plan.name+'.');
-});
-$('#paymentMethods').addEventListener('click',event=>{const btn=event.target.closest('.payment-method');if(!btn)return;$$('.payment-method',$('#paymentMethods')).forEach(x=>x.classList.remove('active'));btn.classList.add('active')});
-// Free-plan pantry limit
-$('#pantryForm').addEventListener('submit',event=>{if(subscriptionState.plan==='free'&&state.pantry.length>=20){event.preventDefault();event.stopImmediatePropagation();closeModal('pantryModal');showUpgradeLock('reports')}},true);
-updateSubscriptionUI();
+                <div class="dish-card">
+                    <div class="dish-image-container">
+                        <div class="dish-image-placeholder">🍤</div>
+                        <div class="dish-heart" onclick="toggleHeart(this)">🤍</div>
+                    </div>
+                    <div class="dish-info">
+                        <div class="dish-name">Tôm xào rau củ</div>
+                        <div class="dish-meta">
+                            <div class="meta-item">⏱️ 18 phút</div>
+                            <div class="meta-item">📊 Dễ</div>
+                        </div>
+                        <div class="dish-match">🍃 Phù hợp 92%</div>
+                    </div>
+                </div>
 
+                <div class="dish-card">
+                    <div class="dish-image-container">
+                        <div class="dish-image-placeholder">🐟</div>
+                        <div class="dish-heart" onclick="toggleHeart(this)">🤍</div>
+                    </div>
+                    <div class="dish-info">
+                        <div class="dish-name">Cá hồi nướng với quinoa</div>
+                        <div class="dish-meta">
+                            <div class="meta-item">⏱️ 25 phút</div>
+                            <div class="meta-item">📊 Trung bình</div>
+                        </div>
+                        <div class="dish-match">🍃 Phù hợp 90%</div>
+                    </div>
+                </div>
+            </div>
 
-// --- Music Widget: playlist YouTube theo thể loại (Việt/Hàn/Trung/Lofi) ---
-(function(){
-  const PLAYLISTS = {
-    vpop: 'PLVFZDXxa2oOPVdSzS9_Ow_PNU8llWMsLa',
-    kpop: 'PLOHoVaTp8R7ccrQM3EpCTVDdwHhXrJhXS',
-    cpop: 'PLYsAoprptZOo_L1Je3wXa02rbF0jqz2E5',
-    lofi: 'PLvGUEIPxRGvWvkelmgyWU6QET6mmGbd8W'
-  };
-  const fab = document.getElementById('musicFabBtn');
-  const panel = document.getElementById('musicPanel');
-  const closeBtn = document.getElementById('musicCloseBtn');
-  const frame = document.getElementById('musicFrame');
-  const tabs = document.querySelectorAll('.music-tab');
-  let currentGenre = 'vpop';
+            <div class="dishes-button">
+                <button class="explore-button">🍃 Khám phá thêm món ngon</button>
+            </div>
+        </div>
+    </section>
 
-  function loadGenre(genre){
-    currentGenre = genre;
-    frame.src = `https://www.youtube.com/embed/videoseries?list=${PLAYLISTS[genre]}&autoplay=0&rel=0`;
-    tabs.forEach(t => t.classList.toggle('active', t.dataset.genre === genre));
-  }
+    <script>
+        function scrollToFeatures() {
+            const featuresSection = document.querySelector('.features-section');
+            featuresSection.scrollIntoView({ behavior: 'smooth' });
+        }
 
-  fab.addEventListener('click', () => {
-    panel.classList.add('show');
-    if (!frame.src) loadGenre(currentGenre);
-  });
-  closeBtn.addEventListener('click', () => panel.classList.remove('show'));
-  tabs.forEach(t => t.addEventListener('click', () => loadGenre(t.dataset.genre)));
-})();
-</script>
+        function toggleHeart(element) {
+            element.textContent = element.textContent === '🤍' ? '❤️' : '🤍';
+        }
+    </script>
 </body>
 </html>
