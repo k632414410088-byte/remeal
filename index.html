@@ -38,9 +38,9 @@
     border:1px solid rgba(190,224,190,0.7);
     border-radius:24px;
     box-shadow: 0 8px 20px -8px rgba(47,107,58,0.25);
-    width:150px; height:170px; padding:16px;
+    width:140px; height:155px; padding:14px;
   }
-  @media (min-width:1280px){ .card{ width:190px; height:210px; } }
+  @media (min-width:1280px){ .card{ width:175px; height:190px; } }
   .icon-circle {
     width:44px; height:44px; border-radius:9999px; background:#dcefdc;
     display:flex; align-items:center; justify-content:center; margin-bottom:8px;
@@ -50,10 +50,10 @@
     display:flex; align-items:center; justify-content:space-between;
     border-radius:9999px; font-weight:800; color:#fff;
     background: linear-gradient(135deg, #4c9a52 0%, #2c6a37 100%);
-    padding:14px 10px 14px 30px;
-    width: clamp(260px, 24vw, 370px);
-    height: clamp(64px, 6vw, 82px);
-    font-size: clamp(15px, 1.5vw, 20px);
+    padding:12px 8px 12px 26px;
+    width: clamp(240px, 22vw, 340px);
+    height: clamp(56px, 5.5vw, 74px);
+    font-size: clamp(15px, 1.4vw, 19px);
     box-shadow: 0 8px 18px -6px rgba(44,106,55,0.45);
     transition: box-shadow .25s ease, transform .25s ease;
     border:none; cursor:pointer;
@@ -71,18 +71,19 @@
   .cta-btn:hover .cta-circle { transform: translateX(4px); }
   .food-section {
     position: absolute;
-    top: 20px;
+    top: 0;
     right: 0;
     width: 30%;
-    height: calc(100vh - 40px);
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: flex-end;
+    gap: clamp(4px, 1.2vh, 14px);
     z-index: 4;
   }
   .food-item {
-    width: clamp(200px, 19vw, 300px);
+    width: clamp(210px, 19vw, 300px);
     height: auto;
     object-fit: contain;
   }
@@ -136,7 +137,7 @@
 
   <!-- ===== MASCOT ===== -->
   <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/mascot.png" alt="ReMeal mascot"
-       class="absolute z-10 object-contain" style="left:20px; bottom:20px; width:clamp(300px,27vw,430px); height:auto; filter:drop-shadow(0 20px 25px rgba(40,90,45,0.25));" />
+       class="absolute z-10 object-contain" style="left:10px; bottom:0px; width:clamp(340px,33vw,520px); height:auto; filter:drop-shadow(0 20px 25px rgba(40,90,45,0.25));" />
 
   <!-- Sticky note near mascot -->
   <div class="absolute z-20 rounded-md shadow-md px-4 py-3" style="left:20%; bottom:8%; width:clamp(110px,12vw,160px); background:#f7f0d8; transform:rotate(-6deg);">
@@ -153,19 +154,19 @@
     <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%201.png" alt="Món ăn 1"
          class="food-item" style="filter:drop-shadow(0 18px 20px rgba(40,90,45,0.25)); margin-right:-2%;" />
     <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%202.png" alt="Món ăn 2"
-         class="food-item" style="filter:drop-shadow(0 18px 20px rgba(40,90,45,0.25)); margin-right:-1%;" />
+         class="food-item" style="filter:drop-shadow(0 18px 20px rgba(40,90,45,0.25)); margin-right:-2%; transform: translateX(6%);" />
     <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%203.png" alt="Món ăn 3"
          class="food-item" style="filter:drop-shadow(0 18px 20px rgba(40,90,45,0.25)); margin-right:-2%;" />
   </div>
 
   <!-- ===== CENTER CONTENT ===== -->
-  <div class="absolute z-30 flex flex-col items-center text-center" style="top:110px; left:50%; transform:translateX(-50%); width:min(650px,48vw);">
+  <div class="absolute z-30 flex flex-col items-center text-center" style="top:60px; left:50%; transform:translateX(-50%); width:min(650px,48vw);">
 
     <div class="relative">
       <svg class="absolute" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3f7d4a" stroke-width="2" style="top:-12px; left:-32px; opacity:0.7;">
         <path d="M4 12c2-4 6-6 10-4M6 6c1-2 3-3 5-2" stroke-linecap="round" />
       </svg>
-      <h2 class="font-extrabold" style="color:#2c6a37; font-size:clamp(58px,5.5vw,82px); line-height:1; margin-bottom:12px; text-shadow:0 3px 0 rgba(255,255,255,0.5);">
+      <h2 class="font-extrabold" style="color:#2c6a37; font-size:clamp(50px,5vw,74px); line-height:1; margin-bottom:8px; text-shadow:0 3px 0 rgba(255,255,255,0.5);">
         Có gì trong tủ?
       </h2>
     </div>
@@ -178,7 +179,7 @@
     </svg>
 
     <!-- Benefit cards -->
-    <div class="flex items-center justify-center" style="gap:18px; margin-top:20px;">
+    <div class="flex items-center justify-center" style="gap:16px; margin-top:14px;">
 
       <div class="card relative">
         <div class="icon-circle">
@@ -230,7 +231,7 @@
     </div>
 
     <!-- CTA button -->
-    <button class="cta-btn" style="margin-top:28px;">
+    <button class="cta-btn" style="margin-top:18px;">
       <span class="flex items-center gap-2">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M6 20c8 0 13-5 13-13 0-1 0-2-.2-3C10.5 4.2 6 9 6 17c0 1 0 2 .2 3z" />
