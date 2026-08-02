@@ -1,404 +1,296 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ReMeal — Biến đồ ăn có sẵn thành bữa ăn tuyệt vời</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --green-900:#155724;
-    --green-800:#1c6e2e;
-    --green-700:#218a38;
-    --green-600:#2fa347;
-    --green-500:#42b656;
-    --green-100:#eaf6df;
-    --green-50:#f6fbef;
-    --cream:#fffdf6;
-    --ink:#1c3d1f;
-  }
+import React, { useState } from "react";
 
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;height:100%;overflow:hidden;}
-  body{
-    font-family:'Be Vietnam Pro', sans-serif;
-    color:var(--ink);
-    background:
-      radial-gradient(circle at 12% 92%, #d7ecc2 0%, transparent 45%),
-      radial-gradient(circle at 90% 6%, #e3f3d3 0%, transparent 40%),
-      linear-gradient(135deg, var(--green-50) 0%, var(--cream) 55%, var(--green-50) 100%);
-    overflow:hidden;
-    height:100vh;
-    width:100vw;
-  }
+const ASSET = {
+  mascot: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/mascot.png",
+  mon1: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%201.png",
+  mon2: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%202.png",
+  mon3: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%203.png",
+  tomato1: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/tomato%202.jpg",
+  tomato2: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/tomato%201.png",
+  onion: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/onion.webp",
+  leaf: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/leaf.png",
+  igdi1: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/igdi.jpg",
+  igdi2: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/igdi%202.webp",
+  fruitSet: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/hoa%20qu%E1%BA%A3%20trang%20tr%C3%AD.png",
+  egg: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/egg.webp",
+  chilli: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/chilli.webp",
+  broccoli: "https://raw.githubusercontent.com/k632414410088-byte/remeal/main/broccoli.png",
+};
 
-  .hero{
-    position:relative;
-    height:100vh;
-    max-width:1600px;
-    margin:0 auto;
-    padding:2.2vh 3.2vw 2vh;
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
-  }
+function ClockIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 md:w-7 md:h-7" stroke="#2f6b3a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </svg>
+  );
+}
+function LeafIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 md:w-7 md:h-7" stroke="#2f6b3a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 20c8 0 13-5 13-13 0-1 0-2-.2-3C10.5 4.2 6 9 6 17c0 1 0 2 .2 3z" />
+      <path d="M7 19C10 15 13 12 18 8" />
+    </svg>
+  );
+}
+function BowlIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 md:w-7 md:h-7" stroke="#2f6b3a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 11h18a9 8 0 0 1-18 0z" />
+      <path d="M8 11c0-2 .5-4 1.5-5" />
+      <path d="M14 11c.5-1.5.5-3 0-4.5" />
+    </svg>
+  );
+}
+function HeartIcon({ className = "w-3.5 h-3.5" }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="#3f7d4a" className={className}>
+      <path d="M12 21s-7.5-4.6-10-9.2C.5 8 2 4.5 5.5 4c2-.3 3.7.7 4.5 2.2C10.8 4.7 12.5 3.7 14.5 4 18 4.5 19.5 8 22 11.8 14.5 16.4 12 21 12 21z" />
+    </svg>
+  );
+}
+function ArrowRightIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="#2f6b3a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  );
+}
 
-  /* decorative produce scattered at the edges */
-  .veg{
-    position:absolute;
-    pointer-events:none;
-    filter:drop-shadow(0 8px 14px rgba(20,60,20,0.14));
-    z-index:1;
-  }
-  .veg svg{ width:100%; height:100%; display:block; }
-  .veg.v1{ width:82px; top:14px;  right:36px;  transform:rotate(12deg); }
-  .veg.v2{ width:54px; top:78px;  right:132px; transform:rotate(-16deg); }
-  .veg.v3{ width:66px; top:44%;   right:-14px; transform:rotate(10deg); }
-  .veg.v4{ width:66px; bottom:56px; right:18px;  transform:rotate(-12deg); }
-  .veg.v5{ width:56px; bottom:6px;  right:112px; transform:rotate(14deg); }
-  .veg.v6{ width:70px; bottom:36px; left:6px;   transform:rotate(-22deg); }
-  .veg.v7{ width:58px; bottom:104px; left:66px;  transform:rotate(16deg); }
-  .veg.v8{ width:82px; bottom:-12px; left:96px;  transform:rotate(-10deg); }
-  .veg.v9{ width:48px; bottom:128px; left:14px;  transform:rotate(20deg); }
-
-  /* header / logo */
-  .logo-row{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    position:relative;
-    z-index:5;
-  }
-  .logo-icon{
-    width:56px; height:56px;
-    border-radius:50%;
-    background:linear-gradient(160deg, var(--green-500), var(--green-700));
-    display:flex; align-items:center; justify-content:center;
-    box-shadow:0 6px 14px rgba(33,138,56,0.28);
-    flex-shrink:0;
-  }
-  .logo-icon svg{width:30px;height:30px;}
-  .logo-text{line-height:1.15;}
-  .logo-text .name{
-    font-family:'Baloo 2', sans-serif;
-    font-weight:700;
-    font-size:28px;
-    color:var(--green-800);
-  }
-  .logo-text .tagline{
-    font-size:13.5px;
-    font-weight:500;
-    color:#4d6b4f;
-    max-width:220px;
-  }
-
-  /* main content grid */
-  .content{
-    position:relative;
-    z-index:5;
-    display:grid;
-    grid-template-columns:1.6fr 1.1fr 0.9fr;
-    align-items:center;
-    justify-items:center;
-    gap:6px;
-    flex:1;
-    min-height:0;
-  }
-
-  /* mascot column */
-  .mascot-col{
-    position:relative;
-    display:flex;
-    justify-content:center;
-    align-items:flex-end;
-    height:100%;
-    width:100%;
-    min-width:0;
-  }
-  .mascot-col img{
-    width:100%;
-    max-width:900px;
-    max-height:90vh;
-    object-fit:contain;
-    filter:drop-shadow(0 22px 26px rgba(28,110,46,0.20));
-    animation:float 4.5s ease-in-out infinite;
-  }
-  @keyframes float{
-    0%,100%{ transform:translateY(0);}
-    50%{ transform:translateY(-12px);}
-  }
-  .heart{
-    position:absolute;
-    color:#ff9db3;
-    opacity:0.85;
-  }
-  .heart.h1{ top:8%; left:2%; font-size:34px; transform:rotate(-8deg);}
-  .heart.h2{ top:26%; right:6%; font-size:22px; transform:rotate(10deg);}
-  .sticky-note{
-    position:absolute;
-    left:6%;
-    bottom:2%;
-    width:190px;
-    background:#fbe98f;
-    padding:16px 18px;
-    border-radius:4px 20px 4px 20px;
-    box-shadow:0 10px 20px rgba(0,0,0,0.14), inset 0 0 0 1px rgba(0,0,0,0.03);
-    transform:rotate(-7deg);
-    font-family:'Baloo 2', sans-serif;
-    font-weight:600;
-    font-size:16px;
-    line-height:1.35;
-    color:#6b5410;
-  }
-  .sticky-note::before{
-    content:"";
-    position:absolute;
-    top:-10px; left:50%;
-    transform:translateX(-50%) rotate(-4deg);
-    width:46px; height:18px;
-    background:rgba(255,255,255,0.55);
-    border:1px solid rgba(255,255,255,0.7);
-  }
-
-  /* middle column: headline etc */
-  .mid-col{ text-align:center; padding:0 8px; }
-  .eyebrow-wrap{
-    display:flex; justify-content:center; align-items:center; gap:14px;
-    margin-bottom:2px;
-  }
-  .sparkle{ color:var(--green-600); font-size:20px; opacity:0.8; }
-  h1{
-    font-family:'Baloo 2', sans-serif;
-    font-weight:800;
-    font-size:clamp(30px, 4.4vh, 50px);
-    color:var(--green-800);
-    margin:0 0 8px;
-    letter-spacing:-0.5px;
-    text-shadow:0 2px 0 rgba(255,255,255,0.6);
-  }
-  h2{
-    font-family:'Baloo 2', sans-serif;
-    font-weight:700;
-    font-size:clamp(17px, 2.3vh, 25px);
-    color:var(--green-700);
-    margin:0 auto 3vh;
-    line-height:1.32;
-    max-width:460px;
-  }
-  h2 .underline{
-    position:relative;
-    display:inline-block;
-  }
-  h2 .underline::after{
-    content:"";
-    position:absolute;
-    left:0; right:0; bottom:-4px;
-    height:9px;
-    background:var(--green-100);
-    border-radius:6px;
-    z-index:-1;
-  }
-
-  .features{
-    display:flex;
-    justify-content:center;
-    gap:3vw;
-    margin-bottom:3vh;
-    flex-wrap:wrap;
-  }
-  .feature{
-    display:flex; flex-direction:column; align-items:center; gap:8px;
-    width:100px;
-  }
-  .feature .icon{
-    width:56px; height:56px;
-    border-radius:50%;
-    background:var(--green-50);
-    border:2px dashed var(--green-500);
-    display:flex; align-items:center; justify-content:center;
-  }
-  .feature .icon svg{ width:25px; height:25px; }
-  .feature span{
-    font-family:'Baloo 2', sans-serif;
-    font-weight:600;
-    font-size:13.5px;
-    color:var(--green-800);
-    line-height:1.3;
-  }
-
-  .cta{
-    display:inline-flex;
-    align-items:center;
-    gap:12px;
-    padding:14px 30px;
-    background:linear-gradient(135deg, var(--green-600), var(--green-800));
-    color:#fff;
-    font-family:'Baloo 2', sans-serif;
-    font-weight:700;
-    font-size:17px;
-    border:none;
-    border-radius:40px;
-    cursor:pointer;
-    box-shadow:0 12px 22px rgba(28,110,46,0.32);
-    transition:transform .18s ease, box-shadow .18s ease;
-    text-decoration:none;
-  }
-  .cta:hover{ transform:translateY(-3px); box-shadow:0 16px 26px rgba(28,110,46,0.4); }
-  .cta .arrow-circle{
-    width:26px; height:26px;
-    border-radius:50%;
-    background:rgba(255,255,255,0.22);
-    display:flex; align-items:center; justify-content:center;
-  }
-
-  /* food column */
-  .food-col{
-    display:flex;
-    flex-direction:column;
-    gap:1.6vh;
-    align-items:center;
-    height:100%;
-    justify-content:center;
-    width:100%;
-  }
-  .food-col img{
-    width:82%;
-    max-width:300px;
-    height:auto;
-    display:block;
-    filter:drop-shadow(0 16px 22px rgba(28,60,20,0.20));
-  }
-  .food-col img:nth-child(1){ transform:rotate(1.5deg); }
-  .food-col img:nth-child(2){ transform:rotate(-1.2deg); width:90%; max-width:320px;}
-  .food-col img:nth-child(3){ transform:rotate(1deg); }
-
-  /* responsive */
-  @media (max-width:1080px){
-    .content{ grid-template-columns:1fr; gap:50px; }
-    .mascot-col{ order:2; }
-    .mid-col{ order:1; }
-    .food-col{ order:3; align-items:center; }
-    .food-card{ width:70%; max-width:340px; }
-    .veg{ display:none; }
-    .hero{ padding:30px 24px 50px; }
-  }
-  @media (max-width:520px){
-    .features{ gap:18px; }
-    .feature{ width:86px; }
-    .logo-text .tagline{ max-width:150px; font-size:12px;}
-    .food-card{ width:92%; }
-  }
-
-  @media (prefers-reduced-motion:reduce){
-    .mascot-col img{ animation:none; }
-  }
-</style>
-</head>
-<body>
-
-<div class="hero">
-
-  <!-- cà chua -->
-  <span class="veg v1">
-    <svg viewBox="0 0 64 64"><path d="M32 6c3 3 3 6 0 9" stroke="#3c8f3f" stroke-width="4" stroke-linecap="round" fill="none"/><path d="M24 10c2 3 2 5 0 7M40 10c-2 3-2 5 0 7" stroke="#3c8f3f" stroke-width="4" stroke-linecap="round" fill="none"/><circle cx="32" cy="38" r="22" fill="#e2574c"/><circle cx="23" cy="29" r="6" fill="#f4877e" opacity="0.55"/></svg>
-  </span>
-  <!-- lá bạc hà -->
-  <span class="veg v2">
-    <svg viewBox="0 0 64 64"><path d="M12 44C12 20 34 8 52 10c2 20-10 42-34 42-4 0-6-4-6-8z" fill="#4c9a4f"/><path d="M18 42C26 30 36 22 48 16" stroke="#3c7c3f" stroke-width="2" fill="none" opacity="0.5"/></svg>
-  </span>
-  <!-- broccoli -->
-  <span class="veg v3">
-    <svg viewBox="0 0 64 64"><rect x="27" y="40" width="10" height="18" rx="4" fill="#c8dba0"/><circle cx="22" cy="26" r="12" fill="#4c9a4f"/><circle cx="34" cy="20" r="13" fill="#59a85c"/><circle cx="44" cy="28" r="11" fill="#4c9a4f"/></svg>
-  </span>
-  <!-- chanh -->
-  <span class="veg v4">
-    <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="#f6d743"/><circle cx="32" cy="32" r="20" fill="#fbe98f"/><g stroke="#f6d743" stroke-width="2" opacity="0.85"><line x1="32" y1="12" x2="32" y2="52"/><line x1="14" y1="20" x2="50" y2="44"/><line x1="14" y1="44" x2="50" y2="20"/></g></svg>
-  </span>
-  <!-- hành tím -->
-  <span class="veg v5">
-    <svg viewBox="0 0 64 64"><path d="M32 6c2 4 2 8 0 12" stroke="#7a5b3e" stroke-width="3" stroke-linecap="round" fill="none"/><ellipse cx="32" cy="40" rx="20" ry="22" fill="#9b5fa0"/><path d="M20 24c4 8 4 24 0 32M44 24c-4 8-4 24 0 32" stroke="#c98fcc" stroke-width="2" fill="none" opacity="0.6"/></svg>
-  </span>
-  <!-- ớt -->
-  <span class="veg v6">
-    <svg viewBox="0 0 64 64"><path d="M14 14c6-4 10-2 10 4 0 14 8 30 24 34 6 1.5 8-3 4-7-16-6-24-18-24-30 0-4-6-4-14-1z" fill="#e2453b"/><path d="M12 12c2-3 5-4 8-2" stroke="#3c8f3f" stroke-width="3" stroke-linecap="round" fill="none"/></svg>
-  </span>
-  <!-- cà chua nhỏ -->
-  <span class="veg v7">
-    <svg viewBox="0 0 64 64"><path d="M32 6c3 3 3 6 0 9" stroke="#3c8f3f" stroke-width="4" stroke-linecap="round" fill="none"/><circle cx="32" cy="38" r="22" fill="#e2574c"/><circle cx="23" cy="29" r="6" fill="#f4877e" opacity="0.55"/></svg>
-  </span>
-  <!-- broccoli nhỏ -->
-  <span class="veg v8">
-    <svg viewBox="0 0 64 64"><rect x="27" y="40" width="10" height="18" rx="4" fill="#c8dba0"/><circle cx="22" cy="26" r="12" fill="#4c9a4f"/><circle cx="34" cy="20" r="13" fill="#59a85c"/><circle cx="44" cy="28" r="11" fill="#4c9a4f"/></svg>
-  </span>
-  <!-- lá nhỏ -->
-  <span class="veg v9">
-    <svg viewBox="0 0 64 64"><path d="M12 44C12 20 34 8 52 10c2 20-10 42-34 42-4 0-6-4-6-8z" fill="#4c9a4f"/></svg>
-  </span>
-
-  <div class="logo-row">
-    <div class="logo-icon">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M12 21C7 21 3 17 3 12c0-1.5 4-8 9-9 5 1 9 7.5 9 9 0 5-4 9-9 9Z" fill="#fff" opacity="0.95"/><path d="M12 21V9" stroke="#218a38" stroke-width="1.6" stroke-linecap="round"/></svg>
+function BenefitCard({ Icon, lines }) {
+  return (
+    <div className="relative flex flex-col items-center justify-center text-center bg-white/70 backdrop-blur-sm border border-green-200/70 rounded-[24px] shadow-[0_8px_20px_-8px_rgba(47,107,58,0.25)] px-4 py-5 w-[118px] h-[128px] sm:w-[136px] sm:h-[146px] md:w-[150px] md:h-[160px]">
+      <div className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-green-100 flex items-center justify-center mb-2">
+        <Icon />
+      </div>
+      <p className="text-[#2f6b3a] font-extrabold leading-tight text-[13px] md:text-[14px] whitespace-pre-line">
+        {lines}
+      </p>
+      <svg className="mt-1.5" width="34" height="8" viewBox="0 0 34 8" fill="none">
+        <path d="M2 5.5C8 1.5 14 1.5 17 4C20 6.5 26 6.5 32 2.5" stroke="#3f7d4a" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+      <HeartIcon className="absolute bottom-2 right-2 w-3 h-3 opacity-80" />
     </div>
-    <div class="logo-text">
-      <div class="name">ReMeal</div>
-      <div class="tagline">Biến đồ ăn có sẵn thành bữa ăn tuyệt vời</div>
-    </div>
-  </div>
+  );
+}
 
-  <div class="content">
+export default function ReMealLanding() {
+  const [hover, setHover] = useState(false);
 
-    <div class="mascot-col">
-      <span class="heart h1">♡</span>
-      <span class="heart h2">♡</span>
-      <img src="https://github.com/k632414410088-byte/remeal/blob/main/mascot.png?raw=true" alt="ReMeal mascot">
-      <div class="sticky-note">Ăn ngon hơn<br>Sống xanh hơn<br>Mỗi ngày!</div>
-    </div>
+  return (
+    <div
+      className="relative w-full overflow-hidden font-sans select-none"
+      style={{
+        aspectRatio: "1536 / 900",
+        minHeight: 480,
+        background:
+          "radial-gradient(ellipse 55% 60% at 8% 15%, rgba(196,224,150,0.55) 0%, rgba(196,224,150,0) 60%), radial-gradient(ellipse 45% 55% at 4% 90%, rgba(214,232,150,0.5) 0%, rgba(214,232,150,0) 60%), radial-gradient(ellipse 50% 55% at 96% 10%, rgba(200,228,180,0.45) 0%, rgba(200,228,180,0) 60%), radial-gradient(ellipse 55% 60% at 98% 90%, rgba(190,222,160,0.5) 0%, rgba(190,222,160,0) 60%), linear-gradient(180deg, #fbfdf6 0%, #f8faf1 100%)",
+      }}
+    >
+      {/* ambient glow behind mascot */}
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          left: "-8%",
+          bottom: "-10%",
+          width: "45%",
+          height: "70%",
+          background: "radial-gradient(circle, rgba(150,210,110,0.35) 0%, rgba(150,210,110,0) 70%)",
+          filter: "blur(20px)",
+        }}
+      />
+      {/* ambient glow behind dishes */}
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          right: "-6%",
+          top: "0%",
+          width: "40%",
+          height: "100%",
+          background: "radial-gradient(circle, rgba(180,220,150,0.3) 0%, rgba(180,220,150,0) 70%)",
+          filter: "blur(20px)",
+        }}
+      />
 
-    <div class="mid-col">
-      <div class="eyebrow-wrap"><span class="sparkle">✦</span></div>
-      <h1>Có gì trong tủ?</h1>
-      <h2>Hãy biến chúng thành một bữa ăn <span class="underline">phù hợp với bạn</span></h2>
+      {/* ---------- DECORATIVE INGREDIENTS ---------- */}
+      {/* top-left */}
+      <img src={ASSET.leaf} alt="" className="absolute w-10 md:w-14 opacity-90 pointer-events-none" style={{ top: "-1%", left: "22%", transform: "rotate(-15deg)" }} />
+      <img src={ASSET.igdi1} alt="" className="absolute w-8 md:w-10 rounded-full object-cover opacity-90 pointer-events-none" style={{ top: "3%", left: "29%", transform: "rotate(10deg)" }} />
 
-      <div class="features">
-        <div class="feature">
-          <div class="icon">
-            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="13" r="8" stroke="#218a38" stroke-width="1.8"/><path d="M12 9v4l3 2" stroke="#218a38" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 2h6" stroke="#218a38" stroke-width="1.8" stroke-linecap="round"/></svg>
-          </div>
-          <span>Tiết kiệm<br>thời gian</span>
+      {/* top-right */}
+      <img src={ASSET.tomato1} alt="" className="absolute w-16 md:w-24 rounded-full object-cover pointer-events-none shadow-md" style={{ top: "-3%", right: "6%", transform: "rotate(8deg)" }} />
+      <img src={ASSET.onion} alt="" className="absolute w-12 md:w-16 object-contain pointer-events-none" style={{ top: "0%", right: "0%", transform: "rotate(-6deg)" }} />
+      <img src={ASSET.leaf} alt="" className="absolute w-10 md:w-14 opacity-90 pointer-events-none" style={{ top: "2%", right: "18%", transform: "rotate(20deg) scaleX(-1)" }} />
+
+      {/* bottom-left near mascot feet */}
+      <img src={ASSET.chilli} alt="" className="absolute w-12 md:w-16 object-contain pointer-events-none" style={{ bottom: "10%", left: "1%", transform: "rotate(-10deg)" }} />
+      <img src={ASSET.fruitSet} alt="" className="absolute w-16 md:w-24 object-contain pointer-events-none" style={{ bottom: "6%", left: "5%" }} />
+      <img src={ASSET.broccoli} alt="" className="absolute w-10 md:w-14 object-contain pointer-events-none" style={{ bottom: "13%", left: "0%" }} />
+      <img src={ASSET.tomato2} alt="" className="absolute w-10 md:w-14 object-contain pointer-events-none" style={{ bottom: "2%", left: "13%", transform: "rotate(6deg)" }} />
+
+      {/* bottom-right near salmon */}
+      <img src={ASSET.leaf} alt="" className="absolute w-10 md:w-14 opacity-90 pointer-events-none" style={{ bottom: "3%", right: "20%", transform: "rotate(-25deg)" }} />
+      <img src={ASSET.igdi2} alt="" className="absolute w-9 md:w-12 rounded-full object-cover opacity-90 pointer-events-none" style={{ bottom: "1%", right: "27%" }} />
+      <img src={ASSET.egg} alt="" className="absolute w-8 md:w-10 object-contain opacity-90 pointer-events-none" style={{ bottom: "18%", right: "31%", transform: "rotate(-8deg)" }} />
+
+      {/* mid-right small tomato accent near mon2 */}
+      <img src={ASSET.tomato2} alt="" className="absolute w-8 md:w-10 object-contain pointer-events-none" style={{ top: "60%", right: "27%", transform: "rotate(-10deg)" }} />
+
+      {/* ---------- LOGO TOP LEFT ---------- */}
+      <div className="absolute z-20" style={{ top: "3%", left: "3%" }}>
+        <div className="relative inline-block">
+          <img src={ASSET.leaf} alt="" className="absolute w-5 md:w-6 -top-3 left-1" style={{ transform: "rotate(-10deg)" }} />
+          <h1
+            className="font-extrabold leading-none"
+            style={{ fontSize: "clamp(22px, 3vw, 40px)", color: "#2c6a37", letterSpacing: "-0.5px" }}
+          >
+            ReMeal
+          </h1>
+          <svg className="mt-0.5" width="70" height="10" viewBox="0 0 70 10" fill="none">
+            <path d="M2 3C15 9 25 9 35 4C45 -1 55 -1 68 5" stroke="#3f7d4a" strokeWidth="2.5" strokeLinecap="round" />
+          </svg>
         </div>
-        <div class="feature">
-          <div class="icon">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M6 20c8 0 12-4 12-12 0-1 0-2-.3-3-6 .5-9 4-9 9-3.5 0-5.7 2-5.7 4.5" stroke="#218a38" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-          <span>Giảm<br>lãng phí</span>
-        </div>
-        <div class="feature">
-          <div class="icon">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M4 12c0 4.5 3.5 8 8 8s8-3.5 8-8" stroke="#218a38" stroke-width="1.8" stroke-linecap="round"/><path d="M2 12h20" stroke="#218a38" stroke-width="1.8" stroke-linecap="round"/><circle cx="9" cy="9.5" r="1.2" fill="#e2574c"/><circle cx="14" cy="8.5" r="1.2" fill="#f2a93b"/></svg>
-          </div>
-          <span>Ăn uống<br>cân bằng</span>
-        </div>
+        <p className="font-bold mt-1" style={{ color: "#2c6a37", fontSize: "clamp(10px, 1vw, 13px)", lineHeight: 1.3 }}>
+          Biến đồ ăn có sẵn<br />thành bữa ăn tuyệt vời
+        </p>
       </div>
 
-      <a href="#" class="cta">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 20c8 0 12-4 12-12 0-1 0-2-.3-3-6 .5-9 4-9 9-3.5 0-5.7 2-5.7 4.5" fill="#fff"/></svg>
-        Tạo bữa ăn ngay
-        <span class="arrow-circle">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-      </a>
+      {/* ---------- MASCOT ---------- */}
+      <img
+        src={ASSET.mascot}
+        alt="ReMeal mascot"
+        className="absolute z-10 pointer-events-none object-contain drop-shadow-[0_20px_25px_rgba(40,90,45,0.25)]"
+        style={{
+          left: "-2%",
+          bottom: "0%",
+          width: "clamp(220px, 30vw, 460px)",
+        }}
+      />
+
+      {/* Sticky note near mascot */}
+      <div
+        className="absolute z-20 bg-[#f7f0d8] rounded-md shadow-md px-4 py-3"
+        style={{
+          left: "20%",
+          bottom: "8%",
+          width: "clamp(110px, 12vw, 160px)",
+          transform: "rotate(-6deg)",
+        }}
+      >
+        <p
+          className="font-bold"
+          style={{
+            color: "#3f7d4a",
+            fontFamily: "'Comic Sans MS', 'Segoe Print', cursive",
+            fontSize: "clamp(11px, 1vw, 14px)",
+            lineHeight: 1.35,
+          }}
+        >
+          Ăn ngon hơn
+          <br />
+          Sống xanh hơn
+          <br />
+          Mỗi ngày!
+        </p>
+        <svg className="mt-1" width="60" height="8" viewBox="0 0 60 8" fill="none">
+          <path d="M2 4C15 8 25 1 35 5C45 8 52 3 58 5" stroke="#3f7d4a" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+        <HeartIcon className="absolute -top-2 -right-2 w-4 h-4" />
+      </div>
+
+      {/* ---------- THREE DISHES RIGHT SIDE ---------- */}
+      <img
+        src={ASSET.mon1}
+        alt="Món ăn 1"
+        className="absolute z-10 pointer-events-none object-contain drop-shadow-[0_18px_20px_rgba(40,90,45,0.25)]"
+        style={{ right: "-3%", top: "2%", width: "clamp(160px, 20vw, 320px)" }}
+      />
+      <img
+        src={ASSET.mon2}
+        alt="Món ăn 2"
+        className="absolute z-10 pointer-events-none object-contain drop-shadow-[0_18px_20px_rgba(40,90,45,0.25)]"
+        style={{ right: "-2%", top: "38%", width: "clamp(160px, 20vw, 320px)" }}
+      />
+      <img
+        src={ASSET.mon3}
+        alt="Món ăn 3"
+        className="absolute z-10 pointer-events-none object-contain drop-shadow-[0_18px_20px_rgba(40,90,45,0.25)]"
+        style={{ right: "-3%", bottom: "0%", width: "clamp(170px, 21vw, 340px)" }}
+      />
+
+      {/* ---------- CENTER CONTENT ---------- */}
+      <div className="absolute z-30 left-1/2 -translate-x-1/2 flex flex-col items-center text-center" style={{ top: "6%", width: "clamp(280px, 46vw, 700px)" }}>
+        <div className="relative">
+          <svg className="absolute -top-3 -left-8 w-6 h-6 opacity-70" viewBox="0 0 24 24" fill="none" stroke="#3f7d4a" strokeWidth="2">
+            <path d="M4 12c2-4 6-6 10-4M6 6c1-2 3-3 5-2" strokeLinecap="round" />
+          </svg>
+          <h2
+            className="font-extrabold"
+            style={{
+              color: "#2c6a37",
+              fontSize: "clamp(30px, 4.6vw, 64px)",
+              lineHeight: 1.05,
+              textShadow: "0 3px 0 rgba(255,255,255,0.5)",
+            }}
+          >
+            Có gì trong tủ?
+          </h2>
+          <HeartIcon className="absolute -top-1 -right-8 w-5 h-5" />
+        </div>
+
+        <p
+          className="font-extrabold mt-2"
+          style={{ color: "#2c6a37", fontSize: "clamp(14px, 1.7vw, 24px)", lineHeight: 1.35 }}
+        >
+          Hãy biến chúng thành
+          <br />
+          một bữa ăn phù hợp với bạn
+        </p>
+        <svg className="mt-1" width="180" height="10" viewBox="0 0 180 10" fill="none">
+          <path d="M4 6C50 -2 90 10 130 4C150 1 165 4 176 6" stroke="#3f7d4a" strokeWidth="3" strokeLinecap="round" />
+        </svg>
+
+        {/* Benefit cards */}
+        <div className="flex items-center justify-center gap-3 md:gap-4 mt-5">
+          <BenefitCard Icon={ClockIcon} lines={"Tiết kiệm\nthời gian"} />
+          <BenefitCard Icon={LeafIcon} lines={"Giảm\nlãng phí"} />
+          <BenefitCard Icon={BowlIcon} lines={"Ăn uống\ncân bằng"} />
+        </div>
+
+        {/* CTA button */}
+        <button
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+          className="mt-6 flex items-center justify-between rounded-full font-extrabold text-white transition-all duration-250 ease-out"
+          style={{
+            background: "linear-gradient(135deg, #4c9a52 0%, #2c6a37 100%)",
+            padding: "14px 10px 14px 26px",
+            width: "clamp(220px, 22vw, 320px)",
+            fontSize: "clamp(14px, 1.4vw, 19px)",
+            boxShadow: hover
+              ? "0 14px 26px -8px rgba(44,106,55,0.55)"
+              : "0 8px 18px -6px rgba(44,106,55,0.45)",
+            transform: hover ? "translateY(-3px)" : "translateY(0px)",
+          }}
+        >
+          <span className="flex items-center gap-2">
+            <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 20c8 0 13-5 13-13 0-1 0-2-.2-3C10.5 4.2 6 9 6 17c0 1 0 2 .2 3z" />
+            </svg>
+            Tạo bữa ăn ngay
+          </span>
+          <span
+            className="flex items-center justify-center rounded-full bg-white transition-transform duration-250 ease-out"
+            style={{
+              width: "clamp(34px, 3vw, 44px)",
+              height: "clamp(34px, 3vw, 44px)",
+              transform: hover ? "translateX(4px)" : "translateX(0px)",
+            }}
+          >
+            <ArrowRightIcon />
+          </span>
+        </button>
+      </div>
     </div>
-
-    <div class="food-col">
-      <img src="https://github.com/k632414410088-byte/remeal/blob/main/m%C3%B3n%20%C4%83n%201.png?raw=true" alt="Món ăn 1">
-      <img src="https://github.com/k632414410088-byte/remeal/blob/main/m%C3%B3n%20%C4%83n%202.png?raw=true" alt="Món ăn 2">
-      <img src="https://github.com/k632414410088-byte/remeal/blob/main/m%C3%B3n%20%C4%83n%203.png?raw=true" alt="Món ăn 3">
-    </div>
-
-  </div>
-</div>
-
-</body>
-</html>
+  );
+}
