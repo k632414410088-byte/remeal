@@ -79,13 +79,33 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-end;
-    gap: clamp(4px, 1.2vh, 14px);
+    gap: 26px;
+    transform: translateX(-34px);
     z-index: 4;
   }
   .food-item {
     width: clamp(210px, 19vw, 300px);
     height: auto;
     object-fit: contain;
+  }
+  .mascot-wrap {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 34%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .mascot-wrap img {
+    height: 88vh;
+    width: auto;
+    max-width: none;
+    object-fit: contain;
+    margin-left: -10px;
   }
 </style>
 </head>
@@ -136,11 +156,13 @@
   </div>
 
   <!-- ===== MASCOT ===== -->
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/mascot.png" alt="ReMeal mascot"
-       class="absolute z-10 object-contain" style="left:10px; bottom:0px; width:clamp(340px,33vw,520px); height:auto; filter:drop-shadow(0 20px 25px rgba(40,90,45,0.25));" />
+  <div class="mascot-wrap">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/mascot.png" alt="ReMeal mascot"
+         class="object-contain" style="filter:drop-shadow(0 20px 25px rgba(40,90,45,0.25));" />
+  </div>
 
   <!-- Sticky note near mascot -->
-  <div class="absolute z-20 rounded-md shadow-md px-4 py-3" style="left:20%; bottom:8%; width:clamp(110px,12vw,160px); background:#f7f0d8; transform:rotate(-6deg);">
+  <div class="absolute z-20 rounded-md shadow-md px-4 py-3" style="left:26%; top:60%; width:clamp(110px,12vw,160px); background:#f7f0d8; transform:rotate(-6deg);">
     <p class="handwrite font-bold" style="color:#3f7d4a; font-size:clamp(11px,1vw,14px); line-height:1.35;">
       Ăn ngon hơn<br />Sống xanh hơn<br />Mỗi ngày!
     </p>
