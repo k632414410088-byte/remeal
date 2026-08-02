@@ -41,18 +41,23 @@
     overflow:hidden;
   }
 
-  /* decorative produce corners */
-  .deco{
+  /* decorative produce scattered at the edges */
+  .veg{
     position:absolute;
-    width:230px;
-    opacity:0.95;
     pointer-events:none;
-    filter:drop-shadow(0 10px 18px rgba(0,0,0,0.10));
+    filter:drop-shadow(0 8px 14px rgba(20,60,20,0.14));
     z-index:1;
   }
-  .deco.tr{ top:-40px; right:-30px; width:340px; transform:rotate(8deg);}
-  .deco.br{ bottom:-50px; right:-20px; width:300px; transform:scaleX(-1) rotate(-6deg);}
-  .deco.bl{ bottom:-30px; left:-40px; width:260px; transform:rotate(-10deg);}
+  .veg svg{ width:100%; height:100%; display:block; }
+  .veg.v1{ width:82px; top:14px;  right:36px;  transform:rotate(12deg); }
+  .veg.v2{ width:54px; top:78px;  right:132px; transform:rotate(-16deg); }
+  .veg.v3{ width:66px; top:44%;   right:-14px; transform:rotate(10deg); }
+  .veg.v4{ width:66px; bottom:56px; right:18px;  transform:rotate(-12deg); }
+  .veg.v5{ width:56px; bottom:6px;  right:112px; transform:rotate(14deg); }
+  .veg.v6{ width:70px; bottom:36px; left:6px;   transform:rotate(-22deg); }
+  .veg.v7{ width:58px; bottom:104px; left:66px;  transform:rotate(16deg); }
+  .veg.v8{ width:82px; bottom:-12px; left:96px;  transform:rotate(-10deg); }
+  .veg.v9{ width:48px; bottom:128px; left:14px;  transform:rotate(20deg); }
 
   /* header / logo */
   .logo-row{
@@ -106,7 +111,7 @@
   }
   .mascot-col img{
     width:100%;
-    max-width:420px;
+    max-width:500px;
     filter:drop-shadow(0 22px 26px rgba(28,110,46,0.20));
     animation:float 4.5s ease-in-out infinite;
   }
@@ -246,19 +251,19 @@
     align-items:flex-end;
   }
   .food-card{
-    width:88%;
+    width:76%;
+    max-width:340px;
     aspect-ratio:16/10;
-    border-radius:28px;
+    border-radius:26px;
     overflow:hidden;
-    box-shadow:0 16px 30px rgba(28,60,20,0.18);
-    border:6px solid #ffffff;
+    box-shadow:0 14px 26px rgba(28,60,20,0.16);
     transform:rotate(0deg);
   }
   .food-card img{
     width:100%; height:100%; object-fit:cover; display:block;
   }
   .food-card:nth-child(1){ transform:rotate(1.5deg); }
-  .food-card:nth-child(2){ transform:rotate(-1.2deg); width:94%;}
+  .food-card:nth-child(2){ transform:rotate(-1.2deg); width:82%; max-width:360px;}
   .food-card:nth-child(3){ transform:rotate(1deg); }
 
   /* responsive */
@@ -267,8 +272,8 @@
     .mascot-col{ order:2; }
     .mid-col{ order:1; }
     .food-col{ order:3; align-items:center; }
-    .food-card{ width:70%; max-width:420px; }
-    .deco{ display:none; }
+    .food-card{ width:70%; max-width:340px; }
+    .veg{ display:none; }
     .hero{ padding:30px 24px 50px; }
   }
   @media (max-width:520px){
@@ -287,9 +292,42 @@
 
 <div class="hero">
 
-  <img class="deco tr" src="https://github.com/k632414410088-byte/remeal/blob/main/hoa%20qu%E1%BA%A3%20trang%20tr%C3%AD.png?raw=true" alt="">
-  <img class="deco br" src="https://github.com/k632414410088-byte/remeal/blob/main/hoa%20qu%E1%BA%A3%20trang%20tr%C3%AD.png?raw=true" alt="">
-  <img class="deco bl" src="https://github.com/k632414410088-byte/remeal/blob/main/hoa%20qu%E1%BA%A3%20trang%20tr%C3%AD.png?raw=true" alt="">
+  <!-- cà chua -->
+  <span class="veg v1">
+    <svg viewBox="0 0 64 64"><path d="M32 6c3 3 3 6 0 9" stroke="#3c8f3f" stroke-width="4" stroke-linecap="round" fill="none"/><path d="M24 10c2 3 2 5 0 7M40 10c-2 3-2 5 0 7" stroke="#3c8f3f" stroke-width="4" stroke-linecap="round" fill="none"/><circle cx="32" cy="38" r="22" fill="#e2574c"/><circle cx="23" cy="29" r="6" fill="#f4877e" opacity="0.55"/></svg>
+  </span>
+  <!-- lá bạc hà -->
+  <span class="veg v2">
+    <svg viewBox="0 0 64 64"><path d="M12 44C12 20 34 8 52 10c2 20-10 42-34 42-4 0-6-4-6-8z" fill="#4c9a4f"/><path d="M18 42C26 30 36 22 48 16" stroke="#3c7c3f" stroke-width="2" fill="none" opacity="0.5"/></svg>
+  </span>
+  <!-- broccoli -->
+  <span class="veg v3">
+    <svg viewBox="0 0 64 64"><rect x="27" y="40" width="10" height="18" rx="4" fill="#c8dba0"/><circle cx="22" cy="26" r="12" fill="#4c9a4f"/><circle cx="34" cy="20" r="13" fill="#59a85c"/><circle cx="44" cy="28" r="11" fill="#4c9a4f"/></svg>
+  </span>
+  <!-- chanh -->
+  <span class="veg v4">
+    <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="#f6d743"/><circle cx="32" cy="32" r="20" fill="#fbe98f"/><g stroke="#f6d743" stroke-width="2" opacity="0.85"><line x1="32" y1="12" x2="32" y2="52"/><line x1="14" y1="20" x2="50" y2="44"/><line x1="14" y1="44" x2="50" y2="20"/></g></svg>
+  </span>
+  <!-- hành tím -->
+  <span class="veg v5">
+    <svg viewBox="0 0 64 64"><path d="M32 6c2 4 2 8 0 12" stroke="#7a5b3e" stroke-width="3" stroke-linecap="round" fill="none"/><ellipse cx="32" cy="40" rx="20" ry="22" fill="#9b5fa0"/><path d="M20 24c4 8 4 24 0 32M44 24c-4 8-4 24 0 32" stroke="#c98fcc" stroke-width="2" fill="none" opacity="0.6"/></svg>
+  </span>
+  <!-- ớt -->
+  <span class="veg v6">
+    <svg viewBox="0 0 64 64"><path d="M14 14c6-4 10-2 10 4 0 14 8 30 24 34 6 1.5 8-3 4-7-16-6-24-18-24-30 0-4-6-4-14-1z" fill="#e2453b"/><path d="M12 12c2-3 5-4 8-2" stroke="#3c8f3f" stroke-width="3" stroke-linecap="round" fill="none"/></svg>
+  </span>
+  <!-- cà chua nhỏ -->
+  <span class="veg v7">
+    <svg viewBox="0 0 64 64"><path d="M32 6c3 3 3 6 0 9" stroke="#3c8f3f" stroke-width="4" stroke-linecap="round" fill="none"/><circle cx="32" cy="38" r="22" fill="#e2574c"/><circle cx="23" cy="29" r="6" fill="#f4877e" opacity="0.55"/></svg>
+  </span>
+  <!-- broccoli nhỏ -->
+  <span class="veg v8">
+    <svg viewBox="0 0 64 64"><rect x="27" y="40" width="10" height="18" rx="4" fill="#c8dba0"/><circle cx="22" cy="26" r="12" fill="#4c9a4f"/><circle cx="34" cy="20" r="13" fill="#59a85c"/><circle cx="44" cy="28" r="11" fill="#4c9a4f"/></svg>
+  </span>
+  <!-- lá nhỏ -->
+  <span class="veg v9">
+    <svg viewBox="0 0 64 64"><path d="M12 44C12 20 34 8 52 10c2 20-10 42-34 42-4 0-6-4-6-8z" fill="#4c9a4f"/></svg>
+  </span>
 
   <div class="logo-row">
     <div class="logo-icon">
