@@ -15,10 +15,10 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
-            background-color: #fff;
+            background: linear-gradient(135deg, #d4e8c1 0%, #e8f5e9 50%, #f5f9e8 100%);
         }
 
-        /* HERO SECTION */
+        /* ========== HERO SECTION ========== */
         .hero {
             background: linear-gradient(135deg, #d4e8c1 0%, #e8f5e9 50%, #f5f9e8 100%);
             padding: 40px 20px;
@@ -32,77 +32,88 @@
         .hero::before {
             content: '';
             position: absolute;
-            top: 20px;
-            right: 30px;
-            width: 200px;
-            height: 200px;
-            background: rgba(255, 150, 100, 0.15);
+            top: -100px;
+            left: -100px;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.3);
             border-radius: 50%;
-            opacity: 0.6;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            right: -50px;
+            width: 300px;
+            height: 300px;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 50%;
         }
 
         .hero-container {
             max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 60px;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 40px;
             align-items: center;
+            position: relative;
+            z-index: 2;
             width: 100%;
         }
 
-        /* LEFT SIDE - TEXT & MASCOT */
+        /* ========== LEFT SIDE ========== */
         .hero-left {
             position: relative;
-            z-index: 2;
+        }
+
+        .logo-section {
+            margin-bottom: 20px;
         }
 
         .hero-logo {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 20px;
-            font-size: 28px;
-            font-weight: bold;
-            color: #2d5016;
-        }
-
-        .logo-icon {
+            gap: 10px;
             font-size: 32px;
+            font-weight: bold;
+            color: #1b5e20;
+            margin-bottom: 10px;
         }
 
         .tagline {
             font-size: 14px;
             color: #4caf50;
-            margin-top: 5px;
-            margin-left: 40px;
+            margin-left: 45px;
+            line-height: 1.6;
         }
 
         .hero h1 {
             font-size: 56px;
             color: #1b5e20;
-            margin: 30px 0 20px 0;
+            margin: 30px 0 15px 0;
             font-weight: 700;
-            line-height: 1.2;
+            line-height: 1.1;
         }
 
         .hero-subtitle {
             font-size: 16px;
-            color: #666;
-            margin-bottom: 40px;
+            color: #555;
+            margin-bottom: 30px;
             line-height: 1.8;
         }
 
-        .features-highlights {
+        .features-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            gap: 15px;
             margin-bottom: 40px;
         }
 
-        .highlight-item {
-            background: rgba(255, 255, 255, 0.6);
-            padding: 20px;
+        .feature-box {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 20px 15px;
             border-radius: 16px;
             text-align: center;
             border: 2px solid rgba(76, 175, 80, 0.2);
@@ -110,114 +121,29 @@
             backdrop-filter: blur(10px);
         }
 
-        .highlight-item:hover {
+        .feature-box:hover {
             background: white;
             border-color: #4caf50;
             box-shadow: 0 4px 12px rgba(76, 175, 80, 0.15);
         }
 
-        .highlight-icon {
-            font-size: 28px;
+        .feature-box-icon {
+            font-size: 32px;
             margin-bottom: 10px;
         }
 
-        .highlight-item h3 {
-            font-size: 14px;
-            color: #1b5e20;
-            font-weight: 600;
-        }
-
-        .hero-text-bottom {
-            font-size: 14px;
-            color: #4caf50;
-            font-weight: 500;
-            line-height: 1.8;
-        }
-
-        .hero-text-bottom strong {
-            color: #2d5016;
-            font-weight: 700;
-        }
-
-        /* MASCOT */
-        .mascot-container {
-            position: relative;
-            height: 400px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .mascot {
-            font-size: 200px;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        /* RIGHT SIDE - DISHES */
-        .hero-right {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .dish-item {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            transition: all 0.3s ease;
-        }
-
-        .dish-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
-        }
-
-        .dish-image-placeholder {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 80px;
-            flex-shrink: 0;
-            margin-right: 20px;
-        }
-
-        .dish-content {
-            flex: 1;
-        }
-
-        .dish-name {
-            font-size: 16px;
-            color: #1b5e20;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .dish-description {
+        .feature-box h3 {
             font-size: 13px;
-            color: #999;
-            line-height: 1.6;
+            color: #1b5e20;
+            font-weight: 600;
+            line-height: 1.4;
         }
 
-        /* CTA BUTTON */
         .cta-button {
             background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
             color: white;
             border: none;
-            padding: 18px 50px;
+            padding: 16px 40px;
             font-size: 16px;
             border-radius: 50px;
             cursor: pointer;
@@ -227,7 +153,7 @@
             align-items: center;
             gap: 12px;
             box-shadow: 0 6px 20px rgba(76, 175, 80, 0.35);
-            width: fit-content;
+            margin-bottom: 25px;
         }
 
         .cta-button:hover {
@@ -235,19 +161,136 @@
             box-shadow: 0 8px 25px rgba(76, 175, 80, 0.45);
         }
 
-        /* FEATURES SECTION */
+        .hero-footer-text {
+            font-size: 13px;
+            color: #4caf50;
+            line-height: 1.8;
+            font-weight: 500;
+        }
+
+        .hero-footer-text strong {
+            color: #2d5016;
+            font-weight: 700;
+        }
+
+        /* ========== RIGHT SIDE - MASCOT & DISHES ========== */
+        .hero-right {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .mascot-wrapper {
+            position: relative;
+            width: 280px;
+            height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        svg {
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.15));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .dishes-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .dish-item {
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 15px;
+            padding: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .dish-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .dish-image {
+            width: 120px;
+            height: 110px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .dish-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 5px 0;
+        }
+
+        .dish-name {
+            font-size: 15px;
+            color: #1b5e20;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .dish-desc {
+            font-size: 12px;
+            color: #999;
+            line-height: 1.5;
+        }
+
+        /* ========== DECORATIVE ELEMENTS ========== */
+        .veg-decoration {
+            position: absolute;
+            font-size: 30px;
+            opacity: 0.7;
+        }
+
+        .veg-1 { top: 10%; left: 5%; animation: rotate 4s linear infinite; }
+        .veg-2 { top: 25%; left: 2%; animation: rotate 5s linear infinite reverse; }
+        .veg-3 { top: 50%; left: 1%; font-size: 25px; }
+        .veg-4 { top: 70%; left: 3%; animation: rotate 4s linear infinite; }
+        .veg-5 { top: 85%; left: 8%; font-size: 28px; }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ========== SECTION 2: FEATURES ========== */
         .features-section {
             background: white;
             padding: 80px 20px;
-            margin-top: 20px;
         }
 
-        .features-section-header {
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
             text-align: center;
             margin-bottom: 60px;
-            max-width: 1000px;
-            margin-left: auto;
-            margin-right: auto;
         }
 
         .section-label {
@@ -260,25 +303,25 @@
             gap: 8px;
         }
 
-        .features-section h2 {
+        .section-header h2 {
             font-size: 38px;
             color: #1b5e20;
             margin-bottom: 20px;
             font-weight: 700;
         }
 
-        .features-section-header p {
+        .section-header p {
             font-size: 16px;
             color: #666;
             line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
         }
 
         .feature-card {
@@ -296,7 +339,7 @@
             border-color: #4caf50;
         }
 
-        .feature-number {
+        .feature-num {
             width: 50px;
             height: 50px;
             background: #4caf50;
@@ -310,10 +353,9 @@
             margin-bottom: 20px;
         }
 
-        .feature-card-icon {
+        .feature-emoji {
             font-size: 60px;
             margin-bottom: 20px;
-            opacity: 0.9;
         }
 
         .feature-card h3 {
@@ -329,46 +371,24 @@
             line-height: 1.8;
         }
 
-        /* HOW IT WORKS SECTION */
+        /* ========== SECTION 3: HOW IT WORKS ========== */
         .how-it-works {
             background: white;
             padding: 80px 20px;
         }
 
-        .how-it-works-header {
-            text-align: center;
-            margin-bottom: 60px;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .how-it-works h2 {
-            font-size: 38px;
-            color: #1b5e20;
-            margin-bottom: 15px;
-            font-weight: 700;
-        }
-
-        .how-it-works-header p {
-            font-size: 16px;
-            color: #666;
-        }
-
-        .steps-container {
+        .steps-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto 60px;
+            margin-top: 60px;
         }
 
         .step {
             text-align: center;
-            position: relative;
         }
 
-        .step-number {
+        .step-num {
             width: 50px;
             height: 50px;
             background: #4caf50;
@@ -382,7 +402,7 @@
             margin: 0 auto 20px;
         }
 
-        .step-icon {
+        .step-emoji {
             font-size: 70px;
             margin-bottom: 15px;
         }
@@ -400,7 +420,7 @@
             line-height: 1.8;
         }
 
-        /* DISHES SECTION */
+        /* ========== SECTION 4: DISHES ========== */
         .dishes-section {
             background: #f9f9f9;
             padding: 60px 20px;
@@ -408,25 +428,20 @@
 
         .dishes-header {
             text-align: center;
-            margin-bottom: 40px;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
+            margin-bottom: 50px;
         }
 
         .dishes-header h2 {
             font-size: 28px;
             color: #1b5e20;
             font-weight: 700;
-            margin-bottom: 20px;
         }
 
         .dishes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
+            margin-bottom: 40px;
         }
 
         .dish-card {
@@ -442,17 +457,13 @@
             box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
         }
 
-        .dish-image-container {
+        .dish-card-image {
             position: relative;
             height: 200px;
             background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
-            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .dish-image-placeholder {
             font-size: 90px;
         }
 
@@ -478,11 +489,11 @@
             transform: scale(1.15);
         }
 
-        .dish-info {
+        .dish-card-info {
             padding: 20px;
         }
 
-        .dish-name {
+        .dish-card-name {
             font-size: 18px;
             color: #1b5e20;
             font-weight: 600;
@@ -514,13 +525,7 @@
             display: inline-block;
         }
 
-        .dishes-button {
-            display: flex;
-            justify-content: center;
-            margin-top: 40px;
-        }
-
-        .explore-button {
+        .explore-btn {
             background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
             color: white;
             border: none;
@@ -534,14 +539,16 @@
             align-items: center;
             gap: 10px;
             box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            margin: 0 auto;
+            display: block;
         }
 
-        .explore-button:hover {
+        .explore-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
         }
 
-        /* RESPONSIVE */
+        /* ========== RESPONSIVE ========== */
         @media (max-width: 1024px) {
             .hero-container {
                 grid-template-columns: 1fr;
@@ -550,10 +557,6 @@
 
             .hero h1 {
                 font-size: 42px;
-            }
-
-            .mascot {
-                font-size: 150px;
             }
         }
 
@@ -567,7 +570,7 @@
                 font-size: 32px;
             }
 
-            .features-highlights {
+            .features-row {
                 grid-template-columns: 1fr;
             }
 
@@ -575,7 +578,7 @@
                 grid-template-columns: 1fr;
             }
 
-            .steps-container {
+            .steps-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -583,242 +586,310 @@
                 grid-template-columns: 1fr;
             }
 
-            .mascot {
-                font-size: 120px;
-            }
-
             .dish-item {
-                flex-direction: column;
-                text-align: center;
+                grid-template-columns: 100px 1fr;
             }
 
-            .dish-image-placeholder {
-                margin-right: 0;
-                margin-bottom: 15px;
+            .dish-image {
+                width: 100px;
+                height: 90px;
+                font-size: 40px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- HERO SECTION -->
+    <!-- ========== HERO SECTION ========== -->
     <section class="hero">
         <div class="hero-container">
+            <!-- LEFT SIDE -->
             <div class="hero-left">
-                <div class="hero-logo">
-                    <span class="logo-icon">🍃</span>
-                    <span>ReMeal</span>
+                <div class="logo-section">
+                    <div class="hero-logo">
+                        <span>🍃</span>
+                        <span>ReMeal</span>
+                    </div>
+                    <div class="tagline">Biến đổ ăn có sẵn<br>thành bữa ăn tuyệt vời</div>
                 </div>
-                <div class="tagline">Biến đổ ăn có sẵn<br>thành bữa ăn tuyệt vời</div>
 
                 <h1>Có gì trong tủ?</h1>
                 <p class="hero-subtitle">Hãy biến chúng thành một bữa ăn phù hợp với bạn</p>
 
-                <div class="features-highlights">
-                    <div class="highlight-item">
-                        <div class="highlight-icon">⏱️</div>
-                        <h3>Tiết kiệm thời gian</h3>
+                <div class="features-row">
+                    <div class="feature-box">
+                        <div class="feature-box-icon">⏱️</div>
+                        <h3>Tiết kiệm<br>thời gian</h3>
                     </div>
-                    <div class="highlight-item">
-                        <div class="highlight-icon">🍃</div>
-                        <h3>Giảm lãng phí</h3>
+                    <div class="feature-box">
+                        <div class="feature-box-icon">🍃</div>
+                        <h3>Giảm<br>lãng phí</h3>
                     </div>
-                    <div class="highlight-item">
-                        <div class="highlight-icon">🥗</div>
-                        <h3>Ăn uống cân bằng</h3>
+                    <div class="feature-box">
+                        <div class="feature-box-icon">🥗</div>
+                        <h3>Ăn uống<br>cân bằng</h3>
                     </div>
                 </div>
 
-                <button class="cta-button" onclick="scrollToFeatures()">
+                <button class="cta-button" onclick="scrollToSection()">
                     🍃 Tạo bữa ăn ngay
                 </button>
 
-                <div class="hero-text-bottom">
+                <div class="hero-footer-text">
                     <strong>Ăn ngon hơn<br>Sống xanh hơn<br>Mỗi ngày!</strong>
                 </div>
             </div>
 
+            <!-- RIGHT SIDE -->
             <div class="hero-right">
-                <div class="mascot-container">
-                    <div class="mascot">🥒</div>
+                <!-- MASCOT -->
+                <div class="mascot-wrapper">
+                    <svg width="280" height="320" viewBox="0 0 280 320" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Body (green avocado shape) -->
+                        <ellipse cx="140" cy="180" rx="90" ry="110" fill="#7ec850"/>
+                        
+                        <!-- Left side curve -->
+                        <path d="M 100 140 Q 50 160 50 200 Q 50 250 100 260" fill="#7ec850"/>
+                        
+                        <!-- Right side curve -->
+                        <path d="M 180 140 Q 230 160 230 200 Q 230 250 180 260" fill="#7ec850"/>
+                        
+                        <!-- Highlight on body -->
+                        <ellipse cx="140" cy="160" rx="60" ry="80" fill="#9dd965" opacity="0.6"/>
+                        
+                        <!-- Head (white face) -->
+                        <circle cx="140" cy="110" r="70" fill="#f5f5f5"/>
+                        
+                        <!-- Left eye -->
+                        <circle cx="115" cy="95" r="12" fill="#000"/>
+                        <circle cx="118" cy="92" r="4" fill="#fff"/>
+                        
+                        <!-- Right eye (winking) -->
+                        <path d="M 155 100 Q 165 105 175 100" stroke="#000" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        
+                        <!-- Smile -->
+                        <path d="M 120 125 Q 140 145 160 125" stroke="#e91e63" stroke-width="8" fill="none" stroke-linecap="round"/>
+                        
+                        <!-- Blush left -->
+                        <circle cx="95" cy="120" r="12" fill="#ffb3ba" opacity="0.6"/>
+                        
+                        <!-- Blush right -->
+                        <circle cx="185" cy="120" r="12" fill="#ffb3ba" opacity="0.6"/>
+                        
+                        <!-- Leaf on head left -->
+                        <ellipse cx="110" cy="50" rx="18" ry="25" fill="#7ec850" transform="rotate(-30 110 50)"/>
+                        
+                        <!-- Leaf on head right -->
+                        <ellipse cx="170" cy="50" rx="18" ry="25" fill="#7ec850" transform="rotate(30 170 50)"/>
+                        
+                        <!-- Arm left (holding spoon) -->
+                        <ellipse cx="60" cy="200" rx="20" ry="35" fill="#7ec850" transform="rotate(-40 60 200)"/>
+                        
+                        <!-- Arm right -->
+                        <ellipse cx="220" cy="200" rx="20" ry="35" fill="#7ec850" transform="rotate(40 220 200)"/>
+                        
+                        <!-- Leg left -->
+                        <ellipse cx="110" cy="280" rx="18" ry="30" fill="#7ec850"/>
+                        
+                        <!-- Leg right -->
+                        <ellipse cx="170" cy="280" rx="18" ry="30" fill="#7ec850"/>
+                    </svg>
+
+                    <!-- Decorative veggies -->
+                    <div class="veg-decoration veg-1">🍅</div>
+                    <div class="veg-decoration veg-2">🌶️</div>
+                    <div class="veg-decoration veg-3">🥬</div>
+                    <div class="veg-decoration veg-4">🥕</div>
+                    <div class="veg-decoration veg-5">🧅</div>
                 </div>
-                <div class="dish-item">
-                    <div class="dish-image-placeholder">🍤</div>
-                    <div class="dish-content">
-                        <div class="dish-name">Ức gà xào bông cải xanh</div>
-                        <div class="dish-description">Món ăn ngon, bổ dưỡng cho cả gia đình</div>
+
+                <!-- DISHES -->
+                <div class="dishes-container">
+                    <div class="dish-item">
+                        <div class="dish-image">🍤</div>
+                        <div class="dish-content">
+                            <div class="dish-name">Ức gà xào bông cải xanh</div>
+                            <div class="dish-desc">Món ăn ngon, bổ dưỡng cho cả gia đình</div>
+                        </div>
                     </div>
-                </div>
-                <div class="dish-item">
-                    <div class="dish-image-placeholder">🍚</div>
-                    <div class="dish-content">
-                        <div class="dish-name">Cơm rang chiên với rau</div>
-                        <div class="dish-description">Dễ nấu, lạ miệng, được gia đình yêu thích</div>
+
+                    <div class="dish-item">
+                        <div class="dish-image">🍚</div>
+                        <div class="dish-content">
+                            <div class="dish-name">Cơm rang chiên với rau</div>
+                            <div class="dish-desc">Dễ nấu, lạ miệng, được gia đình yêu thích</div>
+                        </div>
                     </div>
-                </div>
-                <div class="dish-item">
-                    <div class="dish-image-placeholder">🐟</div>
-                    <div class="dish-content">
-                        <div class="dish-name">Cá hồi nướng sốt chanh</div>
-                        <div class="dish-description">Giàu dinh dưỡng, hương vị tuyệt vời</div>
+
+                    <div class="dish-item">
+                        <div class="dish-image">🐟</div>
+                        <div class="dish-content">
+                            <div class="dish-name">Cá hồi nướng sốt chanh</div>
+                            <div class="dish-desc">Giàu dinh dưỡng, hương vị tuyệt vời</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- FEATURES SECTION -->
-    <section class="features-section" id="features">
-        <div class="features-section-header">
-            <div class="section-label">🍃 TÍNH NĂNG NỔI BẬT</div>
-            <h2>Tất cả những gì bạn cần cho bữa ăn hoàn hảo</h2>
-            <p>ReMeal giúp bạn lên kế hoạch bữa ăn, quản lý nguyên liệu và chăm sóc sức khỏe gia đình một cách dễ dàng.</p>
-        </div>
-
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-number">01</div>
-                <div class="feature-card-icon">📖</div>
-                <h3>Gợi ý công thức thông minh</h3>
-                <p>Để xuất công thức phù hợp với nguyên liệu bạn có, số lượng và mục tiêu định dưỡng.</p>
+    <!-- ========== FEATURES SECTION ========== -->
+    <section class="features-section">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-label">🍃 TÍNH NĂNG NỔI BẬT</div>
+                <h2>Tất cả những gì bạn cần cho bữa ăn hoàn hảo</h2>
+                <p>ReMeal giúp bạn lên kế hoạch bữa ăn, quản lý nguyên liệu và chăm sóc sức khỏe gia đình một cách dễ dàng.</p>
             </div>
 
-            <div class="feature-card">
-                <div class="feature-number">02</div>
-                <div class="feature-card-icon">🧊</div>
-                <h3>Quản lý tủ lạnh</h3>
-                <p>Theo dõi nguyên liệu trong tủ lạnh, biết rõ gì đang có, gì sắp hết hạn để tránh lãng phí.</p>
-            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-num">01</div>
+                    <div class="feature-emoji">📖</div>
+                    <h3>Gợi ý công thức thông minh</h3>
+                    <p>Để xuất công thức phù hợp với nguyên liệu bạn có, số lượng và mục tiêu định dưỡng.</p>
+                </div>
 
-            <div class="feature-card">
-                <div class="feature-number">03</div>
-                <div class="feature-card-icon">📅</div>
-                <h3>Kế hoạch bữa ăn tuần</h3>
-                <p>Lên kế hoạch bữa ăn cho cả tuần nhanh chóng, cần đổi và linh hoạt theo nhu cầu gia đình.</p>
-            </div>
+                <div class="feature-card">
+                    <div class="feature-num">02</div>
+                    <div class="feature-emoji">🧊</div>
+                    <h3>Quản lý tủ lạnh</h3>
+                    <p>Theo dõi nguyên liệu trong tủ lạnh, biết rõ gì đang có, gì sắp hết hạn để tránh lãng phí.</p>
+                </div>
 
-            <div class="feature-card">
-                <div class="feature-number">04</div>
-                <div class="feature-card-icon">🛒</div>
-                <h3>Danh sách mua sắm</h3>
-                <p>Tự động tạo danh sách mua sắm từ kế hoạch bữa ăn, giúp bạn mua sắm hiệu quả và tiết kiệm.</p>
-            </div>
+                <div class="feature-card">
+                    <div class="feature-num">03</div>
+                    <div class="feature-emoji">📅</div>
+                    <h3>Kế hoạch bữa ăn tuần</h3>
+                    <p>Lên kế hoạch bữa ăn cho cả tuần nhanh chóng, cần đổi và linh hoạt theo nhu cầu gia đình.</p>
+                </div>
 
-            <div class="feature-card">
-                <div class="feature-number">05</div>
-                <div class="feature-card-icon">👨‍👩‍👧‍👦</div>
-                <h3>Tài khoản gia đình</h3>
-                <p>Chia sẻ kế hoạch, danh sách và công thức với các thành viên, cùng nhau xây dựng thói quen ăn uống lành mạnh.</p>
-            </div>
+                <div class="feature-card">
+                    <div class="feature-num">04</div>
+                    <div class="feature-emoji">🛒</div>
+                    <h3>Danh sách mua sắm</h3>
+                    <p>Tự động tạo danh sách mua sắm từ kế hoạch bữa ăn, giúp bạn mua sắm hiệu quả và tiết kiệm.</p>
+                </div>
 
-            <div class="feature-card">
-                <div class="feature-number">06</div>
-                <div class="feature-card-icon">📊</div>
-                <h3>Theo dõi dinh dưỡng</h3>
-                <p>Theo dõi lượng định dưỡng hàng ngày, hiểu rõ hơn về chế độ ăn để sống khỏe mỗi ngày.</p>
+                <div class="feature-card">
+                    <div class="feature-num">05</div>
+                    <div class="feature-emoji">👨‍👩‍👧‍👦</div>
+                    <h3>Tài khoản gia đình</h3>
+                    <p>Chia sẻ kế hoạch, danh sách và công thức với các thành viên, cùng nhau xây dựng thói quen ăn uống lành mạnh.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-num">06</div>
+                    <div class="feature-emoji">📊</div>
+                    <h3>Theo dõi dinh dưỡng</h3>
+                    <p>Theo dõi lượng định dưỡng hàng ngày, hiểu rõ hơn về chế độ ăn để sống khỏe mỗi ngày.</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- HOW IT WORKS SECTION -->
+    <!-- ========== HOW IT WORKS ========== -->
     <section class="how-it-works">
-        <div class="how-it-works-header">
-            <h2>ReMeal hoạt động như thế nào?</h2>
-            <p>4 bước đơn giản để khám phá món ngon phù hợp với bạn</p>
-        </div>
-
-        <div class="steps-container">
-            <div class="step">
-                <div class="step-number">1</div>
-                <div class="step-icon">🥗</div>
-                <h3>Nhập nguyên liệu</h3>
-                <p>Thêm các nguyên liệu bạn đang có ở nhà vào ứng dụng</p>
+        <div class="section-container">
+            <div class="section-header">
+                <h2>ReMeal hoạt động như thế nào?</h2>
+                <p>4 bước đơn giản để khám phá món ngon phù hợp với bạn</p>
             </div>
 
-            <div class="step">
-                <div class="step-number">2</div>
-                <div class="step-icon">🎯</div>
-                <h3>Chọn mục tiêu</h3>
-                <p>Chọn mục tiêu định dưỡng phù hợp với bạn</p>
-            </div>
+            <div class="steps-grid">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-emoji">🥗</div>
+                    <h3>Nhập nguyên liệu</h3>
+                    <p>Thêm các nguyên liệu bạn đang có ở nhà vào ứng dụng</p>
+                </div>
 
-            <div class="step">
-                <div class="step-number">3</div>
-                <div class="step-icon">💡</div>
-                <h3>Nhận gợi ý</h3>
-                <p>ReMeal gợi ý những món ăn phù hợp với nguyên liệu và mục tiêu của bạn</p>
-            </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-emoji">🎯</div>
+                    <h3>Chọn mục tiêu</h3>
+                    <p>Chọn mục tiêu định dưỡng phù hợp với bạn</p>
+                </div>
 
-            <div class="step">
-                <div class="step-number">4</div>
-                <div class="step-icon">🍲</div>
-                <h3>Nấu ngay</h3>
-                <p>Xem hướng dẫn chi tiết và bắt tay vào nấu thôi!</p>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-emoji">💡</div>
+                    <h3>Nhận gợi ý</h3>
+                    <p>ReMeal gợi ý những món ăn phù hợp với nguyên liệu và mục tiêu của bạn</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-num">4</div>
+                    <div class="step-emoji">🍲</div>
+                    <h3>Nấu ngay</h3>
+                    <p>Xem hướng dẫn chi tiết và bắt tay vào nấu thôi!</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- DISHES SECTION -->
+    <!-- ========== DISHES SECTION ========== -->
     <section class="dishes-section">
-        <div class="dishes-header">
-            <h2>Gợi ý món ăn dành cho bạn</h2>
-        </div>
+        <div class="section-container">
+            <div class="dishes-header">
+                <h2>Gợi ý món ăn dành cho bạn</h2>
+            </div>
 
-        <div class="dishes-grid">
-            <div class="dish-card">
-                <div class="dish-image-container">
-                    <div class="dish-image-placeholder">🍤</div>
-                    <div class="dish-heart" onclick="toggleHeart(this)">🤍</div>
-                </div>
-                <div class="dish-info">
-                    <div class="dish-name">Ức gà xào bông cải xanh</div>
-                    <div class="dish-meta">
-                        <div class="meta-item">⏱️ 20 phút</div>
-                        <div class="meta-item">📊 Dễ</div>
+            <div class="dishes-grid">
+                <div class="dish-card">
+                    <div class="dish-card-image">
+                        🍤
+                        <div class="dish-heart" onclick="toggleHeart(this)">🤍</div>
                     </div>
-                    <div class="dish-match">🍃 Phù hợp 95%</div>
+                    <div class="dish-card-info">
+                        <div class="dish-card-name">Ức gà xào bông cải xanh</div>
+                        <div class="dish-meta">
+                            <div class="meta-item">⏱️ 20 phút</div>
+                            <div class="meta-item">📊 Dễ</div>
+                        </div>
+                        <div class="dish-match">🍃 Phù hợp 95%</div>
+                    </div>
+                </div>
+
+                <div class="dish-card">
+                    <div class="dish-card-image">
+                        🍚
+                        <div class="dish-heart" onclick="toggleHeart(this)">🤍</div>
+                    </div>
+                    <div class="dish-card-info">
+                        <div class="dish-card-name">Tôm xào rau củ</div>
+                        <div class="dish-meta">
+                            <div class="meta-item">⏱️ 18 phút</div>
+                            <div class="meta-item">📊 Dễ</div>
+                        </div>
+                        <div class="dish-match">🍃 Phù hợp 92%</div>
+                    </div>
+                </div>
+
+                <div class="dish-card">
+                    <div class="dish-card-image">
+                        🐟
+                        <div class="dish-heart" onclick="toggleHeart(this)">🤍</div>
+                    </div>
+                    <div class="dish-card-info">
+                        <div class="dish-card-name">Cá hồi nướng với quinoa</div>
+                        <div class="dish-meta">
+                            <div class="meta-item">⏱️ 25 phút</div>
+                            <div class="meta-item">📊 Trung bình</div>
+                        </div>
+                        <div class="dish-match">🍃 Phù hợp 90%</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="dish-card">
-                <div class="dish-image-container">
-                    <div class="dish-image-placeholder">🍚</div>
-                    <div class="dish-heart" onclick="toggleHeart(this)">🤍</div>
-                </div>
-                <div class="dish-info">
-                    <div class="dish-name">Tôm xào rau củ</div>
-                    <div class="dish-meta">
-                        <div class="meta-item">⏱️ 18 phút</div>
-                        <div class="meta-item">📊 Dễ</div>
-                    </div>
-                    <div class="dish-match">🍃 Phù hợp 92%</div>
-                </div>
-            </div>
-
-            <div class="dish-card">
-                <div class="dish-image-container">
-                    <div class="dish-image-placeholder">🐟</div>
-                    <div class="dish-heart" onclick="toggleHeart(this)">🤍</div>
-                </div>
-                <div class="dish-info">
-                    <div class="dish-name">Cá hồi nướng với quinoa</div>
-                    <div class="dish-meta">
-                        <div class="meta-item">⏱️ 25 phút</div>
-                        <div class="meta-item">📊 Trung bình</div>
-                    </div>
-                    <div class="dish-match">🍃 Phù hợp 90%</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="dishes-button">
-            <button class="explore-button">🍃 Khám phá thêm món ngon</button>
+            <button class="explore-btn" onclick="alert('Khám phá thêm món ngon!')">
+                🍃 Khám phá thêm món ngon
+            </button>
         </div>
     </section>
 
     <script>
-        function scrollToFeatures() {
-            const featuresSection = document.querySelector('#features');
-            featuresSection.scrollIntoView({ behavior: 'smooth' });
+        function scrollToSection() {
+            document.querySelector('.features-section').scrollIntoView({ behavior: 'smooth' });
         }
 
         function toggleHeart(element) {
