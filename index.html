@@ -1,875 +1,402 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ReMeal – Có gì trong tủ?</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-  html, body { margin:0; height:100%; overflow:hidden; }
-  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
-  .handwrite { font-family: 'Comic Sans MS', 'Segoe Print', cursive; }
-  .hero {
-    height: 100vh;
-    min-height: 100vh;
-    max-height: 100vh;
-    overflow: hidden;
-    background:
-      radial-gradient(ellipse 55% 60% at 8% 15%, rgba(196,224,150,0.55) 0%, rgba(196,224,150,0) 60%),
-      radial-gradient(ellipse 45% 55% at 4% 90%, rgba(214,232,150,0.5) 0%, rgba(214,232,150,0) 60%),
-      radial-gradient(ellipse 50% 55% at 96% 10%, rgba(200,228,180,0.45) 0%, rgba(200,228,180,0) 60%),
-      radial-gradient(ellipse 55% 60% at 98% 90%, rgba(190,222,160,0.5) 0%, rgba(190,222,160,0) 60%),
-      linear-gradient(180deg, #fbfdf6 0%, #f8faf1 100%);
-  }
-  .glow-left {
-    position:absolute; left:-8%; bottom:-10%; width:45%; height:70%;
-    background: radial-gradient(circle, rgba(150,210,110,0.35) 0%, rgba(150,210,110,0) 70%);
-    filter: blur(20px); pointer-events:none;
-  }
-  .glow-right {
-    position:absolute; right:-6%; top:0; width:40%; height:100%;
-    background: radial-gradient(circle, rgba(180,220,150,0.3) 0%, rgba(180,220,150,0) 70%);
-    filter: blur(20px); pointer-events:none;
-  }
-  .decor { position:absolute; pointer-events:none; }
-  .card {
-    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
-    background: rgba(255,255,255,0.7); backdrop-filter: blur(2px);
-    border:1px solid rgba(190,224,190,0.7);
-    border-radius:24px;
-    box-shadow: 0 8px 20px -8px rgba(47,107,58,0.25);
-    width:140px; height:155px; padding:14px;
-  }
-  @media (min-width:1280px){ .card{ width:175px; height:190px; } }
-  .icon-circle {
-    width:44px; height:44px; border-radius:9999px; background:#dcefdc;
-    display:flex; align-items:center; justify-content:center; margin-bottom:8px;
-  }
-  @media (min-width:768px){ .icon-circle{ width:48px; height:48px; } }
-  .cta-btn {
-    display:flex; align-items:center; justify-content:space-between;
-    border-radius:9999px; font-weight:800; color:#fff;
-    background: linear-gradient(135deg, #4c9a52 0%, #2c6a37 100%);
-    padding:12px 8px 12px 26px;
-    width: clamp(240px, 22vw, 340px);
-    height: clamp(56px, 5.5vw, 74px);
-    font-size: clamp(15px, 1.4vw, 19px);
-    box-shadow: 0 8px 18px -6px rgba(44,106,55,0.45);
-    transition: box-shadow .25s ease, transform .25s ease;
-    border:none; cursor:pointer;
-  }
-  .cta-btn:hover {
-    box-shadow: 0 14px 26px -8px rgba(44,106,55,0.55);
-    transform: translateY(-3px);
-  }
-  .cta-circle {
-    width: clamp(34px, 3vw, 44px); height: clamp(34px, 3vw, 44px);
-    background:#fff; border-radius:9999px;
-    display:flex; align-items:center; justify-content:center;
-    transition: transform .25s ease;
-  }
-  .cta-btn:hover .cta-circle { transform: translateX(4px); }
-  .food-section {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 30%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-end;
-    gap: -200px;
-    transform: translateX(-130px);
-    z-index: 4;
-  }
-  .food-item {
-    width: clamp(210px, 19vw, 300px);
-    height: auto;
-    object-fit: contain;
-  }
-  .mascot-wrap {
-    position: absolute;
-    left: -200px;
-    top: 50px;
-    width: 34%;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    z-index: 10;
-    pointer-events: none;
-  }
-  .mascot-wrap img {
-    height: 88vh;
-    width: auto;
-    max-width: none;
-    object-fit: contain;
-    margin-left: -10px;
-  }
-
-   @keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.6; }
-    50% { transform: translateY(-60px) rotate(10deg); opacity: 0.8; }
-  }
-
-  .floating-ingredient {
-    position: fixed;
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-    opacity: 0.5;
-    pointer-events: none;
-    z-index: 1;
-    animation: float 6s infinite ease-in-out;
-    animation-play-state: running;
-  }
-
-  .floating-ingredient:nth-child(1) { bottom: 20%; left: 5%; animation-delay: 0s; }
-  .floating-ingredient:nth-child(2) { bottom: 40%; left: 12%; animation-delay: 1s; }
-  .floating-ingredient:nth-child(3) { bottom: 15%; right: 8%; animation-delay: 2s; }
-  .floating-ingredient:nth-child(4) { bottom: 35%; right: 15%; animation-delay: 1.5s; }
-  .floating-ingredient:nth-child(5) { bottom: 55%; left: 8%; animation-delay: 2.5s; }
-  .floating-ingredient:nth-child(6) { bottom: 50%; right: 5%; animation-delay: 0.5s; }
-  .floating-ingredient:nth-child(7) { bottom: 25%; left: 20%; animation-delay: 3s; }
-  .floating-ingredient:nth-child(8) { bottom: 60%; right: 20%; animation-delay: 1.8s; }
-  .floating-ingredient:nth-child(9) { bottom: 30%; right: 25%; animation-delay: 2.2s; }
-
-/* PANTRY STYLES */
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ReMeal - Nền tảng quản lý bữa ăn, dinh dưỡng và thực phẩm thông minh">
+  <title>ReMeal — Trợ lý bữa ăn thông minh</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <style>
+    :root{--g950:#0a3821;--g900:#0f5130;--g800:#12673a;--g700:#187946;--g600:#249655;--g500:#46ad6e;--g400:#79c594;--g300:#a9d9b8;--g200:#ccebd6;--g100:#eaf7ee;--g50:#f5fbf6;--cream:#fffaf0;--orange:#f39a22;--o100:#fff1dc;--red:#e85d55;--r100:#fff0ee;--blue:#3d82d3;--b100:#ebf4ff;--purple:#7a62cf;--p100:#f0edff;--ink:#1d2a22;--muted:#6e7a71;--line:#e3eae4;--panel:rgba(255,255,255,.94);--shadow:0 20px 60px rgba(14,74,39,.10);--shadow-sm:0 9px 28px rgba(14,74,39,.08);--header:72px}
+    *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:"Be Vietnam Pro",sans-serif;color:var(--ink);background:radial-gradient(circle at 8% 3%,rgba(255,209,126,.25),transparent 22%),radial-gradient(circle at 92% 6%,rgba(112,191,137,.16),transparent 19%),#f7faf7;min-height:100vh}button,input,select,textarea{font:inherit}button{border:0;cursor:pointer}img{width:100%;display:block}.hidden{display:none!important}.app{width:min(1640px,100%);margin:0 auto;padding:0 18px 42px}
+    .topbar{position:sticky;top:0;z-index:80;height:var(--header);margin:0 -18px;padding:0 24px;display:flex;align-items:center;gap:20px;background:rgba(255,255,255,.9);backdrop-filter:blur(18px);border-bottom:1px solid rgba(25,104,58,.08);box-shadow:0 4px 22px rgba(18,74,40,.05)}.brand{min-width:178px;display:flex;align-items:center;gap:10px;text-decoration:none}.brand-logo{width:44px;height:44px;border-radius:14px 14px 18px 18px;position:relative;overflow:hidden;background:linear-gradient(145deg,#9bd455,#e8cf50);box-shadow:inset 0 0 0 1px rgba(255,255,255,.5)}.brand-logo:before,.brand-logo:after{content:"";position:absolute;width:17px;height:25px;top:4px;background:var(--g700);border-radius:100% 0 100% 0}.brand-logo:before{left:5px;transform:rotate(-27deg)}.brand-logo:after{right:5px;transform:scaleX(-1) rotate(-27deg)}.brand-logo span{position:absolute;left:20px;top:12px;width:4px;height:28px;border-radius:4px;background:var(--g950)}.brand-copy strong{display:block;color:var(--g800);font-size:22px;line-height:1;letter-spacing:-.6px}.brand-copy small{display:block;margin-top:4px;color:#6b776f;font-size:9px;font-weight:600}.main-nav{flex:1;display:flex;justify-content:center;gap:4px}.nav-btn{min-height:42px;padding:0 12px;border-radius:12px;display:inline-flex;align-items:center;gap:7px;color:#425047;background:transparent;font-size:11px;font-weight:700;white-space:nowrap;transition:.2s}.nav-btn svg{width:16px;height:16px}.nav-btn:hover,.nav-btn.active{color:var(--g800);background:var(--g50)}.header-actions{display:flex;align-items:center;gap:9px}.header-chip{min-height:39px;padding:0 13px;border-radius:999px;border:1px solid var(--g300);color:var(--g800);background:#fff;display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:800}.avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 3px 14px rgba(0,0,0,.13)}.menu-btn{display:none;width:40px;height:40px;border-radius:12px;color:var(--g800);background:var(--g50)}
+    .view{display:none;animation:fadeIn .28s ease}.view.active{display:block}@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@keyframes riseFadeIn{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
+.view.active{animation:riseFadeIn .42s cubic-bezier(.22,.9,.35,1.1)}
+.panel{transition:transform .22s ease,box-shadow .22s ease}
+.home-stat:hover,.recipe-card:hover,.family-card:hover,.quick-step:hover{transform:translateY(-5px);box-shadow:0 16px 34px rgba(14,74,39,.14)}
+.recipe-card{will-change:transform}
+.primary-btn,.secondary-btn,.small-btn{transition:transform .16s ease,box-shadow .18s ease,background .18s ease}
+.primary-btn:hover{transform:translateY(-2px);box-shadow:0 16px 30px rgba(25,130,69,.32)}
+.secondary-btn:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(14,74,39,.14)}
+.primary-btn:active,.secondary-btn:active,.small-btn:active{transform:scale(.96)}
+@keyframes trackFill{from{width:0}}
+.mini-track span,.weight-track span{transition:width 1s cubic-bezier(.16,.8,.3,1);position:relative;overflow:hidden}
+.mini-track span:after,.weight-track span:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);animation:shimmerSweep 2.6s ease-in-out infinite}
+@keyframes shimmerSweep{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.hero-card{animation:floatY 5.5s ease-in-out infinite}
+.home-stats{display:grid!important}
+.home-stats .home-stat{opacity:0;animation:riseFadeIn .5s ease forwards}
+.home-stats .home-stat:nth-child(1){animation-delay:.05s}
+.home-stats .home-stat:nth-child(2){animation-delay:.12s}
+.home-stats .home-stat:nth-child(3){animation-delay:.19s}
+.home-stats .home-stat:nth-child(4){animation-delay:.26s}
+.quick-steps .quick-step{opacity:0;animation:riseFadeIn .5s ease forwards}
+.quick-steps .quick-step:nth-child(1){animation-delay:.1s}
+.quick-steps .quick-step:nth-child(2){animation-delay:.18s}
+.quick-steps .quick-step:nth-child(3){animation-delay:.26s}
+.quick-steps .quick-step:nth-child(4){animation-delay:.34s}
+.nav-btn{transition:transform .16s ease,background .2s ease,color .2s ease}
+.nav-btn:hover{transform:translateY(-1px)}
+.option-btn{transition:transform .18s ease,box-shadow .2s ease,background .2s ease,border-color .2s ease}
+.option-btn:active{transform:scale(.95)}
+.page-head{margin:28px 0 16px;display:flex;align-items:flex-end;justify-content:space-between;gap:18px}.page-head h1,.page-head h2{font-size:28px;letter-spacing:-1px;color:#1b3424}.page-head p{margin-top:6px;max-width:720px;color:var(--muted);font-size:12px;line-height:1.65}.eyebrow{display:inline-flex;align-items:center;gap:7px;color:var(--g700);text-transform:uppercase;letter-spacing:1.3px;font-size:10px;font-weight:800;margin-bottom:10px}.eyebrow:before{content:"";width:28px;height:3px;border-radius:999px;background:linear-gradient(90deg,var(--g600),#9cca50)}.panel{background:var(--panel);border:1px solid rgba(25,91,51,.09);border-radius:21px;box-shadow:var(--shadow-sm)}.panel-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.panel-title h3{font-size:15px;letter-spacing:-.35px}.panel-title small{color:var(--muted);font-size:9px}.primary-btn,.secondary-btn,.soft-btn,.danger-btn{min-height:44px;padding:0 16px;border-radius:13px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:800;font-size:11px;transition:.2s}.primary-btn{color:#fff;background:linear-gradient(135deg,#4db276,#0d743d);box-shadow:0 10px 22px rgba(25,130,69,.22)}.primary-btn:hover{transform:translateY(-2px)}.secondary-btn{color:var(--g800);background:#fff;border:1px solid var(--g300)}.soft-btn{color:var(--g800);background:var(--g100)}.danger-btn{color:var(--red);background:var(--r100)}.small-btn{min-height:34px;padding:0 11px;border-radius:10px;font-size:9px;font-weight:800}.pill{display:inline-flex;align-items:center;gap:6px;min-height:29px;padding:0 10px;border-radius:999px;background:var(--g100);color:var(--g800);font-size:9px;font-weight:800}.pill.orange{background:var(--o100);color:#d87a00}.pill.red{background:var(--r100);color:var(--red)}.pill.blue{background:var(--b100);color:var(--blue)}.pill.purple{background:var(--p100);color:var(--purple)}
+    .hero{min-height:550px;margin-top:18px;position:relative;overflow:hidden;border-radius:31px;border:1px solid rgba(255,255,255,.9);box-shadow:var(--shadow);background:linear-gradient(90deg,rgba(255,252,244,.99) 0%,rgba(255,248,233,.95) 43%,rgba(255,255,255,.08) 72%),url("https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=1800&q=86") center/cover;display:flex;align-items:center}.hero:before{content:"";position:absolute;width:360px;height:360px;left:-110px;bottom:-150px;border-radius:50%;background:rgba(255,206,100,.25)}.hero-copy{position:relative;z-index:2;width:min(650px,62%);padding:60px 62px}.hero h1{max-width:650px;color:#263429;font-size:clamp(40px,4.7vw,68px);line-height:1.06;letter-spacing:-2.9px}.hero h1 span{color:var(--g700)}.hero p{max-width:570px;margin:19px 0 25px;color:#5e6b61;font-size:15px;line-height:1.75}.hero-actions{display:flex;gap:11px;flex-wrap:wrap}.hero-benefits{margin-top:28px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:590px}.hero-benefit{padding:12px;border-radius:15px;background:rgba(255,255,255,.78);border:1px solid rgba(255,255,255,.85);box-shadow:0 8px 22px rgba(22,80,44,.07);font-size:10px;line-height:1.5;font-weight:700;transition:.25s}.hero-benefit:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(22,80,44,.14)}.hero-benefit svg{width:20px;height:20px;color:#fff}.hero-benefit .hb-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;background:linear-gradient(145deg,var(--g600),var(--g800))}.hero-card{position:absolute;right:42px;bottom:32px;width:300px;padding:16px;border-radius:22px;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);box-shadow:0 18px 55px rgba(7,56,29,.20);display:grid;grid-template-columns:78px 1fr;gap:12px;align-items:center}.hero-card img{width:78px;height:78px;object-fit:cover;border-radius:16px}.hero-card small{color:var(--muted);font-size:9px}.hero-card strong{display:block;margin:5px 0 8px;font-size:13px}.mini-track{height:7px;border-radius:999px;background:#e8efe9;overflow:hidden}.mini-track span{display:block;width:92%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#69c087,#188048)}
+    .home-stats{margin-top:16px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.home-stat{padding:17px;display:flex;align-items:center;gap:12px}.home-stat-icon{width:43px;height:43px;border-radius:13px;display:grid;place-items:center;color:var(--g800);background:var(--g100)}.home-stat:nth-child(2) .home-stat-icon{color:#da7c00;background:var(--o100)}.home-stat:nth-child(3) .home-stat-icon{color:var(--blue);background:var(--b100)}.home-stat:nth-child(4) .home-stat-icon{color:var(--purple);background:var(--p100)}.home-stat strong{display:block;font-size:20px;letter-spacing:-.6px}.home-stat small{color:var(--muted);font-size:9px}.home-grid{margin-top:16px;display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.quick-start,.expiry-rescue{padding:20px}.quick-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.quick-step{padding:15px 12px;border-radius:15px;background:linear-gradient(145deg,#fbfdfb,#f2f8f3);border:1px solid #e4ece5}.quick-step-num{width:31px;height:31px;border-radius:50%;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,#4eb075,#156e3b);font-size:11px;font-weight:800;margin-bottom:10px}.quick-step strong{display:block;font-size:11px;margin-bottom:5px}.quick-step p{color:var(--muted);font-size:9px;line-height:1.5}.rescue-list{display:grid;gap:9px}.rescue-item{padding:10px;display:grid;grid-template-columns:38px 1fr auto;gap:9px;align-items:center;border-radius:13px;background:#fffdf8;border:1px solid #f0eadc}.food-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:23px;background:#fff8e9}.rescue-item strong{display:block;font-size:10px}.rescue-item small{color:var(--muted);font-size:8px}.days-left{color:var(--red);font-size:9px;font-weight:800}
+    .pantry-layout{display:grid;grid-template-columns:minmax(0,1fr) 315px;gap:16px;align-items:start}.pantry-main{padding:19px}.toolbar{display:flex;align-items:center;gap:9px;margin-bottom:14px;flex-wrap:wrap}.search-box{flex:1;min-width:220px;position:relative}.search-box svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:17px;color:#778179}.search-box input,.field input,.field select,.field textarea{width:100%;border:1px solid #dfe7e1;border-radius:12px;background:#fff;outline:0}.search-box input{height:44px;padding:0 13px 0 40px}.search-box input:focus,.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--g500);box-shadow:0 0 0 4px rgba(70,173,110,.09)}.filter-select{min-height:44px;padding:0 12px;border-radius:12px;border:1px solid #dfe7e1;background:#fff;color:#465249;font-size:10px;font-weight:700}.pantry-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.pantry-card{position:relative;min-height:150px;padding:13px;border-radius:16px;background:linear-gradient(145deg,#fff,#fbfcfa);border:1px solid #e4eae5;box-shadow:0 5px 16px rgba(23,75,43,.04)}.pantry-card-top{display:flex;gap:10px;align-items:center}.pantry-card .food-icon{width:49px;height:49px;font-size:31px;border-radius:14px}.pantry-card h4{font-size:11px;margin-bottom:3px}.pantry-card p{color:var(--muted);font-size:9px}.pantry-card-meta{margin-top:12px;display:grid;gap:7px;font-size:8px}.meta-line{display:flex;align-items:center;justify-content:space-between;gap:8px}.expiry-track{height:6px;border-radius:999px;background:#edf1ed;overflow:hidden}.expiry-track span{display:block;height:100%;border-radius:inherit;background:var(--g500)}.expiry-track.urgent span{background:var(--red)}.expiry-track.soon span{background:var(--orange)}.pantry-card-actions{margin-top:11px;display:flex;gap:6px}.icon-btn{width:31px;height:31px;border-radius:10px;display:grid;place-items:center;background:#f3f7f4;color:#506057}.icon-btn svg{width:14px;height:14px}.pantry-side{display:grid;gap:16px}.side-card{padding:18px}.health-notice{padding:13px;border-radius:14px;background:linear-gradient(135deg,#edf7ff,#fbfdff);border:1px solid #d8eaf9;color:#416273;font-size:9px;line-height:1.6}.status-list{display:grid;gap:9px}.status-row{display:grid;grid-template-columns:1fr auto;gap:9px;align-items:center;font-size:9px}.status-row span:first-child{color:#4c5a50}.status-row strong{color:var(--g800)}.leftover-box{margin-top:13px}.leftover-result{margin-top:10px;display:grid;gap:8px}.leftover-suggestion{padding:10px;border-radius:12px;background:#fafcf9;border:1px solid #e5ebe5;font-size:9px;line-height:1.5}.leftover-suggestion strong{display:block;font-size:10px;color:var(--g800);margin-bottom:3px}
+    .builder-layout{display:grid;grid-template-columns:220px minmax(0,1fr) 330px;gap:16px;align-items:start}.steps-panel{padding:14px;position:sticky;top:88px}.step-item{position:relative;min-height:73px;padding:14px 8px 17px 50px;border-radius:14px}.step-item.active{background:linear-gradient(135deg,#eaf7ee,#f8fbf8)}.step-item:not(:last-child):after{content:"";position:absolute;left:26px;top:48px;height:43px;border-left:1px dashed #8cc89e}.step-number{position:absolute;left:7px;top:12px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,#4eb174,#146c39);font-size:11px;font-weight:800}.step-item strong{display:block;font-size:11px}.step-item small{color:var(--muted);font-size:8px;line-height:1.45}.builder-center{display:grid;gap:16px}.builder-panel{padding:18px}.ingredients-preview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.ingredient-select{position:relative;min-height:95px;padding:11px;border-radius:14px;border:1px solid #e5eae5;background:#fff;display:grid;place-items:center;text-align:center}.ingredient-select .food-icon{width:44px;height:44px}.ingredient-select strong{font-size:9px;margin-top:6px}.ingredient-select small{color:var(--muted);font-size:7px}.ingredient-select input{position:absolute;right:8px;top:8px;accent-color:var(--g600)}.control-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.control-block{padding:14px;border-radius:15px;background:#fbfdfb;border:1px solid #e5ebe5}.control-block h4{font-size:10px;margin-bottom:10px}.control-block label{display:flex;justify-content:space-between;gap:10px;color:#4b5a50;font-size:9px;font-weight:700;margin-bottom:8px}input[type=range]{width:100%;accent-color:var(--g600)}.option-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.option-grid.four-col{grid-template-columns:repeat(4,1fr)}.option-grid.three-col{grid-template-columns:repeat(3,1fr)}@media(max-width:640px){.option-grid.four-col,.option-grid.three-col{grid-template-columns:repeat(2,1fr)}}.option-btn{min-height:38px;padding:7px;border-radius:11px;border:1px solid #dfe6df;background:#fff;color:#465248;font-size:9px;font-weight:700;transition:.2s}.option-btn:hover,.option-btn.active{color:var(--g800);border-color:var(--g400);background:var(--g50)}
+.option-btn{position:relative;overflow:hidden}
+.option-btn.rich{min-height:auto;display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px;padding:14px 8px 12px;border-radius:14px;border:1.5px solid #e3eae4}
+.option-btn.rich .opt-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--g100);transition:.25s}
+.option-btn.rich.active .opt-icon{background:var(--g600);transform:scale(1.06)}
+.option-btn.rich .opt-title{font-size:9.5px;font-weight:800;color:#33403a;line-height:1.3}
+.option-btn.rich .opt-desc{font-size:8px;font-weight:500;color:#8a9690;line-height:1.35}
+.option-btn.rich .opt-check{position:absolute;top:7px;right:7px;width:17px;height:17px;border-radius:50%;background:var(--g600);color:#fff;display:none;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(18,103,58,.35)}
+.option-btn.rich .opt-check svg{width:11px;height:11px}
+.option-btn.rich.active{border-color:var(--g500);background:var(--g50);box-shadow:0 0 0 3px rgba(36,150,85,.10)}
+.option-btn.rich.active .opt-check{display:flex}
+.option-btn.rich:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(14,74,39,.14);border-color:var(--g400)}
+.option-btn.chip{display:inline-flex;align-items:center;justify-content:center;gap:6px;flex-direction:row}
+.option-btn.chip .opt-icon-sm{font-size:15px;line-height:1}
+.option-btn.chip:hover{transform:translateY(-2px)}
+.family-selector{display:grid;gap:8px}.member-check{padding:9px;border-radius:12px;border:1px solid #e1e7e1;background:#fff;display:flex;align-items:center;gap:9px;font-size:9px;font-weight:700}.member-check input{accent-color:var(--g600)}.member-avatar{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:var(--g100);font-size:16px}.nutrition-summary{margin-top:12px;padding:12px;border-radius:14px;background:linear-gradient(135deg,#edf7ef,#fbfdfb);font-size:9px;line-height:1.6;color:#456050}.builder-side{display:grid;gap:16px}.guard-panel,.score-explain{padding:17px}.guard-line{margin-top:9px;display:flex;gap:8px;align-items:flex-start;font-size:9px;line-height:1.55;color:#516157}.guard-line svg{width:15px;height:15px;color:var(--g700);flex:none}.weight-row{margin-top:9px;display:grid;grid-template-columns:1fr 35px;gap:8px;align-items:center;font-size:8px}.weight-row div:first-child{display:grid;gap:5px}.weight-track{height:6px;border-radius:999px;background:#edf1ed;overflow:hidden}.weight-track span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#6ac188,#1d834b)}
+    .result-summary{padding:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}.summary-stat{padding:12px;border-radius:13px;background:#f6faf7;text-align:center}.summary-stat strong{display:block;color:var(--g800);font-size:16px}.summary-stat small{color:var(--muted);font-size:8px}.recipe-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.recipe-card{overflow:hidden;position:relative;background:#fff;border-radius:19px;border:1px solid #e4eae5;box-shadow:0 8px 24px rgba(22,71,40,.06);transition:.25s}.recipe-card:hover{transform:translateY(-4px);box-shadow:0 15px 36px rgba(22,71,40,.13)}.recipe-card img{height:205px;object-fit:cover}.recipe-badge{position:absolute;left:11px;top:11px;z-index:2;padding:7px 10px;border-radius:999px;color:var(--g800);background:rgba(237,249,240,.95);border:1px solid #8dcba2;font-size:9px;font-weight:800;backdrop-filter:blur(8px)}.recipe-badge.fast{color:#d97900;background:rgba(255,247,227,.96);border-color:#f0b44d}.recipe-body{padding:14px}.recipe-body h3{font-size:15px;letter-spacing:-.4px;margin-bottom:7px}.recipe-desc{min-height:44px;color:var(--muted);font-size:8px;line-height:1.55}.recipe-meta{margin:10px 0;display:flex;flex-wrap:wrap;gap:9px;color:#68756c;font-size:8px}.recipe-meta span{display:flex;align-items:center;gap:4px}.recipe-meta svg{width:12px;height:12px}.recipe-score-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.recipe-score-head strong{color:var(--g800);font-size:19px}.recipe-score-head small{color:var(--muted);font-size:8px}.score-list{display:grid;gap:8px}.score-row{display:grid;grid-template-columns:72px minmax(0,1fr) 29px;gap:7px;align-items:center;font-size:8px}.score-track{height:6px;border-radius:999px;background:#edf1ed;overflow:hidden}.score-track span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#65bd83,#20844b)}.score-row strong{text-align:right;font-size:8px}.missing-note{margin-top:10px;padding:9px;border-radius:11px;background:#fff9ec;color:#9a681c;font-size:8px;line-height:1.5}.recipe-actions{margin-top:12px;display:grid;grid-template-columns:1fr 39px;gap:7px}
+    .planner-layout,.shopping-layout,.family-layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:16px;align-items:start}.planner-panel,.shopping-panel,.family-panel{padding:18px;overflow:auto}.planner-table{min-width:880px;display:grid;grid-template-columns:84px repeat(7,1fr);gap:7px;align-items:stretch}.planner-table .head{min-height:43px;display:grid;place-items:center;color:#57645b;font-size:9px;font-weight:800}.meal-label{display:flex;align-items:center;font-size:9px;font-weight:800;color:#4b5a50}.plan-cell{min-height:102px;padding:7px;border-radius:13px;border:1px dashed #cfdad1;background:#fbfdfb;position:relative}.plan-cell.empty{display:grid;place-items:center;color:#9ba59e;font-size:20px}.plan-meal{height:100%;display:grid;grid-template-rows:49px auto;gap:6px}.plan-meal img{height:49px;object-fit:cover;border-radius:9px}.plan-meal strong{display:block;font-size:8px;line-height:1.35}.plan-meal small{color:var(--muted);font-size:7px}.plan-remove{position:absolute;right:4px;top:4px;width:20px;height:20px;border-radius:50%;color:#fff;background:rgba(19,52,31,.65);font-size:12px}.planner-side{display:grid;gap:16px}.planner-summary{padding:17px}.planner-stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.planner-stat{padding:12px 8px;border-radius:13px;background:#f4f9f5;text-align:center}.planner-stat strong{display:block;color:var(--g800);font-size:15px}.planner-stat small{color:var(--muted);font-size:8px}.prep-list{display:grid;gap:8px}.prep-item{padding:9px;border-radius:11px;background:#fafcf9;border:1px solid #e5ebe5;font-size:8px;line-height:1.55}
+    .shopping-list{display:grid;gap:9px}.shopping-item{padding:11px;display:grid;grid-template-columns:28px 42px 1fr auto;gap:10px;align-items:center;border-radius:13px;background:#fcfdfc;border:1px solid #e5eae5}.shopping-item.done{opacity:.55}.shopping-item input{accent-color:var(--g600)}.shopping-item .food-icon{width:42px;height:42px;font-size:25px}.shopping-item strong{display:block;font-size:10px}.shopping-item small{color:var(--muted);font-size:8px}.shopping-price{color:var(--g800);font-size:10px;font-weight:800}.category-label{margin:13px 0 8px;color:#667369;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px}.budget-card{padding:18px}.budget-number{margin:8px 0 13px;color:var(--g800);font-size:30px;font-weight:800;letter-spacing:-1.2px}.budget-row{margin-top:9px;display:flex;justify-content:space-between;color:#56635a;font-size:9px}
+    .family-layout{grid-template-columns:minmax(0,1fr) 330px}.family-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.family-card{padding:15px;border-radius:16px;background:#fff;border:1px solid #e4eae5;box-shadow:0 5px 17px rgba(25,75,43,.04)}.family-card-top{display:flex;align-items:center;gap:10px;margin-bottom:11px}.family-card .member-avatar{width:43px;height:43px;font-size:23px}.family-card h4{font-size:11px}.family-card p{color:var(--muted);font-size:8px}.tag-wrap{display:flex;gap:5px;flex-wrap:wrap}.mini-tag{padding:5px 7px;border-radius:999px;background:var(--g100);color:var(--g800);font-size:7px;font-weight:800}.mini-tag.warn{background:var(--r100);color:var(--red)}.family-card-actions{margin-top:12px;display:flex;gap:7px}.household-fit{padding:18px}.fit-result{margin-top:11px;padding:13px;border-radius:14px;background:linear-gradient(135deg,#eaf7ee,#fbfdfb);font-size:9px;line-height:1.6;color:#486052}
+    .progress-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}.progress-stat{padding:18px}.progress-stat strong{display:block;margin:9px 0 3px;color:var(--g800);font-size:24px;letter-spacing:-.7px}.progress-stat small{color:var(--muted);font-size:8px}.progress-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.chart-panel,.history-panel{padding:19px}.bar-chart{display:grid;gap:11px}.bar-row{display:grid;grid-template-columns:92px minmax(0,1fr) 42px;gap:9px;align-items:center;font-size:9px}.bar-track{height:11px;border-radius:999px;background:#edf1ed;overflow:hidden}.bar-track span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#67bd83,#1f844a)}.history-list{display:grid;gap:9px}.history-item{padding:10px;display:grid;grid-template-columns:43px 1fr auto;gap:9px;align-items:center;border-radius:12px;background:#fafcf9;border:1px solid #e5ebe5}.history-item img{width:43px;height:43px;border-radius:10px;object-fit:cover}.history-item strong{display:block;font-size:9px}.history-item small{color:var(--muted);font-size:7px}.history-item span{color:var(--g800);font-size:8px;font-weight:800}
+    .vision-hero{padding:30px;display:grid;grid-template-columns:1.1fr .9fr;gap:26px;align-items:center;background:radial-gradient(circle at 90% 15%,rgba(159,213,84,.26),transparent 32%),linear-gradient(135deg,#f6fbf6,#fffaf0)}.vision-hero h2{max-width:680px;font-size:36px;letter-spacing:-1.5px;line-height:1.15}.vision-hero p{margin-top:13px;color:var(--muted);font-size:11px;line-height:1.75}.pitch-card{padding:18px;border-radius:18px;color:#fff;background:linear-gradient(145deg,#1c814b,#0d512e);box-shadow:0 16px 40px rgba(15,81,48,.22)}.pitch-card small{opacity:.75;font-size:8px;text-transform:uppercase;letter-spacing:1.2px}.pitch-card p{color:#fff;margin-top:9px;font-size:11px}.vision-section{margin-top:16px}.vision-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.vision-card{padding:17px}.vision-card-icon{width:39px;height:39px;border-radius:12px;display:grid;place-items:center;color:var(--g800);background:var(--g100);margin-bottom:11px}.vision-card h4{font-size:11px;margin-bottom:6px}.vision-card p{color:var(--muted);font-size:8px;line-height:1.6}.roadmap{padding:20px}.roadmap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.roadmap-item{padding:14px;border-radius:14px;background:#fafcf9;border:1px solid #e5ebe5}.roadmap-item span{display:inline-grid;place-items:center;width:27px;height:27px;border-radius:50%;color:#fff;background:var(--g700);font-size:9px;font-weight:800;margin-bottom:9px}.roadmap-item h4{font-size:10px;margin-bottom:5px}.roadmap-item p{color:var(--muted);font-size:8px;line-height:1.55}.business-grid,.risk-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.business-card,.risk-card{padding:18px}.business-card h4,.risk-card strong{font-size:11px;margin-bottom:9px}.business-card ul{padding-left:16px;display:grid;gap:7px;color:#526158;font-size:8px;line-height:1.5}.risk-card p{color:var(--muted);font-size:8px;line-height:1.55}
+    .modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(6,35,19,.58);backdrop-filter:blur(8px)}.modal.show{display:flex}.modal-card{width:min(850px,100%);max-height:92vh;overflow:auto;border-radius:24px;background:#fff;box-shadow:0 30px 90px rgba(0,0,0,.28)}.modal-head{position:sticky;top:0;z-index:2;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.modal-head h3{font-size:16px}.close-btn{width:37px;height:37px;border-radius:50%;background:#f2f6f3;color:#3e4e43;font-size:20px}.modal-body{padding:18px}.recipe-modal-hero{display:grid;grid-template-columns:280px 1fr;gap:18px;align-items:start}.recipe-modal-hero img{height:220px;object-fit:cover;border-radius:17px}.recipe-modal-hero h2{font-size:24px;letter-spacing:-.8px;margin-bottom:8px}.recipe-modal-hero p{color:var(--muted);font-size:9px;line-height:1.6}.nutrition-grid{margin-top:14px;display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.nutrition-box{padding:10px 6px;border-radius:11px;text-align:center;background:#f5faf6}.nutrition-box strong{display:block;color:var(--g800);font-size:13px}.nutrition-box small{color:var(--muted);font-size:7px}.modal-detail-grid{margin-top:18px;display:grid;grid-template-columns:.9fr 1.1fr;gap:15px}.detail-box{padding:15px;border-radius:15px;background:#f8fbf8}.detail-box h4{margin-bottom:10px;font-size:11px}.detail-box ul,.detail-box ol{padding-left:17px;display:grid;gap:8px;color:#4f5f54;font-size:9px;line-height:1.55}.modal-actions{margin-top:17px;display:flex;gap:8px;flex-wrap:wrap}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:9px;font-weight:800;color:#4c5a50}.field input,.field select{height:43px;padding:0 11px}.field textarea{min-height:80px;padding:11px;resize:vertical}.toast{position:fixed;right:20px;bottom:20px;z-index:300;min-width:290px;max-width:390px;padding:14px 16px;border-radius:15px;color:#fff;background:#174c2d;box-shadow:0 16px 45px rgba(0,0,0,.24);display:flex;align-items:center;gap:10px;font-size:10px;font-weight:700;transform:translateY(110px);opacity:0;transition:.3s}.toast.show{transform:none;opacity:1}footer{margin-top:27px;padding:20px 4px 2px;display:flex;justify-content:space-between;gap:15px;color:#7c887f;font-size:9px}
+    @media print{.topbar,.page-head .page-actions,footer,.modal-actions,.recipe-actions,button{display:none!important}body{background:#fff}.app{width:100%;padding:0}.view{display:none!important}#recipesView.active,#plannerView.active{display:block!important}.panel{box-shadow:none}}
+    @media(max-width:1320px){.nav-btn span{display:none}.nav-btn{padding:0 10px}.builder-layout{grid-template-columns:200px minmax(0,1fr)}.builder-side{grid-column:1/-1;grid-template-columns:1fr 1fr}.pantry-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.family-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:1020px){.header-chip,.profile-name{display:none}.hero-copy{width:72%;padding:48px 35px}.hero-card{right:24px}.home-grid,.progress-layout,.vision-hero{grid-template-columns:1fr}.home-stats,.progress-grid{grid-template-columns:repeat(2,1fr)}.pantry-layout,.planner-layout,.shopping-layout,.family-layout{grid-template-columns:1fr}.pantry-side,.planner-side{grid-template-columns:1fr 1fr}.recipe-grid{grid-template-columns:repeat(2,1fr)}.vision-grid,.roadmap-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:760px){.app{padding:0 10px 30px}.topbar{margin:0 -10px;padding:0 12px}.main-nav{position:fixed;top:68px;left:10px;right:10px;display:none;flex-direction:column;align-items:stretch;padding:10px;border-radius:17px;background:#fff;box-shadow:var(--shadow)}.main-nav.show{display:flex}.nav-btn span{display:inline}.menu-btn{display:grid;place-items:center}.header-actions{margin-left:auto}.hero{min-height:690px;align-items:flex-start;background:linear-gradient(180deg,rgba(255,251,240,.99) 0%,rgba(255,248,229,.94) 62%,rgba(255,255,255,.04) 100%),url("https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=1100&q=82") center bottom/cover}.hero-copy{width:100%;padding:38px 24px}.hero h1{font-size:42px;letter-spacing:-1.8px}.hero p{font-size:13px}.hero-card{display:none}.hero-benefits{grid-template-columns:1fr}.page-head{align-items:flex-start;flex-direction:column}.quick-steps,.ingredients-preview{grid-template-columns:repeat(2,1fr)}.builder-layout{grid-template-columns:1fr}.steps-panel{position:static;display:grid;grid-template-columns:repeat(4,1fr)}.step-item{min-height:92px;padding:48px 6px 8px;text-align:center}.step-number{left:50%;transform:translateX(-50%)}.step-item:not(:last-child):after{left:calc(50% + 22px);top:29px;width:calc(100% - 44px);height:1px;border-left:0;border-top:1px dashed #8cc89e}.control-grid{grid-template-columns:1fr}.builder-side,.pantry-side,.planner-side{grid-template-columns:1fr}.recipe-grid,.family-grid{grid-template-columns:1fr}.recipe-card img{height:230px}.result-summary{grid-template-columns:repeat(2,1fr)}.business-grid,.risk-grid{grid-template-columns:1fr}.recipe-modal-hero,.modal-detail-grid{grid-template-columns:1fr}.recipe-modal-hero img{height:240px}.nutrition-grid{grid-template-columns:repeat(3,1fr)}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}}
+    @media(max-width:520px){.brand-copy small{display:none}.brand{min-width:130px}.brand-copy strong{font-size:19px}.hero{min-height:720px}.hero h1{font-size:36px}.hero-actions{display:grid;grid-template-columns:1fr}.home-stats,.progress-grid,.quick-steps,.ingredients-preview,.steps-panel,.vision-grid,.roadmap-grid{grid-template-columns:1fr}.step-item:not(:last-child):after{display:none}.pantry-grid{grid-template-columns:1fr}.option-grid{grid-template-columns:1fr 1fr}.result-summary{grid-template-columns:1fr}.nutrition-grid{grid-template-columns:repeat(2,1fr)}footer{flex-direction:column}}
   
-.pantry-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 315px;
-  gap: 16px;
-  align-items: start;
-}
-
-.pantry-main {
-  padding: 19px;
-}
-
-.toolbar {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  margin-bottom: 14px;
-  flex-wrap: wrap;
-}
-
-.search-box {
-  flex: 1;
-  min-width: 220px;
-  position: relative;
-}
-
-.search-box svg {
-  position: absolute;
-  left: 13px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 17px;
-  color: #778179;
-}
-
-.search-box input,
-.field input,
-.field select,
-.field textarea {
-  width: 100%;
-  border: 1px solid #dfe7e1;
-  border-radius: 12px;
-  background: #fff;
-  outline: 0;
-}
-
-.search-box input {
-  height: 44px;
-  padding: 0 13px 0 40px;
-}
-
-.search-box input:focus,
-.field input:focus,
-.field select:focus,
-.field textarea:focus {
-  border-color: var(--g500);
-  box-shadow: 0 0 0 4px rgba(70, 173, 110, 0.09);
-}
-
-.filter-select {
-  min-height: 44px;
-  padding: 0 12px;
-  border-radius: 12px;
-  border: 1px solid #dfe7e1;
-  background: #fff;
-  color: #465249;
-  font-size: 10px;
-  font-weight: 700;
-}
-
-.pantry-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 11px;
-}
-
-.pantry-card {
-  position: relative;
-  min-height: 150px;
-  padding: 13px;
-  border-radius: 16px;
-  background: linear-gradient(145deg, #fff, #fbfcfa);
-  border: 1px solid #e4eae5;
-  box-shadow: 0 5px 16px rgba(23, 75, 43, 0.04);
-}
-
-.pantry-card-top {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.pantry-card .food-icon {
-  width: 49px;
-  height: 49px;
-  font-size: 31px;
-  border-radius: 14px;
-}
-
-.pantry-card h4 {
-  font-size: 11px;
-  margin-bottom: 3px;
-}
-
-.pantry-card p {
-  color: var(--muted);
-  font-size: 9px;
-}
-
-.pantry-card-meta {
-  margin-top: 12px;
-  display: grid;
-  gap: 7px;
-  font-size: 8px;
-}
-
-.meta-line {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.expiry-track {
-  height: 6px;
-  border-radius: 999px;
-  background: #edf1ed;
-  overflow: hidden;
-}
-
-.expiry-track span {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--g500);
-}
-
-.expiry-track.urgent span {
-  background: var(--red);
-}
-
-.expiry-track.soon span {
-  background: var(--orange);
-}
-
-.pantry-card-actions {
-  margin-top: 11px;
-  display: flex;
-  gap: 6px;
-}
-
-.icon-btn {
-  width: 31px;
-  height: 31px;
-  border-radius: 10px;
-  display: grid;
-  place-items: center;
-  background: #f3f7f4;
-  color: #506057;
-}
-
-.icon-btn svg {
-  width: 14px;
-  height: 14px;
-}
-
-.pantry-side {
-  display: grid;
-  gap: 16px;
-}
-
-.side-card {
-  padding: 18px;
-}
-
-.health-notice {
-  padding: 13px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #edf7ff, #fbfdff);
-  border: 1px solid #d8eaf9;
-  color: #416273;
-  font-size: 9px;
-  line-height: 1.6;
-}
-
-.status-list {
-  display: grid;
-  gap: 9px;
-}
-
-.status-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 9px;
-  align-items: center;
-  font-size: 9px;
-}
-
-.status-row span:first-child {
-  color: #4c5a50;
-}
-
-.status-row strong {
-  color: var(--g800);
-}
-
-.leftover-box {
-  margin-top: 13px;
-}
-
-.leftover-result {
-  margin-top: 10px;
-  display: grid;
-  gap: 8px;
-}
-
-.leftover-suggestion {
-  padding: 10px;
-  border-radius: 12px;
-  background: #fafcf9;
-  border: 1px solid #e5ebe5;
-  font-size: 9px;
-  line-height: 1.5;
-}
-
-.leftover-suggestion strong {
-  display: block;
-  font-size: 10px;
-  color: var(--g800);
-  margin-bottom: 3px;
-}
-
-  .view {
-  display: none;
-  animation: fadeIn 0.28s ease;
-}
-
-.view.active {
-  display: block;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes riseFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(16px) scale(0.985);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-.view.active {
-  animation: riseFadeIn 0.42s cubic-bezier(0.22, 0.9, 0.35, 1.1);
-}
-
-.panel {
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
-}
-
-.home-stat:hover,
-.recipe-card:hover,
-.family-card:hover,
-.quick-step:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 16px 34px rgba(14, 74, 39, 0.14);
-}
-
-.recipe-card {
-  will-change: transform;
-}
-
-.primary-btn,
-.secondary-btn,
-.small-btn {
-  transition: transform 0.16s ease, box-shadow 0.18s ease, background 0.18s ease;
-}
-
-.primary-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 30px rgba(25, 130, 69, 0.32);
-}
-
-.secondary-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 22px rgba(14, 74, 39, 0.14);
-}
-
-.primary-btn:active,
-.secondary-btn:active,
-.small-btn:active {
-  transform: scale(0.96);
-}
-  
+.music-widget{position:fixed;right:20px;bottom:20px;z-index:300}
+.music-fab{width:56px;height:56px;border-radius:50%;background:linear-gradient(145deg,var(--g600),var(--g900));color:#fff;box-shadow:0 12px 28px rgba(15,81,48,.4);display:flex;align-items:center;justify-content:center;transition:.25s;animation:musicPulse 2.6s ease-in-out infinite}
+.music-fab svg{width:24px;height:24px}
+.music-fab:hover{transform:scale(1.08) rotate(6deg)}
+@keyframes musicPulse{0%,100%{box-shadow:0 12px 28px rgba(15,81,48,.4)}50%{box-shadow:0 12px 28px rgba(15,81,48,.4),0 0 0 8px rgba(36,150,85,.14)}}
+.music-panel{position:absolute;right:0;bottom:70px;width:320px;background:#fff;border-radius:20px;box-shadow:0 24px 60px rgba(14,74,39,.28);border:1px solid var(--line);overflow:hidden;display:none;flex-direction:column;transform-origin:bottom right;animation:musicPop .28s cubic-bezier(.22,1,.36,1)}
+.music-panel.show{display:flex}
+@keyframes musicPop{from{opacity:0;transform:scale(.9) translateY(10px)}to{opacity:1;transform:none}}
+.music-panel-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:linear-gradient(135deg,var(--g700),var(--g900));color:#fff}
+.music-panel-head strong{display:flex;align-items:center;gap:7px;font-size:12.5px}
+.music-panel-head svg{width:17px;height:17px}
+.music-close{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;display:flex;align-items:center;justify-content:center}
+.music-close svg{width:14px;height:14px}
+.music-close:hover{background:rgba(255,255,255,.3)}
+.music-tabs{display:flex;gap:6px;padding:10px 12px 0}
+.music-tab{flex:1;padding:7px 4px;border-radius:9px;background:var(--g50);color:#425047;font-size:9.5px;font-weight:800;transition:.2s}
+.music-tab:hover{background:var(--g100)}
+.music-tab.active{background:var(--g600);color:#fff;box-shadow:0 6px 14px rgba(18,103,58,.3)}
+.music-frame-wrap{padding:10px 12px 0}
+.music-frame-wrap iframe{width:100%;height:170px;border-radius:12px;background:#0b1210}
+.music-hint{font-size:8.5px;color:#8a9690;text-align:center;padding:8px 12px 12px;margin:0}
+@media(max-width:640px){.music-panel{width:min(88vw,320px);right:-8px}.music-widget{right:14px;bottom:14px}}
 </style>
+<style>
+/* ================= LANDING OVERLAY (scoped, không đụng CSS của app) ================= */
+#landing{position:fixed;inset:0;z-index:9999;width:100%;height:100vh;overflow:hidden;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:#fff;user-select:none;transition:opacity .45s ease,visibility .45s ease}
+#landing.landing-hidden{opacity:0;visibility:hidden;pointer-events:none}
+body.landing-lock{overflow:hidden}
+#landing .landing-hero{position:relative;width:100%;height:100vh;min-height:100vh;max-height:100vh;overflow:hidden;
+  background:
+    radial-gradient(ellipse 55% 60% at 8% 15%, rgba(196,224,150,0.55) 0%, rgba(196,224,150,0) 60%),
+    radial-gradient(ellipse 45% 55% at 4% 90%, rgba(214,232,150,0.5) 0%, rgba(214,232,150,0) 60%),
+    radial-gradient(ellipse 50% 55% at 96% 10%, rgba(200,228,180,0.45) 0%, rgba(200,228,180,0) 60%),
+    radial-gradient(ellipse 55% 60% at 98% 90%, rgba(190,222,160,0.5) 0%, rgba(190,222,160,0) 60%),
+    linear-gradient(180deg, #fbfdf6 0%, #f8faf1 100%);
+}
+#landing .landing-glow-left{position:absolute;left:-8%;bottom:-10%;width:45%;height:70%;background:radial-gradient(circle, rgba(150,210,110,0.35) 0%, rgba(150,210,110,0) 70%);filter:blur(20px);pointer-events:none}
+#landing .landing-glow-right{position:absolute;right:-6%;top:0;width:40%;height:100%;background:radial-gradient(circle, rgba(180,220,150,0.3) 0%, rgba(180,220,150,0) 70%);filter:blur(20px);pointer-events:none}
+#landing .landing-floating{position:fixed;width:60px;height:60px;object-fit:contain;opacity:.5;pointer-events:none;z-index:1;animation:landing-float 6s infinite ease-in-out;animation-play-state:running}
+@keyframes landing-float{0%,100%{transform:translateY(0) rotate(0deg);opacity:.6}50%{transform:translateY(-60px) rotate(10deg);opacity:.8}}
+#landing .landing-logo-wrap{position:absolute;z-index:20;top:3%;left:3%}
+#landing .landing-logo-inner{position:relative;display:inline-block}
+#landing .landing-logo-leaf{position:absolute;width:20px;top:-12px;left:4px;transform:rotate(-10deg)}
+#landing .landing-logo-inner h1{font-weight:800;line-height:1;font-size:clamp(22px,3vw,40px);color:#2c6a37;letter-spacing:-0.5px;margin:0}
+#landing .landing-logo-inner svg{margin-top:2px;display:block}
+#landing .landing-tagline{font-weight:700;margin-top:4px;color:#2c6a37;font-size:clamp(10px,1vw,13px);line-height:1.3}
+#landing .landing-mascot-wrap{position:absolute;left:-200px;top:50px;width:34%;height:100vh;display:flex;align-items:center;justify-content:flex-start;z-index:10;pointer-events:none}
+#landing .landing-mascot-wrap img{height:88vh;width:auto;max-width:none;object-fit:contain;margin-left:-10px;filter:drop-shadow(0 20px 25px rgba(40,90,45,0.25))}
+#landing .landing-note{position:absolute;z-index:20;left:15%;top:70%;width:clamp(110px,12vw,160px);background:#f7f0d8;border-radius:6px;box-shadow:0 4px 10px rgba(0,0,0,.12);padding:12px 16px;transform:rotate(-6deg)}
+#landing .landing-note p{font-family:'Comic Sans MS','Segoe Print',cursive;font-weight:700;color:#3f7d4a;font-size:clamp(11px,1vw,14px);line-height:1.35;margin:0}
+#landing .landing-note svg{margin-top:4px;display:block}
+#landing .landing-food-section{position:absolute;top:0;right:0;width:30%;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;transform:translateX(-130px);z-index:4}
+#landing .landing-food-item{width:clamp(210px,19vw,300px);height:auto;object-fit:contain;margin-right:-2%}
+#landing .landing-center{position:absolute;z-index:30;display:flex;flex-direction:column;align-items:center;text-align:center;top:60px;left:50%;transform:translateX(-50%);width:min(650px,86vw)}
+#landing .landing-title-wrap{position:relative}
+#landing .landing-title-wrap svg.landing-squiggle{position:absolute;top:-12px;left:-32px;opacity:.7}
+#landing h2.landing-title{font-weight:800;color:#2c6a37;font-size:clamp(38px,5vw,74px);line-height:1;margin:0 0 8px;text-shadow:0 3px 0 rgba(255,255,255,0.5)}
+#landing .landing-sub{font-weight:800;margin-top:8px;color:#2c6a37;font-size:clamp(14px,1.7vw,24px);line-height:1.35}
+#landing .landing-underline{margin-top:4px;display:block}
+#landing .landing-cards{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:14px;flex-wrap:wrap}
+#landing .landing-card{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:rgba(255,255,255,0.7);backdrop-filter:blur(2px);border:1px solid rgba(190,224,190,0.7);border-radius:24px;box-shadow:0 8px 20px -8px rgba(47,107,58,0.25);width:140px;height:155px;padding:14px}
+@media (min-width:1280px){#landing .landing-card{width:175px;height:190px}}
+#landing .landing-icon-circle{width:44px;height:44px;border-radius:9999px;background:#dcefdc;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+@media (min-width:768px){#landing .landing-icon-circle{width:48px;height:48px}}
+#landing .landing-card p{font-weight:800;color:#2f6b3a;font-size:14px;line-height:1.25;margin:0}
+#landing .landing-card svg.landing-card-underline{margin-top:6px;display:block}
+#landing .landing-card svg.landing-card-leaf{position:absolute;bottom:8px;right:8px}
+#landing .landing-cta-wrap{margin-top:18px;display:flex;flex-direction:column;align-items:center;gap:12px}
+#landing .landing-cta-btn{display:flex;align-items:center;justify-content:space-between;border-radius:9999px;font-weight:800;color:#fff;background:linear-gradient(135deg, #4c9a52 0%, #2c6a37 100%);padding:12px 8px 12px 26px;width:clamp(240px,22vw,340px);height:clamp(56px,5.5vw,74px);font-size:clamp(15px,1.4vw,19px);box-shadow:0 8px 18px -6px rgba(44,106,55,0.45);transition:box-shadow .25s ease, transform .25s ease;border:none;cursor:pointer}
+#landing .landing-cta-btn:hover{box-shadow:0 14px 26px -8px rgba(44,106,55,0.55);transform:translateY(-3px)}
+#landing .landing-cta-btn span.landing-cta-label{display:flex;align-items:center;gap:8px}
+#landing .landing-cta-circle{width:clamp(34px,3vw,44px);height:clamp(34px,3vw,44px);background:#fff;border-radius:9999px;display:flex;align-items:center;justify-content:center;transition:transform .25s ease}
+#landing .landing-cta-btn:hover .landing-cta-circle{transform:translateX(4px)}
+#landing .landing-skip{font-weight:700;color:rgba(15,60,30,0.75);cursor:pointer;font-size:13px;text-decoration:underline;text-underline-offset:3px;background:none;border:none;font-family:inherit}
+@media (max-width:900px){
+  #landing .landing-mascot-wrap,#landing .landing-food-section,#landing .landing-note,#landing .landing-floating{display:none}
+  #landing .landing-center{top:50%;transform:translate(-50%,-50%)}
+}
+</style>
+
 </head>
-<body class="bg-white">
+<body>
+<div id="landing" role="dialog" aria-label="ReMeal - Có gì trong tủ?">
+  <div class="landing-hero">
+    <div class="landing-glow-left"></div>
+    <div class="landing-glow-right"></div>
 
-  <!-- Floating ingredients background -->
-<div style="position: fixed; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; z-index: 1; overflow: hidden;">
-  <!-- Set 1 -->
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/broccoli.png" alt="" class="floating-ingredient" style="bottom: 20%; left: 5%;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/chilli.webp" alt="" class="floating-ingredient" style="bottom: 40%; left: 12%;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/egg.webp" alt="" class="floating-ingredient" style="bottom: 15%; right: 8%;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/igdi%202.webp" alt="" class="floating-ingredient" style="bottom: 55%; left: 8%;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/igdi.jpg" alt="" class="floating-ingredient" style="bottom: 50%; right: 5%;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/leaf.png" alt="" class="floating-ingredient" style="bottom: 25%; left: 20%;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/onion.webp" alt="" class="floating-ingredient" style="bottom: 60%; right: 20%;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/tomato%201.png" alt="" class="floating-ingredient" style="bottom: 30%; right: 25%;" />
-  
-  <!-- Set 2 - Nguyên liệu mới -->
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/avocado.webp" alt="" class="floating-ingredient" style="bottom: 45%; left: 15%;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/chives.webp" alt="" class="floating-ingredient" style="bottom: 22%; left: 30%;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%202.png" alt="" class="floating-ingredient" style="bottom: 70%; left: 25%;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%203.webp" alt="" class="floating-ingredient" style="bottom: 18%; right: 30%;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%204.webp" alt="" class="floating-ingredient" style="bottom: 65%; right: 10%;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%205.webp" alt="" class="floating-ingredient" style="bottom: 35%; left: 2%;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%206.webp" alt="" class="floating-ingredient" style="bottom: 55%; right: 35%;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%207.webp" alt="" class="floating-ingredient" style="bottom: 10%; left: 40%;" />
-  
-  <!-- Set 3 - Lặp lại để nhân 3 -->
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/broccoli.png" alt="" class="floating-ingredient" style="bottom: 38%; left: 45%; animation-delay: 0.3s;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/chilli.webp" alt="" class="floating-ingredient" style="bottom: 52%; left: 8%; animation-delay: 0.6s;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/egg.webp" alt="" class="floating-ingredient" style="bottom: 28%; right: 42%; animation-delay: 0.9s;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/avocado.webp" alt="" class="floating-ingredient" style="bottom: 48%; right: 28%; animation-delay: 1.2s;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/chives.webp" alt="" class="floating-ingredient" style="bottom: 75%; left: 50%; animation-delay: 1.5s;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%202.png" alt="" class="floating-ingredient" style="bottom: 12%; right: 50%; animation-delay: 1.8s;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%203.webp" alt="" class="floating-ingredient" style="bottom: 62%; left: 60%; animation-delay: 2.1s;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%204.webp" alt="" class="floating-ingredient" style="bottom: 32%; left: 70%; animation-delay: 2.4s;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%205.webp" alt="" class="floating-ingredient" style="bottom: 58%; right: 60%; animation-delay: 2.7s;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%206.webp" alt="" class="floating-ingredient" style="bottom: 20%; left: 80%; animation-delay: 3s;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%207.webp" alt="" class="floating-ingredient" style="bottom: 68%; right: 3%; animation-delay: 3.3s;" />
-  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/tomato%201.png" alt="" class="floating-ingredient" style="bottom: 42%; left: 35%; animation-delay: 3.6s;" />
-</div>
+    <!-- Nguyên liệu bay lơ lửng -->
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/broccoli.png" alt="" class="landing-floating" style="bottom:20%;left:5%;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/chilli.webp" alt="" class="landing-floating" style="bottom:40%;left:12%;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/egg.webp" alt="" class="landing-floating" style="bottom:15%;right:8%;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/igdi%202.webp" alt="" class="landing-floating" style="bottom:55%;left:8%;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/igdi.jpg" alt="" class="landing-floating" style="bottom:50%;right:5%;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/leaf.png" alt="" class="landing-floating" style="bottom:25%;left:20%;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/onion.webp" alt="" class="landing-floating" style="bottom:60%;right:20%;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/tomato%201.png" alt="" class="landing-floating" style="bottom:30%;right:25%;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/avocado.webp" alt="" class="landing-floating" style="bottom:45%;left:15%;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/chives.webp" alt="" class="landing-floating" style="bottom:22%;left:30%;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%202.png" alt="" class="landing-floating" style="bottom:70%;left:25%;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%203.webp" alt="" class="landing-floating" style="bottom:18%;right:30%;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%204.webp" alt="" class="landing-floating" style="bottom:65%;right:10%;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%205.webp" alt="" class="landing-floating" style="bottom:35%;left:2%;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%206.webp" alt="" class="landing-floating" style="bottom:55%;right:35%;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%207.webp" alt="" class="landing-floating" style="bottom:10%;left:40%;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/broccoli.png" alt="" class="landing-floating" style="bottom:38%;left:45%;animation-delay:0.3s;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/chilli.webp" alt="" class="landing-floating" style="bottom:52%;left:8%;animation-delay:0.6s;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/egg.webp" alt="" class="landing-floating" style="bottom:28%;right:42%;animation-delay:0.9s;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/avocado.webp" alt="" class="landing-floating" style="bottom:48%;right:28%;animation-delay:1.2s;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/chives.webp" alt="" class="landing-floating" style="bottom:75%;left:50%;animation-delay:1.5s;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%202.png" alt="" class="landing-floating" style="bottom:12%;right:50%;animation-delay:1.8s;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%203.webp" alt="" class="landing-floating" style="bottom:62%;left:60%;animation-delay:2.1s;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%204.webp" alt="" class="landing-floating" style="bottom:32%;left:70%;animation-delay:2.4s;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%205.webp" alt="" class="landing-floating" style="bottom:58%;right:60%;animation-delay:2.7s;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%206.webp" alt="" class="landing-floating" style="bottom:20%;left:80%;animation-delay:3s;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/inge%207.webp" alt="" class="landing-floating" style="bottom:68%;right:3%;animation-delay:3.3s;">
+    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/tomato%201.png" alt="" class="landing-floating" style="bottom:42%;left:35%;animation-delay:3.6s;">
 
-<div class="hero relative w-full overflow-hidden select-none">
-
-  <!-- ambient glows -->
-  <div class="glow-left"></div>
-  <div class="glow-right"></div>
-
-  <!-- ===== LOGO TOP LEFT ===== -->
-  <div class="absolute z-20" style="top:3%; left:3%;">
-    <div class="relative inline-block">
-      <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/leaf.png" alt="" class="absolute w-5 md:w-6" style="top:-12px; left:4px; transform:rotate(-10deg);" />
-      <h1 class="font-extrabold leading-none" style="font-size:clamp(22px,3vw,40px); color:#2c6a37; letter-spacing:-0.5px;">ReMeal</h1>
-      <svg class="mt-0.5" width="70" height="10" viewBox="0 0 70 10" fill="none">
-        <path d="M2 3C15 9 25 9 35 4C45 -1 55 -1 68 5" stroke="#3f7d4a" stroke-width="2.5" stroke-linecap="round" />
-      </svg>
-    </div>
-    <p class="font-bold mt-1" style="color:#2c6a37; font-size:clamp(10px,1vw,13px); line-height:1.3;">
-      Biến nguyên liệu có sẵn<br />thành bữa ăn tuyệt vời
-    </p>
-  </div>
-
-  <!-- ===== MASCOT ===== -->
-  <div class="mascot-wrap">
-    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/mascot.png" alt="ReMeal mascot"
-         class="object-contain" style="filter:drop-shadow(0 20px 25px rgba(40,90,45,0.25));" />
-  </div>
-
-  <!-- Sticky note near mascot -->
-  <div class="absolute z-20 rounded-md shadow-md px-4 py-3" style="left:15%; top:70%; width:clamp(110px,12vw,160px); background:#f7f0d8; transform:rotate(-6deg);">
-    <p class="handwrite font-bold" style="color:#3f7d4a; font-size:clamp(11px,1vw,14px); line-height:1.35;">
-      Ăn ngon hơn<br />Sống xanh hơn<br />Tiết kiệm hơn
-    </p>
-    <svg class="mt-1" width="60" height="8" viewBox="0 0 60 8" fill="none">
-      <path d="M2 4C15 8 25 1 35 5C45 8 52 3 58 5" stroke="#3f7d4a" stroke-width="1.5" stroke-linecap="round" />
-    </svg>
-  </div>
-
-  <!-- ===== THREE DISHES RIGHT SIDE ===== -->
-  <div class="food-section">
-    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%201.png" alt="Món ăn 1"
-         class="food-item" style="filter:drop-shadow(0 18px 20px rgba(40,90,45,0.25)); margin-right:-2%; transform: translateX(20%); transform: translateY(80px)" />
-    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%202.png" alt="Món ăn 2"
-         class="food-item" style="filter:drop-shadow(0 18px 20px rgba(40,90,45,0.25)); margin-right:-2%; transform: translateX(20%);" />
-    <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%203.png" alt="Món ăn 3"
-         class="food-item" style="filter:drop-shadow(0 18px 20px rgba(40,90,45,0.25)); margin-right:-2%; transform: translateX(20%); transform: translateY(-80px)" />
-  </div>
-
-  <!-- ===== CENTER CONTENT ===== -->
-  <div class="absolute z-30 flex flex-col items-center text-center" style="top:60px; left:50%; transform:translateX(-50%); width:min(650px,48vw);">
-
-    <div class="relative">
-      <svg class="absolute" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3f7d4a" stroke-width="2" style="top:-12px; left:-32px; opacity:0.7;">
-        <path d="M4 12c2-4 6-6 10-4M6 6c1-2 3-3 5-2" stroke-linecap="round" />
-      </svg>
-      <h2 class="font-extrabold" style="color:#2c6a37; font-size:clamp(50px,5vw,74px); line-height:1; margin-bottom:8px; text-shadow:0 3px 0 rgba(255,255,255,0.5);">
-        Có gì trong tủ?
-      </h2>
+    <!-- Logo góc trên trái -->
+    <div class="landing-logo-wrap">
+      <div class="landing-logo-inner">
+        <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/leaf.png" alt="" class="landing-logo-leaf" />
+        <h1>ReMeal</h1>
+        <svg width="70" height="10" viewBox="0 0 70 10" fill="none"><path d="M2 3C15 9 25 9 35 4C45 -1 55 -1 68 5" stroke="#3f7d4a" stroke-width="2.5" stroke-linecap="round" /></svg>
+      </div>
+      <p class="landing-tagline">Biến nguyên liệu có sẵn<br />thành bữa ăn tuyệt vời</p>
     </div>
 
-    <p class="font-extrabold mt-2" style="color:#2c6a37; font-size:clamp(14px,1.7vw,24px); line-height:1.35;">
-      Hãy biến chúng thành<br />một bữa ăn phù hợp với bạn
-    </p>
-    <svg class="mt-1" width="180" height="10" viewBox="0 0 180 10" fill="none">
-      <path d="M4 6C50 -2 90 10 130 4C150 1 165 4 176 6" stroke="#3f7d4a" stroke-width="3" stroke-linecap="round" />
-    </svg>
-
-    <!-- Benefit cards -->
-    <div class="flex items-center justify-center" style="gap:16px; margin-top:14px;">
-
-      <div class="card relative">
-        <div class="icon-circle">
-          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#2f6b3a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />
-          </svg>
-        </div>
-        <p class="font-extrabold" style="color:#2f6b3a; font-size:14px; line-height:1.25;">Tiết kiệm<br />thời gian</p>
-        <svg class="mt-1.5" width="34" height="8" viewBox="0 0 34 8" fill="none">
-          <path d="M2 5.5C8 1.5 14 1.5 17 4C20 6.5 26 6.5 32 2.5" stroke="#3f7d4a" stroke-width="2" stroke-linecap="round" />
-        </svg>
-        <svg class="absolute" width="12" height="12" viewBox="0 0 24 24" fill="#3f7d4a" style="bottom:8px; right:8px;">
-          <path d="M12 21s-7.5-4.6-10-9.2C.5 8 2 4.5 5.5 4c2-.3 3.7.7 4.5 2.2C10.8 4.7 12.5 3.7 14.5 4 18 4.5 19.5 8 22 11.8 14.5 16.4 12 21 12 21z" />
-        </svg>
-      </div>
-
-      <div class="card relative">
-        <div class="icon-circle">
-          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#2f6b3a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 20c8 0 13-5 13-13 0-1 0-2-.2-3C10.5 4.2 6 9 6 17c0 1 0 2 .2 3z" />
-            <path d="M7 19C10 15 13 12 18 8" />
-          </svg>
-        </div>
-        <p class="font-extrabold" style="color:#2f6b3a; font-size:14px; line-height:1.25;">Giảm<br />lãng phí</p>
-        <svg class="mt-1.5" width="34" height="8" viewBox="0 0 34 8" fill="none">
-          <path d="M2 5.5C8 1.5 14 1.5 17 4C20 6.5 26 6.5 32 2.5" stroke="#3f7d4a" stroke-width="2" stroke-linecap="round" />
-        </svg>
-        <svg class="absolute" width="12" height="12" viewBox="0 0 24 24" fill="#3f7d4a" style="bottom:8px; right:8px;">
-          <path d="M12 21s-7.5-4.6-10-9.2C.5 8 2 4.5 5.5 4c2-.3 3.7.7 4.5 2.2C10.8 4.7 12.5 3.7 14.5 4 18 4.5 19.5 8 22 11.8 14.5 16.4 12 21 12 21z" />
-        </svg>
-      </div>
-
-      <div class="card relative">
-        <div class="icon-circle">
-          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#2f6b3a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 11h18a9 8 0 0 1-18 0z" />
-            <path d="M8 11c0-2 .5-4 1.5-5" /><path d="M14 11c.5-1.5.5-3 0-4.5" />
-          </svg>
-        </div>
-        <p class="font-extrabold" style="color:#2f6b3a; font-size:14px; line-height:1.25;">Ăn uống<br />cân bằng</p>
-        <svg class="mt-1.5" width="34" height="8" viewBox="0 0 34 8" fill="none">
-          <path d="M2 5.5C8 1.5 14 1.5 17 4C20 6.5 26 6.5 32 2.5" stroke="#3f7d4a" stroke-width="2" stroke-linecap="round" />
-        </svg>
-        <svg class="absolute" width="12" height="12" viewBox="0 0 24 24" fill="#3f7d4a" style="bottom:8px; right:8px;">
-          <path d="M12 21s-7.5-4.6-10-9.2C.5 8 2 4.5 5.5 4c2-.3 3.7.7 4.5 2.2C10.8 4.7 12.5 3.7 14.5 4 18 4.5 19.5 8 22 11.8 14.5 16.4 12 21 12 21z" />
-        </svg>
-      </div>
-
+    <!-- Linh vật -->
+    <div class="landing-mascot-wrap">
+      <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/mascot.png" alt="ReMeal mascot" />
     </div>
 
-    <!-- CTA button -->
-<button class="cta-btn" style="margin-top:18px;" onclick="showPantry();">
-  <span class="flex items-center gap-2">
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M6 20c8 0 13-5 13-13 0-1 0-2-.2-3C10.5 4.2 6 9 6 17c0 1 0 2 .2 3z" />
-    </svg>
-    Tạo bữa ăn ngay
-  </span>
-  <span class="cta-circle">
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#2f6b3a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M5 12h14M13 6l6 6-6 6" />
-    </svg>
-  </span>
-</button>
+    <!-- Note dán -->
+    <div class="landing-note">
+      <p>Ăn ngon hơn<br />Sống xanh hơn<br />Tiết kiệm hơn</p>
+      <svg width="60" height="8" viewBox="0 0 60 8" fill="none"><path d="M2 4C15 8 25 1 35 5C45 8 52 3 58 5" stroke="#3f7d4a" stroke-width="1.5" stroke-linecap="round" /></svg>
+    </div>
 
+    <!-- 3 món ăn bên phải -->
+    <div class="landing-food-section">
+      <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%201.png" alt="Món ăn 1" class="landing-food-item" style="filter:drop-shadow(0 18px 20px rgba(40,90,45,0.25)); transform: translate(20%, 80px)" />
+      <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%202.png" alt="Món ăn 2" class="landing-food-item" style="filter:drop-shadow(0 18px 20px rgba(40,90,45,0.25)); transform: translateX(20%)" />
+      <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/m%C3%B3n%20%C4%83n%203.png" alt="Món ăn 3" class="landing-food-item" style="filter:drop-shadow(0 18px 20px rgba(40,90,45,0.25)); transform: translate(20%, -80px)" />
+    </div>
+
+    <!-- Nội dung trung tâm -->
+    <div class="landing-center">
+      <div class="landing-title-wrap">
+        <svg class="landing-squiggle" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3f7d4a" stroke-width="2"><path d="M4 12c2-4 6-6 10-4M6 6c1-2 3-3 5-2" stroke-linecap="round" /></svg>
+        <h2 class="landing-title">Có gì trong tủ?</h2>
+      </div>
+
+      <p class="landing-sub">Hãy biến chúng thành<br />một bữa ăn phù hợp với bạn</p>
+      <svg class="landing-underline" width="180" height="10" viewBox="0 0 180 10" fill="none"><path d="M4 6C50 -2 90 10 130 4C150 1 165 4 176 6" stroke="#3f7d4a" stroke-width="3" stroke-linecap="round" /></svg>
+
+      <!-- 3 thẻ lợi ích -->
+      <div class="landing-cards">
+        <div class="landing-card">
+          <div class="landing-icon-circle">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#2f6b3a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>
+          </div>
+          <p>Tiết kiệm<br />thời gian</p>
+          <svg class="landing-card-underline" width="34" height="8" viewBox="0 0 34 8" fill="none"><path d="M2 5.5C8 1.5 14 1.5 17 4C20 6.5 26 6.5 32 2.5" stroke="#3f7d4a" stroke-width="2" stroke-linecap="round" /></svg>
+          <svg class="landing-card-leaf" width="12" height="12" viewBox="0 0 24 24" fill="#3f7d4a"><path d="M12 21s-7.5-4.6-10-9.2C.5 8 2 4.5 5.5 4c2-.3 3.7.7 4.5 2.2C10.8 4.7 12.5 3.7 14.5 4 18 4.5 19.5 8 22 11.8 14.5 16.4 12 21 12 21z" /></svg>
+        </div>
+
+        <div class="landing-card">
+          <div class="landing-icon-circle">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#2f6b3a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20c8 0 13-5 13-13 0-1 0-2-.2-3C10.5 4.2 6 9 6 17c0 1 0 2 .2 3z" /><path d="M7 19C10 15 13 12 18 8" /></svg>
+          </div>
+          <p>Giảm<br />lãng phí</p>
+          <svg class="landing-card-underline" width="34" height="8" viewBox="0 0 34 8" fill="none"><path d="M2 5.5C8 1.5 14 1.5 17 4C20 6.5 26 6.5 32 2.5" stroke="#3f7d4a" stroke-width="2" stroke-linecap="round" /></svg>
+          <svg class="landing-card-leaf" width="12" height="12" viewBox="0 0 24 24" fill="#3f7d4a"><path d="M12 21s-7.5-4.6-10-9.2C.5 8 2 4.5 5.5 4c2-.3 3.7.7 4.5 2.2C10.8 4.7 12.5 3.7 14.5 4 18 4.5 19.5 8 22 11.8 14.5 16.4 12 21 12 21z" /></svg>
+        </div>
+
+        <div class="landing-card">
+          <div class="landing-icon-circle">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#2f6b3a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18a9 8 0 0 1-18 0z" /><path d="M8 11c0-2 .5-4 1.5-5" /><path d="M14 11c.5-1.5.5-3 0-4.5" /></svg>
+          </div>
+          <p>Ăn uống<br />cân bằng</p>
+          <svg class="landing-card-underline" width="34" height="8" viewBox="0 0 34 8" fill="none"><path d="M2 5.5C8 1.5 14 1.5 17 4C20 6.5 26 6.5 32 2.5" stroke="#3f7d4a" stroke-width="2" stroke-linecap="round" /></svg>
+          <svg class="landing-card-leaf" width="12" height="12" viewBox="0 0 24 24" fill="#3f7d4a"><path d="M12 21s-7.5-4.6-10-9.2C.5 8 2 4.5 5.5 4c2-.3 3.7.7 4.5 2.2C10.8 4.7 12.5 3.7 14.5 4 18 4.5 19.5 8 22 11.8 14.5 16.4 12 21 12 21z" /></svg>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="landing-cta-wrap">
+        <button class="landing-cta-btn" id="landingCtaBtn" type="button">
+          <span class="landing-cta-label">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20c8 0 13-5 13-13 0-1 0-2-.2-3C10.5 4.2 6 9 6 17c0 1 0 2 .2 3z" /></svg>
+            Tạo bữa ăn ngay
+          </span>
+          <span class="landing-cta-circle">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#2f6b3a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </span>
+        </button>
+        <button class="landing-skip" id="landingSkipBtn" type="button">Bỏ qua, vào thẳng ứng dụng</button>
+      </div>
+    </div>
   </div>
 </div>
 
-<section id="pantryView" style="display:none; min-height:100vh; background:#f5f7fa; padding:24px; overflow-y:auto;">
-    <div class="page-head">
-      <div>
-        <div class="eyebrow">Pantry Intelligence</div>
-        <h1>Tủ lạnh thông minh của bạn</h1>
-        <p>Theo dõi số lượng, trạng thái, hạn sử dụng và ưu tiên các nguyên liệu cần dùng trước.</p>
-      </div>
-      <div class="page-actions">
-        <button class="secondary-btn" id="exportJsonBtn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          Xuất JSON
-        </button>
-        <button class="primary-btn" id="openPantryModal">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-          Thêm nguyên liệu
-        </button>
-      </div>
+<script>
+(function(){
+  document.body.classList.add('landing-lock');
+  function dismissLanding(){
+    var landing = document.getElementById('landing');
+    if(!landing) return;
+    landing.classList.add('landing-hidden');
+    document.body.classList.remove('landing-lock');
+    setTimeout(function(){ landing.style.display = 'none'; }, 500);
+  }
+  document.getElementById('landingCtaBtn').addEventListener('click', dismissLanding);
+  document.getElementById('landingSkipBtn').addEventListener('click', dismissLanding);
+})();
+</script>
+
+<div class="app">
+  <header class="topbar">
+    <a href="#" class="brand" data-view="home"><div class="brand-logo"><span></span></div><div class="brand-copy"><strong>ReMeal</strong><small>Trợ lý bữa ăn thông minh</small></div></a>
+    <nav class="main-nav" id="mainNav">
+      <button class="nav-btn active" data-view="home"><i data-lucide="house"></i><span>Trang chủ</span></button><button class="nav-btn" data-view="pantry"><i data-lucide="refrigerator"></i><span>Tủ lạnh</span></button><button class="nav-btn" data-view="builder"><i data-lucide="sparkles"></i><span>Tạo bữa ăn</span></button><button class="nav-btn" data-view="recipes"><i data-lucide="chef-hat"></i><span>Công thức</span></button><button class="nav-btn" data-view="planner"><i data-lucide="calendar-days"></i><span>Kế hoạch tuần</span></button><button class="nav-btn" data-view="shopping"><i data-lucide="shopping-cart"></i><span>Mua sắm</span></button><button class="nav-btn" data-view="family"><i data-lucide="users"></i><span>Gia đình</span></button><button class="nav-btn" data-view="progress"><i data-lucide="chart-no-axes-combined"></i><span>Tiến độ</span></button><button class="nav-btn" data-view="vision"><i data-lucide="rocket"></i><span>Tiềm năng</span></button>
+    </nav>
+    <div class="header-actions"><button class="header-chip" data-view="planner"><i data-lucide="calendar-check" width="15"></i> Tuần này</button><img class="avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" alt="Lan Anh"><span class="profile-name" style="font-size:10px;font-weight:800">Lan Anh</span><button class="menu-btn" id="menuBtn"><i data-lucide="menu"></i></button></div>
+  </header>
+  <main>
+    <section class="view active" id="homeView">
+      <section class="hero"><div class="hero-copy"><div class="eyebrow">Ăn thông minh · Giảm lãng phí</div><h1><span>Có gì trong tủ?</span><br>Biến chúng thành bữa ăn phù hợp với bạn.</h1><p>ReMeal kết hợp nguyên liệu sẵn có, số người ăn, thời gian, mục tiêu dinh dưỡng, chế độ ăn và giới hạn sức khỏe để đề xuất bữa ăn dễ thực hiện nhất.</p><div class="hero-actions"><button class="primary-btn" data-view="builder">Tạo bữa ăn ngay <i data-lucide="arrow-right" width="17"></i></button><button class="secondary-btn" data-view="pantry"><i data-lucide="refrigerator" width="17"></i> Quản lý tủ lạnh</button></div><div class="hero-benefits"><div class="hero-benefit"><div class="hb-icon"><i data-lucide="clock-3"></i></div>Tiết kiệm thời gian với công thức phù hợp nguyên liệu.</div><div class="hero-benefit"><div class="hb-icon"><i data-lucide="trash-2"></i></div>Ưu tiên thực phẩm sắp hết hạn để giảm lãng phí.</div><div class="hero-benefit"><div class="hb-icon"><i data-lucide="heart-pulse"></i></div>Cá nhân hóa theo gia đình và mục tiêu ăn uống.</div></div></div><div class="hero-card"><img src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=300&q=80" alt="Ức gà xào rau củ"><div><small>Gợi ý hôm nay</small><strong>Ức gà xào rau củ</strong><div class="mini-track"><span></span></div><small style="display:block;margin-top:6px;color:#167542;font-weight:800">92% phù hợp</small></div></div></section>
+      <div class="home-stats"><div class="panel home-stat"><div class="home-stat-icon"><i data-lucide="utensils"></i></div><div><strong id="homeMealCount">12</strong><small>Bữa ăn đã tạo</small></div></div><div class="panel home-stat"><div class="home-stat-icon"><i data-lucide="wallet-cards"></i></div><div><strong id="homeSavedMoney">185K</strong><small>Chi phí đã tiết kiệm</small></div></div><div class="panel home-stat"><div class="home-stat-icon"><i data-lucide="leaf"></i></div><div><strong id="homeRescued">8.4kg</strong><small>Thực phẩm được giải cứu</small></div></div><div class="panel home-stat"><div class="home-stat-icon"><i data-lucide="chart-spline"></i></div><div><strong>23%</strong><small>Mức giảm lãng phí</small></div></div></div>
+      <div class="home-grid"><section class="panel quick-start"><div class="panel-title"><div><h3>Cách ReMeal hoạt động</h3><small>Bốn bước để có một bữa ăn phù hợp</small></div><button class="small-btn soft-btn" data-view="builder">Bắt đầu</button></div><div class="quick-steps"><div class="quick-step"><div class="quick-step-num">1</div><strong>Nhập nguyên liệu</strong><p>Thêm thực phẩm sống, đông lạnh hoặc đồ đã nấu.</p></div><div class="quick-step"><div class="quick-step-num">2</div><strong>Thiết lập bữa ăn</strong><p>Chọn số người, thời gian, thiết bị và ngân sách.</p></div><div class="quick-step"><div class="quick-step-num">3</div><strong>Chọn mục tiêu</strong><p>Giảm cân, tăng protein, ăn chay hoặc tránh dị ứng.</p></div><div class="quick-step"><div class="quick-step-num">4</div><strong>Nhận gợi ý</strong><p>So sánh món phù hợp nhất, nhanh nhất và lành mạnh nhất.</p></div></div></section><aside class="panel expiry-rescue"><div class="panel-title"><div><h3>Cần dùng sớm</h3><small>Ưu tiên nguyên liệu có nguy cơ bị bỏ phí</small></div><span class="pill red">3 mục</span></div><div class="rescue-list" id="homeRescueList"></div></aside></div>
+    </section>
+    <section class="view" id="pantryView"><div class="page-head"><div><div class="eyebrow">Pantry Intelligence</div><h1>Tủ lạnh thông minh của bạn</h1><p>Theo dõi số lượng, trạng thái, hạn sử dụng và ưu tiên các nguyên liệu cần dùng trước.</p></div><div class="page-actions"><button class="secondary-btn" id="exportJsonBtn"><i data-lucide="download" width="16"></i> Xuất JSON</button><button class="primary-btn" id="openPantryModal"><i data-lucide="plus" width="16"></i> Thêm nguyên liệu</button></div></div><div class="pantry-layout"><section class="panel pantry-main"><div class="toolbar"><div class="search-box"><i data-lucide="search"></i><input id="pantrySearch" placeholder="Tìm nguyên liệu..."></div><select class="filter-select" id="pantryFilter"><option value="all">Tất cả trạng thái</option><option value="urgent">Cần dùng ngay</option><option value="soon">Sắp hết hạn</option><option value="fresh">Còn tươi</option><option value="cooked">Đã nấu chín</option><option value="frozen">Đông lạnh</option></select><select class="filter-select" id="pantryCategory"><option value="all">Tất cả nhóm</option><option value="protein">Chất đạm</option><option value="vegetable">Rau củ</option><option value="grain">Tinh bột</option><option value="other">Khác</option></select></div><div class="pantry-grid" id="pantryGrid"></div></section><aside class="pantry-side"><section class="panel side-card"><div class="panel-title"><h3>Tổng quan tủ lạnh</h3><span class="pill" id="pantryCountPill">0 mục</span></div><div class="status-list" id="pantryStatusList"></div></section><section class="panel side-card"><div class="panel-title"><h3>Biến đồ ăn thừa thành món mới</h3><span class="pill orange">Leftover</span></div><div class="leftover-box"><select class="filter-select" id="leftoverSelect" style="width:100%"><option value="rice">Cơm nguội</option><option value="chicken">Gà đã nấu</option><option value="vegetables">Rau củ đã chín</option><option value="bread">Bánh mì cũ</option><option value="broth">Nước dùng còn thừa</option></select><div class="leftover-result" id="leftoverResult"></div></div></section><div class="health-notice"><strong style="display:block;margin-bottom:5px;color:#2f5d72">Lưu ý an toàn thực phẩm</strong>ReMeal hỗ trợ sắp xếp và gợi ý, nhưng không thể xác định thực phẩm còn an toàn chỉ qua ngày nhập. Hãy kiểm tra mùi, màu sắc, nhiệt độ bảo quản và hướng dẫn an toàn trước khi sử dụng.</div></aside></div></section>
+    <section class="view" id="builderView"><div class="page-head"><div><div class="eyebrow">Smart Meal Builder</div><h1>Tạo bữa ăn cá nhân hóa</h1><p>Kết hợp nguyên liệu, thành viên, mục tiêu, thời gian và thiết bị bếp để xếp hạng công thức phù hợp.</p></div><button class="secondary-btn" id="resetBuilderBtn"><i data-lucide="rotate-ccw" width="16"></i> Đặt lại lựa chọn</button></div><div class="builder-layout"><aside class="panel steps-panel"><div class="step-item active"><div class="step-number">1</div><strong>Nguyên liệu</strong><small id="stepIngredients">Đang chọn 0 nguyên liệu</small></div><div class="step-item"><div class="step-number">2</div><strong>Bữa ăn</strong><small id="stepMeal">Bữa tối · 2 người</small></div><div class="step-item"><div class="step-number">3</div><strong>Mục tiêu</strong><small id="stepGoal">Ăn cân bằng</small></div><div class="step-item"><div class="step-number">4</div><strong>Kết quả</strong><small>Ba lựa chọn nổi bật</small></div></aside><div class="builder-center"><section class="panel builder-panel"><div class="panel-title"><div><h3>1. Chọn nguyên liệu muốn sử dụng</h3><small>Nguyên liệu sắp hết hạn sẽ được cộng điểm ưu tiên.</small></div><button class="small-btn soft-btn" id="selectAllPantry">Chọn tất cả</button></div><div class="ingredients-preview" id="builderIngredients"></div></section><section class="panel builder-panel"><div class="panel-title"><div><h3>2. Thiết lập bữa ăn</h3><small>Điều chỉnh theo thời gian, khẩu phần và khả năng nấu nướng.</small></div></div><div class="control-grid"><div class="control-block"><h4>Loại bữa ăn</h4><div class="option-grid four-col" id="mealTypeOptions"><button class="option-btn rich" data-value="breakfast"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">🌅</span><span class="opt-title">Bữa sáng</span><span class="opt-desc"></span></button><button class="option-btn rich" data-value="lunch"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">☀️</span><span class="opt-title">Bữa trưa</span><span class="opt-desc"></span></button><button class="option-btn rich active" data-value="dinner"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">🌙</span><span class="opt-title">Bữa tối</span><span class="opt-desc"></span></button><button class="option-btn rich" data-value="snack"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">🧁</span><span class="opt-title">Ăn nhẹ</span><span class="opt-desc"></span></button></div></div><div class="control-block"><h4>Số người ăn</h4><label><span>Khẩu phần</span><strong><span id="servingValue">2</span> người</strong></label><input id="servingRange" type="range" min="1" max="10" value="2"></div><div class="control-block"><h4>Thời gian tối đa</h4><div class="option-grid" id="timeOptions"><button class="option-btn" data-value="15">≤ 15 phút</button><button class="option-btn active" data-value="30">≤ 30 phút</button><button class="option-btn" data-value="45">≤ 45 phút</button><button class="option-btn" data-value="90">Không giới hạn</button></div></div><div class="control-block"><h4>Mức độ nấu ăn</h4><div class="option-grid four-col" id="difficultyOptions"><button class="option-btn rich active" data-value="easy"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">🍳</span><span class="opt-title">Dễ</span><span class="opt-desc">Công thức đơn giản, dễ làm</span></button><button class="option-btn rich" data-value="medium"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">👨‍🍳</span><span class="opt-title">Trung bình</span><span class="opt-desc">Cần một vài kỹ thuật cơ bản</span></button><button class="option-btn rich" data-value="hard"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">🏆</span><span class="opt-title">Khó</span><span class="opt-desc">Yêu cầu kỹ năng nấu tốt</span></button><button class="option-btn rich" data-value="any"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">🎲</span><span class="opt-title">Bất kỳ</span><span class="opt-desc">Không giới hạn độ khó</span></button></div></div><div class="control-block"><h4>Thiết bị bếp có sẵn</h4><div class="option-grid three-col" id="equipmentOptions"><button class="option-btn chip multi active" data-value="stove"><span class="opt-icon-sm">🔥</span>Bếp ga/điện</button><button class="option-btn chip multi active" data-value="pan"><span class="opt-icon-sm">🍳</span>Chảo</button><button class="option-btn chip multi active" data-value="pot"><span class="opt-icon-sm">🥘</span>Nồi</button><button class="option-btn chip multi" data-value="oven"><span class="opt-icon-sm">🔲</span>Lò nướng</button><button class="option-btn chip multi" data-value="airfryer"><span class="opt-icon-sm">🌀</span>Nồi chiên</button><button class="option-btn chip multi" data-value="microwave"><span class="opt-icon-sm">📻</span>Lò vi sóng</button></div></div><div class="control-block"><h4>Ngân sách mua thêm</h4><label><span>Chi phí tối đa</span><strong><span id="budgetValue">50.000</span>đ</strong></label><input id="budgetRange" type="range" min="0" max="200000" step="10000" value="50000"></div></div></section><section class="panel builder-panel"><div class="panel-title"><div><h3>3. Mục tiêu dinh dưỡng và giới hạn</h3><small>Thông tin này dùng để xếp hạng, không thay thế tư vấn y tế.</small></div></div><div class="control-grid"><div class="control-block"><h4>Mục tiêu chính</h4><div class="option-grid three-col" id="goalOptions"><button class="option-btn rich active" data-value="balanced"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">🥗</span><span class="opt-title">Ăn cân bằng</span><span class="opt-desc">Đầy đủ dinh dưỡng, phù hợp hằng ngày</span></button><button class="option-btn rich" data-value="weightloss"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">⚖️</span><span class="opt-title">Giảm cân</span><span class="opt-desc">Kiểm soát calo, hỗ trợ giảm cân</span></button><button class="option-btn rich" data-value="protein"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">💪</span><span class="opt-title">Tăng protein</span><span class="opt-desc">Hỗ trợ tăng cơ và phục hồi</span></button><button class="option-btn rich" data-value="fiber"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">🌾</span><span class="opt-title">Tăng chất xơ</span><span class="opt-desc">Tốt cho tiêu hóa, thanh lọc</span></button><button class="option-btn rich" data-value="vegetables"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">🥬</span><span class="opt-title">Ăn nhiều rau</span><span class="opt-desc">Tăng rau xanh trong bữa ăn</span></button><button class="option-btn rich" data-value="lowfat"><span class="opt-check"><i data-lucide="check"></i></span><span class="opt-icon">🫒</span><span class="opt-title">Giảm dầu mỡ</span><span class="opt-desc">Hạn chế dầu mỡ, tốt cho tim mạch</span></button></div></div><div class="control-block"><h4>Chế độ ăn và giới hạn</h4><div class="option-grid" id="restrictionOptions"><button class="option-btn multi" data-value="vegetarian">Ăn chay</button><button class="option-btn multi active" data-value="nospicy">Không ăn cay</button><button class="option-btn multi" data-value="dairyfree">Không sữa</button><button class="option-btn multi" data-value="glutenfree">Không gluten</button><button class="option-btn multi" data-value="seafoodallergy">Dị ứng hải sản</button><button class="option-btn multi" data-value="nutallergy">Dị ứng hạt</button></div></div><div class="control-block"><h4>Ai sẽ tham gia bữa ăn?</h4><div class="family-selector" id="builderFamily"></div></div><div class="control-block"><h4>Health Guard</h4><div class="nutrition-summary" id="healthGuardSummary">Không phát hiện xung đột nghiêm trọng.</div></div></div></section><button class="primary-btn" id="generateRecipesBtn" style="min-height:54px;font-size:12px"><i data-lucide="sparkles" width="18"></i> Phân tích và tạo 3 gợi ý tốt nhất</button></div><aside class="builder-side"><section class="panel guard-panel"><div class="panel-title"><h3>Bộ lọc an toàn</h3><span class="pill">Health Guard</span></div><div class="guard-line"><i data-lucide="shield-check"></i><span>Dị ứng và nguyên liệu “không được sử dụng” là điều kiện loại trừ tuyệt đối.</span></div><div class="guard-line"><i data-lucide="scale"></i><span>Mục tiêu dinh dưỡng chỉ ảnh hưởng điểm xếp hạng, không phải chẩn đoán.</span></div><div class="guard-line"><i data-lucide="user-round-check"></i><span>Yêu cầu của các thành viên được hợp nhất để tìm phần giao phù hợp.</span></div></section><section class="panel score-explain"><div class="panel-title"><h3>Cách chấm điểm</h3><small>Tổng 100 điểm</small></div><div class="weight-row"><div><span>Khớp nguyên liệu</span><div class="weight-track"><span style="width:100%"></span></div></div><strong>35%</strong></div><div class="weight-row"><div><span>Giải cứu thực phẩm</span><div class="weight-track"><span style="width:57%"></span></div></div><strong>20%</strong></div><div class="weight-row"><div><span>Dinh dưỡng</span><div class="weight-track"><span style="width:43%"></span></div></div><strong>15%</strong></div><div class="weight-row"><div><span>Mục tiêu cá nhân</span><div class="weight-track"><span style="width:29%"></span></div></div><strong>10%</strong></div><div class="weight-row"><div><span>Thời gian & độ khó</span><div class="weight-track"><span style="width:29%"></span></div></div><strong>10%</strong></div><div class="weight-row"><div><span>Thiết bị</span><div class="weight-track"><span style="width:15%"></span></div></div><strong>5%</strong></div><div class="weight-row"><div><span>Khẩu vị</span><div class="weight-track"><span style="width:15%"></span></div></div><strong>5%</strong></div></section></aside></div></section>
+    <section class="view" id="recipesView"><div class="page-head"><div><div class="eyebrow">Smart Recommendations</div><h1>Ba công thức phù hợp nhất</h1><p>Mỗi kết quả được giải thích bằng điểm nguyên liệu, dinh dưỡng, độ dễ, thời gian và khả năng giảm lãng phí.</p></div><div class="page-actions"><button class="secondary-btn" onclick="window.print()"><i data-lucide="printer" width="16"></i> In kết quả</button><button class="primary-btn" data-view="builder"><i data-lucide="sliders-horizontal" width="16"></i> Điều chỉnh</button></div></div><div class="panel result-summary"><div class="summary-stat"><strong id="summaryIngredients">0</strong><small>Nguyên liệu đang dùng</small></div><div class="summary-stat"><strong id="summaryServing">2</strong><small>Khẩu phần</small></div><div class="summary-stat"><strong id="summarySpend">0đ</strong><small>Chi phí mua thêm</small></div><div class="summary-stat"><strong id="summaryWaste">0%</strong><small>Điểm giảm lãng phí</small></div></div><div class="recipe-grid" id="recipeGrid"></div></section>
+    <section class="view" id="plannerView"><div class="page-head"><div><div class="eyebrow">Weekly Meal Planner</div><h1>Kế hoạch bữa ăn trong tuần</h1><p>Ưu tiên thực phẩm nhanh hỏng trước, tận dụng một lần sơ chế cho nhiều món và tự động tạo danh sách mua.</p></div><div class="page-actions"><button class="secondary-btn" id="clearPlanBtn"><i data-lucide="trash-2" width="16"></i> Xóa kế hoạch</button><button class="primary-btn" id="autoPlanBtn"><i data-lucide="wand-sparkles" width="16"></i> Tạo kế hoạch tự động</button></div></div><div class="planner-layout"><section class="panel planner-panel"><div class="planner-table" id="plannerTable"></div></section><aside class="planner-side"><section class="panel planner-summary"><div class="panel-title"><h3>Tổng quan tuần</h3><span class="pill">7 ngày</span></div><div class="planner-stat-grid"><div class="planner-stat"><strong id="planMealsCount">0</strong><small>Bữa đã lên lịch</small></div><div class="planner-stat"><strong id="planSpend">0đ</strong><small>Cần mua thêm</small></div><div class="planner-stat"><strong id="planProtein">0g</strong><small>Protein/ngày</small></div><div class="planner-stat"><strong id="planWaste">0%</strong><small>Giảm lãng phí</small></div></div></section><section class="panel planner-summary"><div class="panel-title"><h3>Chuẩn bị thông minh</h3><span class="pill orange">Meal prep</span></div><div class="prep-list"><div class="prep-item"><strong>Chủ nhật:</strong> Luộc 500g thịt gà để dùng cho salad, cơm trộn và cháo.</div><div class="prep-item"><strong>Thứ hai:</strong> Rửa và chia rau xanh thành ba phần, bảo quản kín.</div><div class="prep-item"><strong>Giữa tuần:</strong> Nấu thêm cơm để tái sử dụng cho món cơm chiên ngày hôm sau.</div></div></section></aside></div></section>
+    <section class="view" id="shoppingView"><div class="page-head"><div><div class="eyebrow">Shopping Gap</div><h1>Danh sách mua tối thiểu</h1><p>Chỉ mua những nguyên liệu còn thiếu cho công thức và kế hoạch tuần, có ước tính chi phí theo nhóm.</p></div><div class="page-actions"><button class="secondary-btn" id="addCustomShoppingBtn"><i data-lucide="plus" width="16"></i> Thêm mục</button><button class="primary-btn" id="shareShoppingBtn"><i data-lucide="share-2" width="16"></i> Chia sẻ danh sách</button></div></div><div class="shopping-layout"><section class="panel shopping-panel"><div class="panel-title"><div><h3>Nguyên liệu cần mua</h3><small>Đánh dấu khi đã mua hoặc thêm vào tủ lạnh.</small></div><button class="small-btn soft-btn" id="moveBoughtToPantry">Đưa mục đã mua vào tủ</button></div><div id="shoppingList"></div></section><aside class="panel budget-card"><div class="panel-title"><h3>Ngân sách dự kiến</h3><span class="pill blue">Tuần này</span></div><div class="budget-number" id="shoppingTotal">0đ</div><div class="budget-row"><span>Nguyên liệu thiết yếu</span><strong id="shoppingEssential">0đ</strong></div><div class="budget-row"><span>Nguyên liệu tùy chọn</span><strong id="shoppingOptional">0đ</strong></div><div class="budget-row"><span>Đã mua</span><strong id="shoppingDone">0 mục</strong></div><div class="health-notice" style="margin-top:15px">Giá chỉ là dữ liệu mô phỏng cho prototype. Phiên bản thương mại có thể kết nối siêu thị và nền tảng giao thực phẩm.</div></aside></div></section>
+    <section class="view" id="familyView"><div class="page-head"><div><div class="eyebrow">Household Profile</div><h1>Hồ sơ ăn uống gia đình</h1><p>Lưu khẩu vị, dị ứng, mục tiêu và khẩu phần của từng thành viên để tìm món phù hợp cho cả nhà.</p></div><button class="primary-btn" id="openFamilyModal"><i data-lucide="user-round-plus" width="16"></i> Thêm thành viên</button></div><div class="family-layout"><section class="panel family-panel"><div class="family-grid" id="familyGrid"></div></section><aside class="panel household-fit"><div class="panel-title"><h3>Phần giao yêu cầu</h3><span class="pill purple">Household fit</span></div><p style="font-size:9px;line-height:1.6;color:var(--muted)">Hệ thống hợp nhất các giới hạn của thành viên đang chọn và loại công thức có xung đột.</p><div class="fit-result" id="householdFit"></div><button class="primary-btn" data-view="builder" style="width:100%;margin-top:12px">Tạo bữa ăn cho cả nhà</button></aside></div></section>
+    <section class="view" id="progressView"><div class="page-head"><div><div class="eyebrow">Impact Dashboard</div><h1>Tiến độ ăn uống và giảm lãng phí</h1><p>Theo dõi bữa đã nấu, chi phí tiết kiệm, thực phẩm được dùng trước khi hết hạn và mức độ cân bằng dinh dưỡng.</p></div><button class="secondary-btn" id="resetDemoData"><i data-lucide="database-backup" width="16"></i> Khôi phục dữ liệu demo</button></div><div class="progress-grid"><div class="panel progress-stat"><span class="pill">Bữa ăn</span><strong id="progressMeals">12</strong><small>Đã đánh dấu hoàn thành</small></div><div class="panel progress-stat"><span class="pill orange">Tiết kiệm</span><strong id="progressMoney">185.000đ</strong><small>So với mua bữa ăn bên ngoài</small></div><div class="panel progress-stat"><span class="pill blue">Giải cứu</span><strong id="progressFood">8,4kg</strong><small>Thực phẩm dùng trước khi hết hạn</small></div><div class="panel progress-stat"><span class="pill purple">Chuỗi ngày</span><strong id="progressStreak">6 ngày</strong><small>Duy trì kế hoạch ăn tại nhà</small></div></div><div class="progress-layout"><section class="panel chart-panel"><div class="panel-title"><h3>Cân bằng dinh dưỡng 7 ngày</h3><small>Mục tiêu cá nhân: Ăn cân bằng</small></div><div class="bar-chart"><div class="bar-row"><span>Protein</span><div class="bar-track"><span style="width:86%"></span></div><strong>86%</strong></div><div class="bar-row"><span>Chất xơ</span><div class="bar-track"><span style="width:74%"></span></div><strong>74%</strong></div><div class="bar-row"><span>Rau xanh</span><div class="bar-track"><span style="width:91%"></span></div><strong>91%</strong></div><div class="bar-row"><span>Đường</span><div class="bar-track"><span style="width:68%"></span></div><strong>68%</strong></div><div class="bar-row"><span>Dầu mỡ</span><div class="bar-track"><span style="width:79%"></span></div><strong>79%</strong></div></div></section><section class="panel history-panel"><div class="panel-title"><h3>Lịch sử gần đây</h3><small>Nhấn “Đã nấu” trong công thức để cập nhật.</small></div><div class="history-list" id="historyList"></div></section></div></section>
+    <section class="view" id="visionView"><div class="page-head"><div><div class="eyebrow">Product Vision</div><h1>ReMeal không chỉ là ứng dụng công thức</h1><p>Đây là nền tảng quản lý bữa ăn cá nhân hóa, kết nối tủ lạnh, sức khỏe, kế hoạch tuần, mua sắm và dữ liệu tiêu dùng.</p></div></div><section class="panel vision-hero"><div><h2>Hệ điều hành bữa ăn cho cá nhân và gia đình.</h2><p>ReMeal giúp người dùng biến những gì đang có thành bữa ăn phù hợp, theo dõi nguyên liệu sắp hết hạn, điều chỉnh khẩu phần, hợp nhất nhu cầu gia đình và tạo danh sách mua tối thiểu.</p></div><div class="pitch-card"><small>Elevator pitch</small><p>ReMeal là trợ lý bữa ăn thông minh giúp người dùng biến nguyên liệu sẵn có thành những bữa ăn phù hợp với số người, thời gian, khẩu vị và mục tiêu dinh dưỡng. Khác với ứng dụng công thức truyền thống, ReMeal hiểu trạng thái tủ lạnh, ưu tiên thực phẩm sắp hết hạn và tối ưu lượng cần mua thêm.</p></div></section><div class="vision-section"><div class="page-head" style="margin-top:0"><div><h2>Lợi thế cạnh tranh</h2><p>Bốn lớp giá trị giúp sản phẩm khó bị sao chép hơn một website công thức đơn thuần.</p></div></div><div class="vision-grid"><div class="panel vision-card"><div class="vision-card-icon"><i data-lucide="refrigerator"></i></div><h4>Pantry Intelligence</h4><p>Biết người dùng đang có gì, số lượng bao nhiêu, trạng thái và thời điểm nên sử dụng.</p></div><div class="panel vision-card"><div class="vision-card-icon"><i data-lucide="heart-pulse"></i></div><h4>Personal Nutrition</h4><p>Xếp hạng theo mục tiêu dinh dưỡng, khẩu phần, giới hạn và lịch sử lựa chọn.</p></div><div class="panel vision-card"><div class="vision-card-icon"><i data-lucide="users"></i></div><h4>Household Optimization</h4><p>Tìm phần giao giữa nhu cầu của nhiều thành viên trong cùng một bữa ăn.</p></div><div class="panel vision-card"><div class="vision-card-icon"><i data-lucide="leaf"></i></div><h4>Waste Reduction Data</h4><p>Đo lượng thực phẩm được giải cứu, tiền tiết kiệm và thói quen mua dư.</p></div></div></div><div class="vision-section panel roadmap"><div class="panel-title"><div><h3>Lộ trình phát triển</h3><small>Từ MVP đến hệ sinh thái bữa ăn thông minh</small></div></div><div class="roadmap-grid"><div class="roadmap-item"><span>1</span><h4>MVP</h4><p>Nhập nguyên liệu, xếp hạng công thức, khẩu phần, mục tiêu cơ bản và local storage.</p></div><div class="roadmap-item"><span>2</span><h4>Product–Market Fit</h4><p>Hồ sơ gia đình, kế hoạch tuần, theo dõi món đã nấu và số tiền tiết kiệm.</p></div><div class="roadmap-item"><span>3</span><h4>AI & Computer Vision</h4><p>Nhận diện tủ lạnh, hóa đơn, mã vạch, nhập giọng nói và trợ lý nấu ăn.</p></div><div class="roadmap-item"><span>4</span><h4>Hệ sinh thái</h4><p>Kết nối siêu thị, giao thực phẩm, thiết bị bếp và ứng dụng sức khỏe.</p></div></div></div><div class="vision-section"><div class="page-head" style="margin-top:0"><div><h2>Mô hình doanh thu</h2><p>Kết hợp B2C, thương mại và B2B.</p></div></div><div class="business-grid"><div class="panel business-card"><h4>Freemium</h4><ul><li>Gợi ý món và tính khẩu phần miễn phí.</li><li>Premium cho kế hoạch tuần, nhiều hồ sơ và phân tích chuyên sâu.</li><li>Gói gia đình và gói chuyên gia dinh dưỡng.</li></ul></div><div class="panel business-card"><h4>Affiliate & Commerce</h4><ul><li>Hoa hồng khi mua nguyên liệu còn thiếu.</li><li>Combo nguyên liệu theo công thức.</li><li>Nội dung tài trợ được đánh dấu rõ ràng.</li></ul></div><div class="panel business-card"><h4>B2B</h4><ul><li>Tích hợp cho siêu thị và ứng dụng giao hàng.</li><li>Công cụ thực đơn cho căng tin, trường học và doanh nghiệp.</li><li>Bảng phân tích hành vi tiêu dùng thực phẩm ẩn danh.</li></ul></div></div></div><div class="vision-section"><div class="page-head" style="margin-top:0"><div><h2>Chỉ số nhà đầu tư cần theo dõi</h2><p>Tập trung vào thói quen sử dụng, giá trị tạo ra và khả năng kiếm tiền.</p></div></div><div class="vision-grid"><div class="panel vision-card"><h4>Retention</h4><p>Tỷ lệ quay lại sau 7 ngày, 30 ngày và số lần tạo bữa ăn mỗi tuần.</p></div><div class="panel vision-card"><h4>Cooking conversion</h4><p>Tỷ lệ người dùng mở công thức và đánh dấu thực sự đã nấu.</p></div><div class="panel vision-card"><h4>Value creation</h4><p>Tiền tiết kiệm, số nguyên liệu dùng trước hạn và tỷ lệ không cần mua thêm.</p></div><div class="panel vision-card"><h4>Revenue</h4><p>Tỷ lệ nâng cấp Premium, ARPU và giá trị đơn hàng từ đối tác.</p></div></div></div><div class="vision-section"><div class="page-head" style="margin-top:0"><div><h2>Rủi ro và cách xử lý</h2></div></div><div class="risk-grid"><div class="panel risk-card"><strong>Dữ liệu dinh dưỡng không chính xác</strong><p>Hiển thị là số liệu ước tính, cho phép chỉnh khẩu phần và dùng nguồn dữ liệu có kiểm chứng ở bản chính thức.</p></div><div class="panel risk-card"><strong>Người dùng ngại nhập nguyên liệu</strong><p>Hỗ trợ gợi ý nhanh, lưu tủ gần nhất, quét hóa đơn, giọng nói và nhận diện hình ảnh ở giai đoạn sau.</p></div><div class="panel risk-card"><strong>Công thức không thực tế</strong><p>Dùng dataset đã kiểm duyệt và học từ tỷ lệ “Đã nấu”, đánh giá và nguyên liệu thay thế được chấp nhận.</p></div></div></div></section>
+  </main>
+  <footer><span>© 2026 ReMeal. Thông tin dinh dưỡng và sức khỏe trong prototype chỉ mang tính tham khảo.</span><span>Single-file HTML · Responsive · LocalStorage · Rule-based recommendation engine</span></footer>
+</div>
+<div class="modal" id="recipeModal"><div class="modal-card"><div class="modal-head"><h3>Chi tiết công thức</h3><button class="close-btn" data-close="recipeModal">×</button></div><div class="modal-body" id="recipeModalBody"></div></div></div>
+<div class="modal" id="pantryModal"><div class="modal-card" style="width:min(620px,100%)"><div class="modal-head"><h3>Thêm nguyên liệu vào tủ</h3><button class="close-btn" data-close="pantryModal">×</button></div><div class="modal-body"><form id="pantryForm" class="form-grid"><div class="field full"><label>Tên nguyên liệu</label><input name="name" required placeholder="Ví dụ: Cà chua"></div><div class="field"><label>Số lượng</label><input name="qty" type="number" min="0" step="0.1" value="1" required></div><div class="field"><label>Đơn vị</label><select name="unit"><option>g</option><option>kg</option><option>quả</option><option>củ</option><option>bó</option><option>hộp</option><option>phần</option></select></div><div class="field"><label>Hạn sử dụng</label><input name="expiry" type="date" required></div><div class="field"><label>Trạng thái</label><select name="condition"><option value="fresh">Tươi</option><option value="cooked">Đã nấu chín</option><option value="frozen">Đông lạnh</option></select></div><div class="field"><label>Nhóm nguyên liệu</label><select name="category"><option value="protein">Chất đạm</option><option value="vegetable">Rau củ</option><option value="grain">Tinh bột</option><option value="other">Khác</option></select></div><div class="field"><label>Biểu tượng</label><input name="emoji" value="🥣"></div><div class="field full"><button class="primary-btn" type="submit">Thêm vào tủ lạnh</button></div></form></div></div></div>
+<div class="modal" id="familyModal"><div class="modal-card" style="width:min(620px,100%)"><div class="modal-head"><h3>Thêm thành viên gia đình</h3><button class="close-btn" data-close="familyModal">×</button></div><div class="modal-body"><form id="familyForm" class="form-grid"><div class="field"><label>Tên</label><input name="name" required placeholder="Ví dụ: Minh"></div><div class="field"><label>Vai trò</label><input name="role" placeholder="Ví dụ: Con trai"></div><div class="field"><label>Biểu tượng</label><input name="avatar" value="🙂"></div><div class="field"><label>Mục tiêu</label><select name="goal"><option value="balanced">Ăn cân bằng</option><option value="weightloss">Giảm cân</option><option value="protein">Tăng protein</option><option value="fiber">Tăng chất xơ</option></select></div><div class="field full"><label>Giới hạn, ngăn cách bằng dấu phẩy</label><input name="restrictions" placeholder="Ví dụ: Không cay, Dị ứng hạt"></div><div class="field full"><label>Ghi chú khẩu vị</label><textarea name="note" placeholder="Ví dụ: thích món mềm, không thích nấm"></textarea></div><div class="field full"><button class="primary-btn" type="submit">Lưu thành viên</button></div></form></div></div></div>
+<div class="toast" id="toast"><i data-lucide="check-circle-2" width="18"></i><span id="toastText">Đã cập nhật.</span></div>
+
+<div class="music-widget" id="musicWidget">
+  <button class="music-fab" id="musicFabBtn" aria-label="Mở playlist nhạc"><i data-lucide="music-4"></i></button>
+  <div class="music-panel" id="musicPanel">
+    <div class="music-panel-head">
+      <strong><i data-lucide="disc-3"></i> Playlist Cho Bạn</strong>
+      <button class="music-close" id="musicCloseBtn" aria-label="Đóng"><i data-lucide="x"></i></button>
     </div>
-
-    <div class="pantry-layout">
-      <section class="panel pantry-main">
-        <div class="toolbar">
-          <div class="search-box">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8"></circle>
-              <path d="m21 21-4.35-4.35"></path>
-            </svg>
-            <input id="pantrySearch" placeholder="Tìm nguyên liệu...">
-          </div>
-          <select class="filter-select" id="pantryFilter">
-            <option value="all">Tất cả trạng thái</option>
-            <option value="urgent">Cần dùng ngay</option>
-            <option value="soon">Sắp hết hạn</option>
-            <option value="fresh">Còn tươi</option>
-            <option value="cooked">Đã nấu chín</option>
-            <option value="frozen">Đông lạnh</option>
-          </select>
-          <select class="filter-select" id="pantryCategory">
-            <option value="all">Tất cả nhóm</option>
-            <option value="protein">Chất đạm</option>
-            <option value="vegetable">Rau củ</option>
-            <option value="grain">Tinh bột</option>
-            <option value="other">Khác</option>
-          </select>
-        </div>
-        <div class="pantry-grid" id="pantryGrid">
-          <div class="empty-state">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-            </svg>
-            <p>Chưa có nguyên liệu nào. Bấm "Thêm nguyên liệu" để bắt đầu!</p>
-          </div>
-        </div>
-      </section>
-
-      <aside class="pantry-side">
-        <section class="panel side-card">
-          <div class="panel-title">
-            <h3>Tổng quan tủ lạnh</h3>
-            <span class="pill" id="pantryCountPill">0 mục</span>
-          </div>
-          <div class="status-list" id="pantryStatusList">
-            <div class="status-item">
-              <strong>Cần dùng ngay:</strong>
-              <span class="status-count">0</span>
-            </div>
-            <div class="status-item">
-              <strong>Sắp hết hạn:</strong>
-              <span class="status-count">0</span>
-            </div>
-            <div class="status-item">
-              <strong>Còn tươi:</strong>
-              <span class="status-count">0</span>
-            </div>
-          </div>
-        </section>
-
-        <section class="panel side-card">
-          <div class="panel-title">
-            <h3>Biến đồ ăn thừa thành món mới</h3>
-            <span class="pill orange">Leftover</span>
-          </div>
-          <div class="leftover-box">
-            <select class="filter-select" id="leftoverSelect" style="width:100%">
-              <option value="">Chọn đồ ăn thừa...</option>
-              <option value="rice">Cơm nguội</option>
-              <option value="chicken">Gà đã nấu</option>
-              <option value="vegetables">Rau củ đã chín</option>
-              <option value="bread">Bánh mì cũ</option>
-              <option value="broth">Nước dùng còn thừa</option>
-            </select>
-            <div class="leftover-result" id="leftoverResult">
-              Chọn một loại đồ ăn thừa để nhận gợi ý cách biến thành món mới
-            </div>
-          </div>
-        </section>
-
-        <div class="health-notice">
-          <strong style="display:block;margin-bottom:5px;">Lưu ý an toàn thực phẩm</strong>
-          ReMeal hỗ trợ sắp xếp và gợi ý, nhưng không thể xác định thực phẩm còn an toàn chỉ qua ngày nhập. Hãy kiểm tra mùi, màu sắc, nhiệt độ bảo quản và hướng dẫn an toàn trước khi sử dụng.
-        </div>
-      </aside>
+    <div class="music-tabs" id="musicTabs">
+      <button class="music-tab active" data-genre="vpop">🇻🇳 Việt</button>
+      <button class="music-tab" data-genre="kpop">🇰🇷 Hàn</button>
+      <button class="music-tab" data-genre="cpop">🇨🇳 Trung</button>
+      <button class="music-tab" data-genre="lofi">🎧 Lofi</button>
     </div>
-  </section>
+    <div class="music-frame-wrap">
+      <iframe id="musicFrame" src="" title="Trình phát nhạc" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <p class="music-hint">🎵 Nhạc phát qua YouTube — bấm ▶ trong khung để nghe.</p>
+  </div>
+</div>
 
-  <script>
-    // Dữ liệu mẫu
-    let pantryItems = JSON.parse(localStorage.getItem('pantryItems')) || [];
+<script>
+const $=(s,p=document)=>p.querySelector(s),$$=(s,p=document)=>[...p.querySelectorAll(s)];const currency=v=>new Intl.NumberFormat("vi-VN").format(Math.round(v))+"đ";const todayIso=()=>new Date().toISOString().slice(0,10);const addDays=d=>{const x=new Date();x.setDate(x.getDate()+d);return x.toISOString().slice(0,10)};
+const catalog={chicken:{name:"Thịt gà",emoji:"🍗",category:"protein",price:65000},egg:{name:"Trứng gà",emoji:"🥚",category:"protein",price:4000},carrot:{name:"Cà rốt",emoji:"🥕",category:"vegetable",price:5000},greens:{name:"Rau cải xanh",emoji:"🥬",category:"vegetable",price:12000},rice:{name:"Cơm",emoji:"🍚",category:"grain",price:7000},mushroom:{name:"Nấm rơm",emoji:"🍄",category:"vegetable",price:18000},tofu:{name:"Đậu hũ",emoji:"🧈",category:"protein",price:8000},tomato:{name:"Cà chua",emoji:"🍅",category:"vegetable",price:6000},beef:{name:"Thịt bò",emoji:"🥩",category:"protein",price:95000},potato:{name:"Khoai tây",emoji:"🥔",category:"vegetable",price:7000},onion:{name:"Hành tây",emoji:"🧅",category:"vegetable",price:6000},scallion:{name:"Hành lá",emoji:"🌿",category:"vegetable",price:5000},garlic:{name:"Tỏi",emoji:"🧄",category:"other",price:3000},pumpkin:{name:"Bí đỏ",emoji:"🎃",category:"vegetable",price:12000},bread:{name:"Bánh mì",emoji:"🍞",category:"grain",price:6000},noodles:{name:"Mì",emoji:"🍜",category:"grain",price:10000},milk:{name:"Sữa",emoji:"🥛",category:"other",price:28000},yogurt:{name:"Sữa chua",emoji:"🥣",category:"other",price:8000},cucumber:{name:"Dưa chuột",emoji:"🥒",category:"vegetable",price:7000}};
+const defaultPantry=()=>[{id:crypto.randomUUID(),key:"chicken",name:"Thịt gà",emoji:"🍗",qty:350,unit:"g",expiry:addDays(1),condition:"fresh",category:"protein"},{id:crypto.randomUUID(),key:"egg",name:"Trứng gà",emoji:"🥚",qty:6,unit:"quả",expiry:addDays(8),condition:"fresh",category:"protein"},{id:crypto.randomUUID(),key:"carrot",name:"Cà rốt",emoji:"🥕",qty:2,unit:"củ",expiry:addDays(2),condition:"fresh",category:"vegetable"},{id:crypto.randomUUID(),key:"greens",name:"Rau cải xanh",emoji:"🥬",qty:1,unit:"bó",expiry:addDays(3),condition:"fresh",category:"vegetable"},{id:crypto.randomUUID(),key:"rice",name:"Cơm nguội",emoji:"🍚",qty:2,unit:"chén",expiry:addDays(1),condition:"cooked",category:"grain"},{id:crypto.randomUUID(),key:"mushroom",name:"Nấm rơm",emoji:"🍄",qty:150,unit:"g",expiry:addDays(2),condition:"fresh",category:"vegetable"},{id:crypto.randomUUID(),key:"tofu",name:"Đậu hũ",emoji:"🧈",qty:1,unit:"miếng",expiry:addDays(4),condition:"frozen",category:"protein"},{id:crypto.randomUUID(),key:"garlic",name:"Tỏi",emoji:"🧄",qty:5,unit:"tép",expiry:addDays(14),condition:"fresh",category:"other"}];
+const defaultMembers=()=>[{id:crypto.randomUUID(),name:"Lan Anh",role:"Bạn",avatar:"👩🏻",goal:"balanced",restrictions:["Không ăn cay"],note:"Ưu tiên món nhiều rau",selected:true},{id:crypto.randomUUID(),name:"Minh",role:"Chồng",avatar:"👨🏻",goal:"protein",restrictions:[],note:"Đang tập gym",selected:true},{id:crypto.randomUUID(),name:"Bé An",role:"Con",avatar:"👧🏻",goal:"balanced",restrictions:["Dị ứng hạt"],note:"Thích món mềm, ít gia vị",selected:false}];
+const R=(id,title,image,desc,mealTypes,servings,time,difficulty,equipment,diet,allergens,ingredients,nutrition,steps)=>({id,title,image,desc,mealTypes,servings,time,difficulty,equipment,diet,allergens,spicy:false,ingredients,nutrition,steps});
+const recipes=[R("fried-rice-chicken","Cơm chiên gà rau củ","https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=900&q=86","Tận dụng cơm nguội, thịt gà và rau củ thành bữa ăn đủ chất, dễ nấu.",["lunch","dinner"],2,25,"easy",["stove","pan"],["dairyfree"],[],[{key:"rice",amount:300,unit:"g",role:"main",required:true},{key:"chicken",amount:180,unit:"g",role:"main",required:true,substitutes:["tofu"]},{key:"egg",amount:2,unit:"quả",role:"secondary",required:false},{key:"carrot",amount:1,unit:"củ",role:"secondary",required:false},{key:"greens",amount:.5,unit:"bó",role:"secondary",required:false},{key:"scallion",amount:.5,unit:"bó",role:"seasoning",required:false}],{calories:520,protein:36,carbs:62,fat:14,fiber:7},["Cắt nhỏ thịt gà và rau củ.","Áp chảo thịt gà đến khi vừa chín.","Cho trứng và cơm nguội vào đảo đều.","Thêm rau củ, nêm gia vị và xào thêm 3–4 phút."]),R("egg-greens","Trứng xào rau cải","https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=86","Món nhanh cho ngày bận rộn, giàu đạm từ trứng và chất xơ từ rau.",["breakfast","lunch","dinner"],2,15,"easy",["stove","pan"],["vegetarian","dairyfree","glutenfree"],[],[{key:"egg",amount:3,unit:"quả",role:"main",required:true},{key:"greens",amount:1,unit:"bó",role:"main",required:true},{key:"carrot",amount:.5,unit:"củ",role:"secondary",required:false},{key:"garlic",amount:1,unit:"tép",role:"seasoning",required:false}],{calories:270,protein:21,carbs:13,fat:15,fiber:5},["Rửa sạch và cắt rau vừa ăn.","Đánh đều trứng với một ít gia vị.","Xào rau nhanh trên lửa lớn.","Cho trứng vào, đảo đến khi vừa chín mềm."]),R("chicken-mushroom-soup","Canh gà nấm rau xanh","https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=86","Canh thanh nhẹ, nhiều rau và protein nạc, phù hợp bữa tối ít dầu mỡ.",["lunch","dinner"],2,30,"easy",["stove","pot"],["dairyfree","glutenfree"],[],[{key:"chicken",amount:220,unit:"g",role:"main",required:true,substitutes:["tofu"]},{key:"mushroom",amount:100,unit:"g",role:"main",required:true},{key:"greens",amount:.5,unit:"bó",role:"secondary",required:false},{key:"carrot",amount:1,unit:"củ",role:"secondary",required:false}],{calories:330,protein:39,carbs:22,fat:9,fiber:8},["Sơ chế gà, nấm và rau củ.","Đun nước, cho thịt gà vào nấu chín.","Thêm cà rốt và nấm, nấu 8 phút.","Cho rau cải vào cuối cùng, nêm vừa ăn rồi tắt bếp."]),R("tofu-tomato","Đậu hũ sốt cà chua","https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=86","Món chay dễ ăn, chi phí thấp, có thể dùng cùng cơm hoặc rau luộc.",["lunch","dinner"],2,22,"easy",["stove","pan"],["vegetarian","dairyfree","glutenfree"],[],[{key:"tofu",amount:2,unit:"miếng",role:"main",required:true},{key:"tomato",amount:3,unit:"quả",role:"main",required:true},{key:"scallion",amount:.5,unit:"bó",role:"seasoning",required:false},{key:"garlic",amount:1,unit:"tép",role:"seasoning",required:false}],{calories:310,protein:22,carbs:24,fat:16,fiber:7},["Cắt đậu hũ thành miếng vừa ăn.","Áp chảo đậu hũ đến khi vàng nhẹ.","Nấu cà chua thành sốt sệt.","Cho đậu hũ vào rim 5 phút rồi thêm hành lá."]),R("chicken-egg-salad","Salad gà trứng","https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=900&q=86","Bữa ăn nhiều protein, nhiều rau và dễ điều chỉnh cho mục tiêu giảm cân.",["lunch","dinner"],2,20,"easy",["stove","pot"],["glutenfree"],["dairy"],[{key:"chicken",amount:180,unit:"g",role:"main",required:true},{key:"egg",amount:2,unit:"quả",role:"secondary",required:false},{key:"greens",amount:1,unit:"bó",role:"main",required:true},{key:"carrot",amount:1,unit:"củ",role:"secondary",required:false},{key:"cucumber",amount:1,unit:"quả",role:"secondary",required:false},{key:"yogurt",amount:1,unit:"hộp",role:"seasoning",required:false}],{calories:360,protein:43,carbs:19,fat:13,fiber:8},["Luộc hoặc áp chảo thịt gà.","Luộc trứng và cắt đôi.","Rửa rau, thái cà rốt và dưa chuột.","Trộn tất cả với sốt sữa chua hoặc dầu giấm."]),R("chicken-congee","Cháo gà nấm","https://images.unsplash.com/photo-1625944525533-473f1a3d54e7?auto=format&fit=crop&w=900&q=86","Món mềm, dễ ăn, phù hợp trẻ em hoặc khi cần bữa nhẹ bụng.",["breakfast","dinner"],3,42,"medium",["stove","pot"],["dairyfree","glutenfree"],[],[{key:"rice",amount:180,unit:"g",role:"main",required:true},{key:"chicken",amount:220,unit:"g",role:"main",required:true},{key:"mushroom",amount:100,unit:"g",role:"secondary",required:false},{key:"carrot",amount:.5,unit:"củ",role:"secondary",required:false},{key:"scallion",amount:.5,unit:"bó",role:"seasoning",required:false}],{calories:390,protein:31,carbs:55,fat:7,fiber:5},["Vo gạo và nấu với nhiều nước.","Luộc gà, xé nhỏ và giữ lại nước dùng.","Cho nấm, cà rốt và gà vào cháo.","Nấu đến khi mềm, nêm nhẹ và thêm hành."]),R("beef-noodles","Mì xào bò rau củ","https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=900&q=86","Món no lâu, giàu protein, phù hợp bữa trưa hoặc tối cần nhiều năng lượng.",["lunch","dinner"],2,28,"medium",["stove","pan"],["dairyfree"],["gluten"],[{key:"beef",amount:200,unit:"g",role:"main",required:true},{key:"noodles",amount:250,unit:"g",role:"main",required:true},{key:"carrot",amount:1,unit:"củ",role:"secondary",required:false},{key:"greens",amount:.5,unit:"bó",role:"secondary",required:false},{key:"onion",amount:.5,unit:"củ",role:"secondary",required:false}],{calories:610,protein:39,carbs:77,fat:17,fiber:7},["Luộc mì vừa chín rồi để ráo.","Ướp bò nhẹ và xào nhanh trên lửa lớn.","Xào rau củ, cho mì vào đảo đều.","Thêm bò trở lại, nêm vừa ăn."]),R("pumpkin-soup","Súp bí đỏ","https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=900&q=86","Súp ấm, nhiều chất xơ, phù hợp bữa sáng hoặc bữa tối nhẹ.",["breakfast","dinner"],2,35,"easy",["stove","pot"],["vegetarian","glutenfree"],["dairy"],[{key:"pumpkin",amount:350,unit:"g",role:"main",required:true},{key:"milk",amount:200,unit:"ml",role:"secondary",required:false},{key:"onion",amount:.5,unit:"củ",role:"secondary",required:false}],{calories:260,protein:8,carbs:42,fat:9,fiber:9},["Cắt bí đỏ và hành tây.","Nấu mềm bí với một ít nước.","Xay hoặc nghiền nhuyễn.","Thêm sữa, nêm nhẹ và đun thêm 3 phút."]),R("tofu-rice-bowl","Cơm bowl đậu hũ rau củ","https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=86","Bowl chay cân bằng, nhiều màu sắc, dễ thay đổi theo rau đang có.",["lunch","dinner"],2,25,"easy",["stove","pan"],["vegetarian","dairyfree","glutenfree"],["soy"],[{key:"rice",amount:300,unit:"g",role:"main",required:true},{key:"tofu",amount:2,unit:"miếng",role:"main",required:true},{key:"carrot",amount:1,unit:"củ",role:"secondary",required:false},{key:"greens",amount:.5,unit:"bó",role:"secondary",required:false},{key:"mushroom",amount:100,unit:"g",role:"secondary",required:false}],{calories:500,protein:26,carbs:68,fat:15,fiber:11},["Áp chảo đậu hũ đến khi vàng.","Xào nhanh nấm và rau củ.","Cho cơm vào tô.","Xếp đậu hũ, rau lên trên và thêm sốt tùy chọn."]),R("potato-egg","Khoai tây trứng áp chảo","https://images.unsplash.com/photo-1510693206972-df098062cb71?auto=format&fit=crop&w=900&q=86","Món ít nguyên liệu, no lâu, phù hợp bữa sáng hoặc bữa nhẹ.",["breakfast","lunch"],2,24,"easy",["stove","pan"],["vegetarian","dairyfree","glutenfree"],[],[{key:"potato",amount:3,unit:"củ",role:"main",required:true},{key:"egg",amount:3,unit:"quả",role:"main",required:true},{key:"onion",amount:.5,unit:"củ",role:"secondary",required:false}],{calories:440,protein:20,carbs:54,fat:17,fiber:6},["Thái khoai tây lát mỏng.","Áp chảo khoai đến khi mềm và vàng.","Đổ trứng đánh lên trên.","Đậy nắp đến khi trứng chín."]),R("chicken-sandwich","Sandwich gà rau xanh","https://images.unsplash.com/photo-1553909489-cd47e0907980?auto=format&fit=crop&w=900&q=86","Tận dụng gà đã nấu thành bữa sáng hoặc trưa mang đi.",["breakfast","lunch","snack"],2,12,"easy",["pan"],["dairyfree"],["gluten"],[{key:"bread",amount:4,unit:"lát",role:"main",required:true},{key:"chicken",amount:150,unit:"g",role:"main",required:true},{key:"greens",amount:.5,unit:"bó",role:"secondary",required:false},{key:"tomato",amount:1,unit:"quả",role:"secondary",required:false}],{calories:420,protein:35,carbs:49,fat:10,fiber:6},["Xé nhỏ thịt gà đã nấu.","Rửa và để ráo rau.","Xếp gà, rau và cà chua vào bánh mì.","Áp chảo nhẹ hai mặt nếu muốn ăn nóng."]),R("vegetable-stirfry","Rau củ nấm áp chảo","https://images.unsplash.com/photo-1543353071-087092ec393a?auto=format&fit=crop&w=900&q=86","Món phụ nhiều rau, ít năng lượng, dùng tốt cho mục tiêu giảm cân.",["lunch","dinner"],2,18,"easy",["stove","pan"],["vegetarian","dairyfree","glutenfree"],[],[{key:"mushroom",amount:150,unit:"g",role:"main",required:true},{key:"carrot",amount:1,unit:"củ",role:"secondary",required:false},{key:"greens",amount:1,unit:"bó",role:"main",required:true},{key:"garlic",amount:1,unit:"tép",role:"seasoning",required:false}],{calories:180,protein:9,carbs:25,fat:6,fiber:10},["Rửa sạch và cắt rau củ.","Làm nóng chảo với lượng dầu nhỏ.","Cho nấm và cà rốt vào trước.","Thêm rau xanh, nêm nhẹ và đảo nhanh."])];
+const leftoverMap={rice:["Cơm chiên rau củ|Thêm trứng và rau còn lại, hoàn thành trong khoảng 15 phút.","Cháo nhanh|Nấu cơm nguội với nước dùng, thêm nấm hoặc thịt xé.","Cơm nắm áp chảo|Trộn cơm với rau băm, tạo viên và áp chảo hai mặt."],chicken:["Salad gà|Xé gà, trộn rau xanh và sốt nhẹ.","Sandwich gà|Kẹp gà cùng cà chua và rau để làm bữa sáng.","Cháo gà|Tận dụng gà và nước dùng cho bữa nhẹ bụng."],vegetables:["Trứng cuộn rau|Băm rau đã chín và cuộn cùng trứng.","Súp rau củ|Xay rau với nước dùng để tạo món súp nhanh.","Mì xào rau|Cho rau vào cuối cùng để tránh bị quá mềm."],bread:["Bánh mì trứng nướng|Nhúng bánh vào trứng và áp chảo.","Crouton giòn|Cắt nhỏ, nướng hoặc áp chảo làm topping salad.","Pudding bánh mì|Trộn bánh với sữa, trứng rồi nướng."],broth:["Súp nấm|Thêm nấm, rau và đậu hũ vào nước dùng.","Cháo rau củ|Nấu cơm hoặc gạo cùng nước dùng còn thừa.","Mì nước nhanh|Thêm mì, trứng và rau để có bữa 15 phút."]};
+const defaultHistory=()=>[{id:crypto.randomUUID(),recipeId:"fried-rice-chicken",date:addDays(-1),saved:35000,rescued:.6},{id:crypto.randomUUID(),recipeId:"egg-greens",date:addDays(-2),saved:26000,rescued:.3},{id:crypto.randomUUID(),recipeId:"chicken-mushroom-soup",date:addDays(-4),saved:42000,rescued:.7}];
+const state={pantry:JSON.parse(localStorage.getItem("remeal_pantry")||"null")||defaultPantry(),members:JSON.parse(localStorage.getItem("remeal_members")||"null")||defaultMembers(),planner:JSON.parse(localStorage.getItem("remeal_planner")||"{}"),shopping:JSON.parse(localStorage.getItem("remeal_shopping")||"[]"),history:JSON.parse(localStorage.getItem("remeal_history")||"null")||defaultHistory(),builder:{selectedPantry:[],mealType:"dinner",servings:2,maxTime:30,difficulty:"easy",equipment:["stove","pan","pot"],budget:50000,goal:"balanced",restrictions:["nospicy"]},results:[]};
+function save(){localStorage.setItem("remeal_pantry",JSON.stringify(state.pantry));localStorage.setItem("remeal_members",JSON.stringify(state.members));localStorage.setItem("remeal_planner",JSON.stringify(state.planner));localStorage.setItem("remeal_shopping",JSON.stringify(state.shopping));localStorage.setItem("remeal_history",JSON.stringify(state.history))}function daysUntil(d){return Math.ceil((new Date(d+"T00:00:00")-new Date(todayIso()+"T00:00:00"))/86400000)}function pStatus(i){const d=daysUntil(i.expiry);if(i.condition==="frozen")return{key:"frozen",label:"Đông lạnh",cls:"blue"};if(i.condition==="cooked")return{key:"cooked",label:"Đã nấu chín",cls:"blue"};if(d<=1)return{key:"urgent",label:"Cần dùng ngay",cls:"red"};if(d<=3)return{key:"soon",label:"Sắp hết hạn",cls:"orange"};return{key:"fresh",label:"Còn tươi",cls:""}}function showToast(m){$("#toastText").textContent=m;$("#toast").classList.add("show");clearTimeout(window.__t);window.__t=setTimeout(()=>$("#toast").classList.remove("show"),2500)}function showView(n){$$('.view').forEach(v=>v.classList.remove('active'));$$('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===n));const v=$("#"+n+"View");if(v)v.classList.add('active');$("#mainNav").classList.remove('show');scrollTo({top:0,behavior:'smooth'});({pantry:renderPantry,builder:renderBuilder,recipes:renderResults,planner:renderPlanner,shopping:renderShopping,family:renderFamily,progress:renderProgress}[n]||(()=>{}))()}
+function renderHome(){const x=[...state.pantry].sort((a,b)=>daysUntil(a.expiry)-daysUntil(b.expiry)).slice(0,3);$("#homeRescueList").innerHTML=x.map(i=>`<div class="rescue-item"><div class="food-icon">${i.emoji}</div><div><strong>${i.name}</strong><small>${i.qty}${i.unit} · ${pStatus(i).label}</small></div><span class="days-left">${daysUntil(i.expiry)<=0?'Hôm nay':daysUntil(i.expiry)+' ngày'}</span></div>`).join('');const money=82000+state.history.reduce((s,h)=>s+h.saved,0),food=6.8+state.history.reduce((s,h)=>s+h.rescued,0);$("#homeMealCount").textContent=9+state.history.length;$("#homeSavedMoney").textContent=Math.round(money/1000)+'K';$("#homeRescued").textContent=food.toFixed(1)+'kg'}
+function renderPantry(){const q=($("#pantrySearch")?.value||'').toLowerCase(),f=$("#pantryFilter")?.value||'all',c=$("#pantryCategory")?.value||'all';const list=state.pantry.filter(i=>i.name.toLowerCase().includes(q)&&(f==='all'||pStatus(i).key===f)&&(c==='all'||i.category===c));$("#pantryGrid").innerHTML=list.map(i=>{const s=pStatus(i),d=daysUntil(i.expiry),cls=s.key==='urgent'?'urgent':s.key==='soon'?'soon':'',w=i.condition==='frozen'?100:Math.max(8,Math.min(100,d/12*100));return`<article class="pantry-card"><div class="pantry-card-top"><div class="food-icon">${i.emoji}</div><div><h4>${i.name}</h4><p>${i.qty}${i.unit} · ${s.label}</p></div></div><div class="pantry-card-meta"><div class="meta-line"><span>Hạn sử dụng</span><strong>${i.expiry}</strong></div><div class="expiry-track ${cls}"><span style="width:${w}%"></span></div><div class="meta-line"><span>Còn lại</span><strong>${i.condition==='frozen'?'Đang đông lạnh':d<=0?'Dùng ngay':d+' ngày'}</strong></div></div><div class="pantry-card-actions"><button class="icon-btn" onclick="adjustPantry('${i.id}',-1)"><i data-lucide="minus"></i></button><button class="icon-btn" onclick="adjustPantry('${i.id}',1)"><i data-lucide="plus"></i></button><button class="icon-btn" onclick="usePantry('${i.id}')"><i data-lucide="check"></i></button><button class="icon-btn" onclick="removePantry('${i.id}')"><i data-lucide="trash-2"></i></button></div></article>`}).join('')||`<div class="health-notice" style="grid-column:1/-1">Không tìm thấy nguyên liệu phù hợp bộ lọc.</div>`;const counts={urgent:0,soon:0,fresh:0,cooked:0,frozen:0};state.pantry.forEach(i=>counts[pStatus(i).key]++);$("#pantryCountPill").textContent=state.pantry.length+' mục';$("#pantryStatusList").innerHTML=`<div class="status-row"><span>Cần dùng ngay</span><strong>${counts.urgent}</strong></div><div class="status-row"><span>Sắp hết hạn</span><strong>${counts.soon}</strong></div><div class="status-row"><span>Còn tươi</span><strong>${counts.fresh}</strong></div><div class="status-row"><span>Đã nấu chín</span><strong>${counts.cooked}</strong></div><div class="status-row"><span>Đông lạnh</span><strong>${counts.frozen}</strong></div>`;renderHome();lucide.createIcons()}window.adjustPantry=(id,d)=>{const i=state.pantry.find(x=>x.id===id);if(!i)return;i.qty=Math.max(0,+i.qty+d);if(i.qty<=0)state.pantry=state.pantry.filter(x=>x.id!==id);save();renderPantry();renderBuilder()};window.usePantry=id=>{const i=state.pantry.find(x=>x.id===id);if(!i)return;i.qty=Math.max(0,+i.qty-1);if(i.qty<=0)state.pantry=state.pantry.filter(x=>x.id!==id);save();renderPantry();renderBuilder();showToast('Đã cập nhật lượng nguyên liệu còn lại.')};window.removePantry=id=>{state.pantry=state.pantry.filter(x=>x.id!==id);save();renderPantry();renderBuilder();showToast('Đã xóa nguyên liệu khỏi tủ.')};function renderLeftovers(){const k=$("#leftoverSelect").value;$("#leftoverResult").innerHTML=leftoverMap[k].map(s=>{const[a,b]=s.split('|');return`<div class="leftover-suggestion"><strong>${a}</strong>${b}</div>`}).join('')}
+function goalName(g){return{balanced:'Ăn cân bằng',weightloss:'Giảm cân',protein:'Tăng protein',fiber:'Tăng chất xơ',vegetables:'Ăn nhiều rau',lowfat:'Giảm dầu mỡ'}[g]||g}function syncOne(sel,v){$$('.option-btn',$(sel)).forEach(b=>b.classList.toggle('active',b.dataset.value===v))}function syncMulti(sel,v){$$('.option-btn',$(sel)).forEach(b=>b.classList.toggle('active',v.includes(b.dataset.value)))}function updateSteps(){$("#stepIngredients").textContent=`Đang chọn ${state.builder.selectedPantry.length} nguyên liệu`;const m={breakfast:'Bữa sáng',lunch:'Bữa trưa',dinner:'Bữa tối',snack:'Ăn nhẹ'}[state.builder.mealType];$("#stepMeal").textContent=`${m} · ${state.builder.servings} người`;$("#stepGoal").textContent=goalName(state.builder.goal)}function updateGuard(){const ms=state.members.filter(m=>m.selected),all=[...new Set([...state.builder.restrictions,...ms.flatMap(m=>m.restrictions)])];$("#healthGuardSummary").innerHTML=all.length?`<strong>Đang áp dụng:</strong> ${all.join(', ')}. Công thức có xung đột sẽ bị loại hoặc hạ điểm.`:'Không có giới hạn đặc biệt.'}
+function renderBuilder(){if(!state.builder.selectedPantry.length)state.builder.selectedPantry=state.pantry.map(x=>x.id);$("#builderIngredients").innerHTML=state.pantry.map(i=>`<label class="ingredient-select"><input type="checkbox" data-pantry-select="${i.id}" ${state.builder.selectedPantry.includes(i.id)?'checked':''}><div class="food-icon">${i.emoji}</div><strong>${i.name}</strong><small>${i.qty}${i.unit}</small></label>`).join('');$("#builderFamily").innerHTML=state.members.map(m=>`<label class="member-check"><input type="checkbox" data-member-select="${m.id}" ${m.selected?'checked':''}><span class="member-avatar">${m.avatar}</span><span>${m.name}<small style="display:block;color:var(--muted);font-size:7px">${m.role}</small></span></label>`).join('');$("#servingRange").value=state.builder.servings;$("#servingValue").textContent=state.builder.servings;$("#budgetRange").value=state.builder.budget;$("#budgetValue").textContent=new Intl.NumberFormat('vi-VN').format(state.builder.budget);syncOne('#mealTypeOptions',state.builder.mealType);syncOne('#timeOptions',String(state.builder.maxTime));syncOne('#difficultyOptions',state.builder.difficulty);syncOne('#goalOptions',state.builder.goal);syncMulti('#equipmentOptions',state.builder.equipment);syncMulti('#restrictionOptions',state.builder.restrictions);updateSteps();updateGuard();lucide.createIcons()}
+function mergedRestrictions(){const t=state.members.filter(m=>m.selected).flatMap(m=>m.restrictions).map(x=>x.toLowerCase()),r=[...state.builder.restrictions];if(t.some(x=>x.includes('không cay')))r.push('nospicy');if(t.some(x=>x.includes('dị ứng hạt')))r.push('nutallergy');if(t.some(x=>x.includes('hải sản')))r.push('seafoodallergy');if(t.some(x=>x.includes('không sữa')))r.push('dairyfree');if(t.some(x=>x.includes('gluten')))r.push('glutenfree');if(t.some(x=>x.includes('ăn chay')))r.push('vegetarian');return[...new Set(r)]}function roleWeight(r){return{main:5,secondary:2,seasoning:1,optional:.5}[r]||1}function goalScore(r,g){const n=r.nutrition;if(g==='weightloss')return Math.max(35,100-Math.max(0,n.calories-300)/4+n.fiber*2);if(g==='protein')return Math.min(100,35+n.protein*1.6);if(g==='fiber')return Math.min(100,35+n.fiber*6);if(g==='vegetables')return Math.min(100,40+r.ingredients.filter(x=>catalog[x.key]?.category==='vegetable').length*15);if(g==='lowfat')return Math.max(35,100-n.fat*2.5);return Math.max(45,100-(Math.abs(n.protein-30)*.8+Math.abs(n.fiber-8)*2+Math.max(0,n.calories-600)/5))}
+function evaluate(r){const p=state.pantry.filter(i=>state.builder.selectedPantry.includes(i.id)),keys=new Set(p.map(x=>x.key)),res=mergedRestrictions();if(res.includes('vegetarian')&&!r.diet.includes('vegetarian'))return null;if(res.includes('dairyfree')&&r.allergens.includes('dairy'))return null;if(res.includes('glutenfree')&&r.allergens.includes('gluten'))return null;if(!r.mealTypes.includes(state.builder.mealType))return null;if(r.time>state.builder.maxTime&&state.builder.maxTime<90)return null;const order={easy:1,medium:2,hard:3};if(state.builder.difficulty!=='any'&&order[r.difficulty]>order[state.builder.difficulty])return null;if(r.equipment.some(e=>!state.builder.equipment.includes(e)))return null;let total=0,matched=0,urgent=0;const missing=[];r.ingredients.forEach(i=>{const w=roleWeight(i.role);total+=w;if(keys.has(i.key))matched+=w;else if(i.required)missing.push(i);const pi=p.find(x=>x.key===i.key);if(pi&&(daysUntil(pi.expiry)<=3||pi.condition==='cooked'))urgent++});const relevant=p.filter(x=>daysUntil(x.expiry)<=3||x.condition==='cooked').length,match=Math.round(matched/total*100),waste=relevant?Math.min(100,Math.round(urgent/relevant*100+35)):70,nutrition=Math.round(goalScore(r,'balanced')),goal=Math.round(goalScore(r,state.builder.goal)),timeScore=Math.max(40,100-Math.max(0,r.time-15)*2),cost=missing.reduce((s,i)=>s+(catalog[i.key]?.price||12000),0);let score=match*.35+waste*.2+nutrition*.15+goal*.1+timeScore*.1+100*.05+95*.05-missing.length*7-(cost>state.builder.budget?18:0);return{...r,score:Math.max(0,Math.min(99,Math.round(score))),match,waste,nutrition,goalScore:goal,timeScore,missing,missingCost:cost}}
+function generate(){const a=recipes.map(evaluate).filter(Boolean).sort((x,y)=>y.score-x.score);if(!a.length){showToast('Không có công thức đáp ứng toàn bộ giới hạn. Hãy nới thời gian hoặc bộ lọc.');return}const best=a[0],fast=[...a].sort((x,y)=>x.time-y.time||y.score-x.score).find(x=>x.id!==best.id)||a[1]||best,healthy=[...a].sort((x,y)=>y.goalScore-x.goalScore).find(x=>x.id!==best.id&&x.id!==fast.id)||a.find(x=>x.id!==best.id)||best;state.results=[{...best,resultLabel:'Phù hợp nhất',badgeClass:''},{...fast,resultLabel:'Nhanh nhất',badgeClass:'fast'},{...healthy,resultLabel:'Lành mạnh nhất',badgeClass:'healthy'}];const map={};state.results.flatMap(r=>r.missing).forEach(i=>{if(!map[i.key]){const c=catalog[i.key]||{name:i.key,emoji:'🥣',category:'other',price:12000};map[i.key]={id:crypto.randomUUID(),key:i.key,name:c.name,emoji:c.emoji,qty:i.amount,unit:i.unit,category:c.category,price:c.price,done:false,essential:true}}});state.shopping=Object.values(map);save();renderResults();renderShopping();showView('recipes');showToast('Đã phân tích và tạo ba gợi ý phù hợp nhất.')}
+function scoreRow(n,v){return`<div class="score-row"><span>${n}</span><div class="score-track"><span style="width:${v}%"></span></div><strong>${v}%</strong></div>`}function renderResults(){if(!state.results.length)state.results=recipes.slice(0,3).map((r,i)=>({...r,score:[92,86,88][i],match:[92,85,88][i],waste:[84,70,85][i],nutrition:[88,75,92][i],goalScore:[88,75,94][i],missing:[],missingCost:0,resultLabel:['Phù hợp nhất','Nhanh nhất','Lành mạnh nhất'][i],badgeClass:['','fast','healthy'][i]}));$("#summaryIngredients").textContent=state.builder.selectedPantry.length||state.pantry.length;$("#summaryServing").textContent=state.builder.servings;$("#summarySpend").textContent=currency(state.results.reduce((s,r)=>s+r.missingCost,0));$("#summaryWaste").textContent=Math.round(state.results.reduce((s,r)=>s+r.waste,0)/state.results.length)+'%';$("#recipeGrid").innerHTML=state.results.map(r=>`<article class="recipe-card"><div class="recipe-badge ${r.badgeClass}">${r.resultLabel}</div><img src="${r.image}" alt="${r.title}"><div class="recipe-body"><h3>${r.title}</h3><p class="recipe-desc">${r.desc}</p><div class="recipe-meta"><span><i data-lucide="clock-3"></i>${r.time} phút</span><span><i data-lucide="bar-chart-3"></i>${r.difficulty==='easy'?'Dễ':'Trung bình'}</span><span><i data-lucide="users"></i>${state.builder.servings} người</span></div><div class="recipe-score-head"><small>Điểm phù hợp tổng</small><strong>${r.score}%</strong></div><div class="score-list">${scoreRow('Nguyên liệu',r.match)}${scoreRow('Dinh dưỡng',r.nutrition)}${scoreRow('Mục tiêu',r.goalScore)}${scoreRow('Giảm lãng phí',r.waste)}</div>${r.missing.length?`<div class="missing-note">Cần mua thêm: ${r.missing.map(x=>catalog[x.key]?.name||x.key).join(', ')} · ${currency(r.missingCost)}</div>`:`<div class="missing-note" style="background:#edf8ef;color:#35704a">Có thể nấu bằng nguyên liệu đang có.</div>`}<div class="recipe-actions"><button class="primary-btn small-btn" onclick="openRecipe('${r.id}')">Xem chi tiết</button><button class="secondary-btn small-btn" onclick="showToast('Đã lưu công thức yêu thích.')"><i data-lucide="heart" width="14"></i></button></div></div></article>`).join('');lucide.createIcons()}
+window.openRecipe=id=>{const r=recipes.find(x=>x.id===id),e=evaluate(r)||{...r,missing:[],missingCost:0,score:90},scale=state.builder.servings/r.servings,missing=new Set(e.missing.map(x=>x.key));$("#recipeModalBody").innerHTML=`<div class="recipe-modal-hero"><img src="${r.image}" alt="${r.title}"><div><span class="pill">${e.score||90}% phù hợp</span><h2>${r.title}</h2><p>${r.desc}</p><div class="recipe-meta" style="font-size:9px;margin-top:12px"><span><i data-lucide="clock-3"></i>${r.time} phút</span><span><i data-lucide="users"></i>${state.builder.servings} người</span><span><i data-lucide="wallet-cards"></i>Mua thêm ${currency(e.missingCost||0)}</span></div><div class="nutrition-grid"><div class="nutrition-box"><strong>${Math.round(r.nutrition.calories*scale)}</strong><small>kcal tổng</small></div><div class="nutrition-box"><strong>${Math.round(r.nutrition.protein*scale)}g</strong><small>Protein</small></div><div class="nutrition-box"><strong>${Math.round(r.nutrition.carbs*scale)}g</strong><small>Carb</small></div><div class="nutrition-box"><strong>${Math.round(r.nutrition.fat*scale)}g</strong><small>Chất béo</small></div><div class="nutrition-box"><strong>${Math.round(r.nutrition.fiber*scale)}g</strong><small>Chất xơ</small></div></div></div></div><div class="modal-detail-grid"><div class="detail-box"><h4>Nguyên liệu cho ${state.builder.servings} người</h4><ul>${r.ingredients.map(i=>`<li style="${missing.has(i.key)?'color:#d87a00;font-weight:700':''}">${catalog[i.key]?.name||i.key}: ${Math.round(i.amount*scale*10)/10}${i.unit}${missing.has(i.key)?' — cần mua':''}</li>`).join('')}</ul></div><div class="detail-box"><h4>Các bước thực hiện</h4><ol>${r.steps.map(s=>`<li>${s}</li>`).join('')}</ol></div></div><div class="health-notice" style="margin-top:15px">Dinh dưỡng được ước tính theo dữ liệu mẫu. Với dị ứng hoặc tình trạng sức khỏe cần kiểm soát nghiêm ngặt, hãy xác nhận nguyên liệu và khẩu phần với chuyên gia phù hợp.</div><div class="modal-actions"><button class="primary-btn" onclick="markCooked('${r.id}')"><i data-lucide="circle-check" width="16"></i> Đã nấu món này</button><button class="secondary-btn" onclick="addRecipeToPlan('${r.id}')"><i data-lucide="calendar-plus" width="16"></i> Thêm vào kế hoạch</button><button class="secondary-btn" onclick="addMissingToShopping('${r.id}')"><i data-lucide="shopping-basket" width="16"></i> Thêm đồ còn thiếu</button><button class="secondary-btn" onclick="shareRecipe('${r.id}')"><i data-lucide="share-2" width="16"></i> Chia sẻ</button></div>`;openModal('recipeModal');lucide.createIcons()};window.markCooked=id=>{state.history.unshift({id:crypto.randomUUID(),recipeId:id,date:todayIso(),saved:32000,rescued:.5});save();closeModal('recipeModal');renderProgress();renderHome();showToast('Đã ghi nhận món ăn và cập nhật tiến độ.')};window.addRecipeToPlan=id=>{const days=['mon','tue','wed','thu','fri','sat','sun'],k=days.map(d=>`${d}-dinner`).find(x=>!state.planner[x])||'mon-dinner';state.planner[k]=id;save();closeModal('recipeModal');renderPlanner();showToast('Đã thêm công thức vào kế hoạch tuần.')};window.addMissingToShopping=id=>{const e=evaluate(recipes.find(r=>r.id===id));if(!e)return;e.missing.forEach(i=>{if(!state.shopping.some(x=>x.key===i.key)){const c=catalog[i.key]||{name:i.key,emoji:'🥣',category:'other',price:12000};state.shopping.push({id:crypto.randomUUID(),key:i.key,name:c.name,emoji:c.emoji,qty:i.amount,unit:i.unit,category:c.category,price:c.price,done:false,essential:true})}});save();renderShopping();showToast('Đã thêm nguyên liệu còn thiếu vào danh sách mua.')};window.shareRecipe=async id=>{const r=recipes.find(x=>x.id===id),text=`${r.title} — công thức gợi ý từ ReMeal, ${r.time} phút.`;if(navigator.share)try{await navigator.share({title:r.title,text})}catch(e){}else{await navigator.clipboard.writeText(text);showToast('Đã sao chép nội dung chia sẻ.')}};
+const dayLabels=[['mon','Thứ 2'],['tue','Thứ 3'],['wed','Thứ 4'],['thu','Thứ 5'],['fri','Thứ 6'],['sat','Thứ 7'],['sun','CN']],mealLabels=[['breakfast','Sáng'],['lunch','Trưa'],['dinner','Tối'],['snack','Ăn nhẹ']];function renderPlanner(){let h=`<div></div>${dayLabels.map(x=>`<div class="head">${x[1]}</div>`).join('')}`;mealLabels.forEach(([m,l])=>{h+=`<div class="meal-label">${l}</div>`;dayLabels.forEach(([d])=>{const k=`${d}-${m}`,r=recipes.find(x=>x.id===state.planner[k]);h+=r?`<div class="plan-cell"><button class="plan-remove" onclick="removePlan('${k}')">×</button><div class="plan-meal"><img src="${r.image}" alt="${r.title}"><div><strong>${r.title}</strong><small>${r.time} phút</small></div></div></div>`:`<button class="plan-cell empty" onclick="quickAddPlan('${k}')">+</button>`})});$("#plannerTable").innerHTML=h;const ps=Object.values(state.planner).map(id=>recipes.find(r=>r.id===id)).filter(Boolean);$("#planMealsCount").textContent=ps.length;$("#planSpend").textContent=currency(state.shopping.reduce((s,x)=>s+(x.done?0:x.price),0));$("#planProtein").textContent=ps.length?Math.round(ps.reduce((s,r)=>s+r.nutrition.protein,0)/7)+'g':'0g';$("#planWaste").textContent=ps.length?Math.min(40,15+ps.length*2)+'%':'0%';lucide.createIcons()}window.removePlan=k=>{delete state.planner[k];save();renderPlanner()};window.quickAddPlan=k=>{const m=k.split('-')[1],r=recipes.find(x=>x.mealTypes.includes(m))||recipes[0];state.planner[k]=r.id;save();renderPlanner()};function autoPlan(){let idx=0;mealLabels.forEach(([m])=>dayLabels.forEach(([d])=>{const o=recipes.filter(r=>r.mealTypes.includes(m));if(o.length)state.planner[`${d}-${m}`]=o[idx++%o.length].id}));buildShoppingFromPlan();save();renderPlanner();renderShopping();showToast('Đã tạo kế hoạch bữa ăn 7 ngày.')}function buildShoppingFromPlan(){const pk=new Set(state.pantry.map(x=>x.key)),map={};Object.values(state.planner).forEach(id=>{const r=recipes.find(x=>x.id===id);if(!r)return;r.ingredients.filter(i=>i.required&&!pk.has(i.key)).forEach(i=>{if(!map[i.key]){const c=catalog[i.key]||{name:i.key,emoji:'🥣',category:'other',price:12000};map[i.key]={id:crypto.randomUUID(),key:i.key,name:c.name,emoji:c.emoji,qty:i.amount,unit:i.unit,category:c.category,price:c.price,done:false,essential:true}}else map[i.key].qty+=i.amount})});state.shopping=Object.values(map)}
+function renderShopping(){const g={};state.shopping.forEach(i=>(g[i.category||'other']||(g[i.category||'other']=[])).push(i));const labels={protein:'Chất đạm',vegetable:'Rau củ',grain:'Tinh bột',other:'Khác'};$("#shoppingList").innerHTML=Object.keys(g).length?Object.entries(g).map(([c,items])=>`<div class="category-label">${labels[c]||c}</div><div class="shopping-list">${items.map(i=>`<div class="shopping-item ${i.done?'done':''}"><input type="checkbox" ${i.done?'checked':''} onchange="toggleShopping('${i.id}')"><div class="food-icon">${i.emoji}</div><div><strong>${i.name}</strong><small>${Math.round(i.qty*10)/10}${i.unit} · ${i.essential?'Thiết yếu':'Tùy chọn'}</small></div><span class="shopping-price">${currency(i.price)}</span></div>`).join('')}</div>`).join(''):`<div class="health-notice">Danh sách mua đang trống. Hãy tạo gợi ý hoặc kế hoạch tuần.</div>`;const t=state.shopping.filter(x=>!x.done).reduce((s,x)=>s+x.price,0),e=state.shopping.filter(x=>!x.done&&x.essential).reduce((s,x)=>s+x.price,0),o=state.shopping.filter(x=>!x.done&&!x.essential).reduce((s,x)=>s+x.price,0);$("#shoppingTotal").textContent=currency(t);$("#shoppingEssential").textContent=currency(e);$("#shoppingOptional").textContent=currency(o);$("#shoppingDone").textContent=state.shopping.filter(x=>x.done).length+' mục'}window.toggleShopping=id=>{const i=state.shopping.find(x=>x.id===id);if(i)i.done=!i.done;save();renderShopping()};function addCustomShopping(){const name=prompt('Tên nguyên liệu cần mua:');if(!name)return;const price=+(prompt('Giá dự kiến:','10000')||10000);state.shopping.push({id:crypto.randomUUID(),key:name.toLowerCase(),name,emoji:'🛒',qty:1,unit:'phần',category:'other',price,done:false,essential:false});save();renderShopping()}function moveBought(){const b=state.shopping.filter(x=>x.done);b.forEach(i=>state.pantry.push({id:crypto.randomUUID(),key:i.key,name:i.name,emoji:i.emoji,qty:i.qty,unit:i.unit,expiry:addDays(7),condition:'fresh',category:i.category}));state.shopping=state.shopping.filter(x=>!x.done);save();renderShopping();renderPantry();renderBuilder();showToast(`Đã chuyển ${b.length} mục vào tủ lạnh.`)}async function shareShopping(){const text=state.shopping.filter(x=>!x.done).map(x=>`• ${x.name}: ${x.qty}${x.unit}`).join('\n')||'Danh sách mua đang trống.';if(navigator.share)try{await navigator.share({title:'Danh sách mua ReMeal',text})}catch(e){}else{await navigator.clipboard.writeText(text);showToast('Đã sao chép danh sách mua.')}}
+function renderFamily(){$("#familyGrid").innerHTML=state.members.map(m=>`<article class="family-card"><div class="family-card-top"><div class="member-avatar">${m.avatar}</div><div><h4>${m.name}</h4><p>${m.role}</p></div></div><div class="tag-wrap"><span class="mini-tag">${goalName(m.goal)}</span>${m.restrictions.map(r=>`<span class="mini-tag warn">${r}</span>`).join('')}</div><p style="margin-top:10px;line-height:1.55">${m.note||'Chưa có ghi chú khẩu vị.'}</p><div class="family-card-actions"><button class="small-btn ${m.selected?'soft-btn':'secondary-btn'}" onclick="toggleMember('${m.id}')">${m.selected?'Đang chọn':'Chọn cho bữa ăn'}</button><button class="small-btn danger-btn" onclick="removeMember('${m.id}')">Xóa</button></div></article>`).join('');const s=state.members.filter(m=>m.selected),r=[...new Set(s.flatMap(m=>m.restrictions))];$("#householdFit").innerHTML=s.length?`<strong>${s.map(m=>m.name).join(', ')}</strong><br>Yêu cầu chung: ${r.length?r.join(', '):'Không có giới hạn bắt buộc'}. Hệ thống sẽ ưu tiên mục tiêu ${[...new Set(s.map(m=>goalName(m.goal)))].join(' và ').toLowerCase()}.`:'Chưa chọn thành viên nào cho bữa ăn.';renderBuilder()}window.toggleMember=id=>{const m=state.members.find(x=>x.id===id);if(m)m.selected=!m.selected;save();renderFamily();updateGuard()};window.removeMember=id=>{state.members=state.members.filter(x=>x.id!==id);save();renderFamily()};function renderProgress(){const meals=9+state.history.length,money=82000+state.history.reduce((s,h)=>s+h.saved,0),food=6.8+state.history.reduce((s,h)=>s+h.rescued,0);$("#progressMeals").textContent=meals;$("#progressMoney").textContent=currency(money);$("#progressFood").textContent=food.toFixed(1).replace('.',',')+'kg';$("#progressStreak").textContent=Math.min(14,3+state.history.length)+' ngày';$("#historyList").innerHTML=state.history.slice(0,6).map(h=>{const r=recipes.find(x=>x.id===h.recipeId);return r?`<div class="history-item"><img src="${r.image}" alt="${r.title}"><div><strong>${r.title}</strong><small>${h.date} · Giải cứu ${h.rescued}kg</small></div><span>+${currency(h.saved)}</span></div>`:''}).join('')||`<div class="health-notice">Chưa có lịch sử nấu ăn.</div>`;renderHome()}
+function openModal(id){$("#"+id).classList.add('show');document.body.style.overflow='hidden'}function closeModal(id){$("#"+id).classList.remove('show');document.body.style.overflow=''}window.closeModal=closeModal;$$('.nav-btn,[data-view]').forEach(b=>b.addEventListener('click',e=>{if(b.dataset.view){e.preventDefault();showView(b.dataset.view)}}));$("#menuBtn").onclick=()=>$("#mainNav").classList.toggle('show');$$('[data-close]').forEach(b=>b.onclick=()=>closeModal(b.dataset.close));$$('.modal').forEach(m=>m.onclick=e=>{if(e.target===m)closeModal(m.id)});$("#openPantryModal").onclick=()=>{$("#pantryForm [name=expiry]").value=addDays(7);openModal('pantryModal')};$("#pantryForm").onsubmit=e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target)),key=d.name.toLowerCase().replace(/\s+/g,'-');state.pantry.push({id:crypto.randomUUID(),key,name:d.name,emoji:d.emoji||'🥣',qty:+d.qty,unit:d.unit,expiry:d.expiry,condition:d.condition,category:d.category});save();closeModal('pantryModal');e.target.reset();renderPantry();renderBuilder();showToast('Đã thêm nguyên liệu vào tủ lạnh.')};$("#openFamilyModal").onclick=()=>openModal('familyModal');$("#familyForm").onsubmit=e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));state.members.push({id:crypto.randomUUID(),name:d.name,role:d.role||'Thành viên',avatar:d.avatar||'🙂',goal:d.goal,restrictions:d.restrictions.split(',').map(x=>x.trim()).filter(Boolean),note:d.note,selected:false});save();closeModal('familyModal');e.target.reset();renderFamily();showToast('Đã thêm thành viên gia đình.')};$("#pantrySearch").oninput=renderPantry;$("#pantryFilter").onchange=renderPantry;$("#pantryCategory").onchange=renderPantry;$("#leftoverSelect").onchange=renderLeftovers;$("#selectAllPantry").onclick=()=>{state.builder.selectedPantry=state.builder.selectedPantry.length===state.pantry.length?[]:state.pantry.map(x=>x.id);renderBuilder()};$("#builderIngredients").onchange=e=>{const id=e.target.dataset.pantrySelect;if(!id)return;if(e.target.checked)state.builder.selectedPantry.push(id);else state.builder.selectedPantry=state.builder.selectedPantry.filter(x=>x!==id);state.builder.selectedPantry=[...new Set(state.builder.selectedPantry)];updateSteps()};$("#builderFamily").onchange=e=>{const m=state.members.find(x=>x.id===e.target.dataset.memberSelect);if(m)m.selected=e.target.checked;save();updateGuard()};function bindOne(sel,key,tr=v=>v){$(sel).onclick=e=>{const b=e.target.closest('.option-btn');if(!b)return;$$('.option-btn',$(sel)).forEach(x=>x.classList.remove('active'));b.classList.add('active');state.builder[key]=tr(b.dataset.value);updateSteps()}}function bindMulti(sel,key){$(sel).onclick=e=>{const b=e.target.closest('.option-btn');if(!b)return;b.classList.toggle('active');const v=b.dataset.value,a=state.builder[key];if(b.classList.contains('active'))a.push(v);else state.builder[key]=a.filter(x=>x!==v);state.builder[key]=[...new Set(state.builder[key])];updateGuard()}}bindOne('#mealTypeOptions','mealType');bindOne('#timeOptions','maxTime',Number);bindOne('#difficultyOptions','difficulty');bindOne('#goalOptions','goal');bindMulti('#equipmentOptions','equipment');bindMulti('#restrictionOptions','restrictions');$("#servingRange").oninput=e=>{state.builder.servings=+e.target.value;$("#servingValue").textContent=state.builder.servings;updateSteps()};$("#budgetRange").oninput=e=>{state.builder.budget=+e.target.value;$("#budgetValue").textContent=new Intl.NumberFormat('vi-VN').format(state.builder.budget)};$("#generateRecipesBtn").onclick=generate;$("#resetBuilderBtn").onclick=()=>{state.builder={selectedPantry:state.pantry.map(x=>x.id),mealType:'dinner',servings:2,maxTime:30,difficulty:'easy',equipment:['stove','pan','pot'],budget:50000,goal:'balanced',restrictions:['nospicy']};state.members.forEach((m,i)=>m.selected=i<2);renderBuilder();showToast('Đã đặt lại lựa chọn.')};$("#autoPlanBtn").onclick=autoPlan;$("#clearPlanBtn").onclick=()=>{state.planner={};save();renderPlanner();showToast('Đã xóa kế hoạch tuần.')};$("#addCustomShoppingBtn").onclick=addCustomShopping;$("#moveBoughtToPantry").onclick=moveBought;$("#shareShoppingBtn").onclick=shareShopping;$("#exportJsonBtn").onclick=()=>{const blob=new Blob([JSON.stringify({pantry:state.pantry,members:state.members,planner:state.planner,shopping:state.shopping},null,2)],{type:'application/json'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='remeal-data.json';a.click();URL.revokeObjectURL(u);showToast('Đã xuất dữ liệu JSON.')};$("#resetDemoData").onclick=()=>{if(!confirm('Khôi phục toàn bộ dữ liệu demo?'))return;['remeal_pantry','remeal_members','remeal_planner','remeal_shopping','remeal_history'].forEach(k=>localStorage.removeItem(k));location.reload()};renderHome();renderPantry();renderLeftovers();renderBuilder();renderResults();renderPlanner();renderShopping();renderFamily();renderProgress();lucide.createIcons();
 
-    const leftoverRecipes = {
-      rice: [
-        'Cơm chiên gà: Cơm nguội + trứng + rau + nước mắm',
-        'Cơm cari: Cơm nguội + cà ri + rau + sữa tươi',
-        'Cơm cơm: Cơm nguội + nước dùng + hành'
-      ],
-      chicken: [
-        'Gà xé phát khô: Gà + ớt + sả + nước mắm',
-        'Bánh mì gà: Gà + bánh mì + dưa chuột',
-        'Cơm gà: Cơm + gà + hành hoa'
-      ],
-      vegetables: [
-        'Canh rau: Rau + thịt/cá + nước dùng',
-        'Gỏi rau: Rau + tôm + nước cốt chanh',
-        'Rau xào: Rau + tương ớt + dầu ăn'
-      ],
-      bread: [
-        'Bánh mì nướng: Bánh mì + bơ + jam',
-        'Bánh mì cuộn: Bánh mì + thịt + rau',
-        'Cơm bánh mì: Bánh mì ngâm nước dùng'
-      ],
-      broth: [
-        'Canh măng: Nước dùng + măng + thịt',
-        'Súp rau: Nước dùng + rau + gia vị',
-        'Mì nước: Nước dùng + mì + cà chua'
-      ]
-    };
+// --- Music Widget: playlist YouTube theo thể loại (Việt/Hàn/Trung/Lofi) ---
+(function(){
+  const PLAYLISTS = {
+    vpop: 'PLVFZDXxa2oOPVdSzS9_Ow_PNU8llWMsLa',
+    kpop: 'PLOHoVaTp8R7ccrQM3EpCTVDdwHhXrJhXS',
+    cpop: 'PLYsAoprptZOo_L1Je3wXa02rbF0jqz2E5',
+    lofi: 'PLvGUEIPxRGvWvkelmgyWU6QET6mmGbd8W'
+  };
+  const fab = document.getElementById('musicFabBtn');
+  const panel = document.getElementById('musicPanel');
+  const closeBtn = document.getElementById('musicCloseBtn');
+  const frame = document.getElementById('musicFrame');
+  const tabs = document.querySelectorAll('.music-tab');
+  let currentGenre = 'vpop';
 
-    // Xử lý nút Thêm nguyên liệu
-    document.getElementById('openPantryModal').addEventListener('click', function() {
-      const name = prompt('Tên nguyên liệu:');
-      if (!name) return;
-      
-      const quantity = prompt('Số lượng:');
-      const expiry = prompt('Hạn sử dụng (YYYY-MM-DD):');
-      const status = prompt('Trạng thái (fresh/urgent/soon/cooked/frozen):', 'fresh');
-      const category = prompt('Nhóm (protein/vegetable/grain/other):', 'other');
+  function loadGenre(genre){
+    currentGenre = genre;
+    frame.src = `https://www.youtube.com/embed/videoseries?list=${PLAYLISTS[genre]}&autoplay=0&rel=0`;
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.genre === genre));
+  }
 
-      const item = {
-        id: Date.now(),
-        name,
-        quantity: quantity || '1',
-        expiry: expiry || '',
-        status: status || 'fresh',
-        category: category || 'other'
-      };
-
-      pantryItems.push(item);
-      localStorage.setItem('pantryItems', JSON.stringify(pantryItems));
-      renderPantry();
-    });
-
-    // Render danh sách nguyên liệu
-    function renderPantry() {
-      const grid = document.getElementById('pantryGrid');
-      const countPill = document.getElementById('pantryCountPill');
-      
-      if (pantryItems.length === 0) {
-        grid.innerHTML = `
-          <div class="empty-state">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-            </svg>
-            <p>Chưa có nguyên liệu nào. Bấm "Thêm nguyên liệu" để bắt đầu!</p>
-          </div>
-        `;
-      } else {
-        grid.innerHTML = pantryItems.map(item => `
-          <div class="ingredient-card">
-            <div class="ingredient-name">${item.name}</div>
-            <div class="ingredient-details">
-              <div>Số lượng: ${item.quantity}</div>
-              ${item.expiry ? `<div>Hạn: ${item.expiry}</div>` : ''}
-              <span class="status-badge status-${item.status}">${item.status}</span>
-            </div>
-          </div>
-        `).join('');
-      }
-
-      countPill.textContent = `${pantryItems.length} mục`;
-      updateStatus();
-    }
-
-    // Cập nhật trạng thái
-    function updateStatus() {
-      const urgent = pantryItems.filter(i => i.status === 'urgent').length;
-      const soon = pantryItems.filter(i => i.status === 'soon').length;
-      const fresh = pantryItems.filter(i => i.status === 'fresh').length;
-
-      document.querySelectorAll('.status-count').forEach((el, i) => {
-        const counts = [urgent, soon, fresh];
-        el.textContent = counts[i];
-      });
-    }
-
-    // Xử lý gợi ý đồ ăn thừa
-    document.getElementById('leftoverSelect').addEventListener('change', function(e) {
-      const result = document.getElementById('leftoverResult');
-      const value = e.target.value;
-      
-      if (value && leftoverRecipes[value]) {
-        result.innerHTML = leftoverRecipes[value].map(r => `<div style="margin-bottom: 8px;">✓ ${r}</div>`).join('');
-      } else {
-        result.textContent = 'Chọn một loại đồ ăn thừa để nhận gợi ý cách biến thành món mới';
-      }
-    });
-
-    // Xuất JSON
-    document.getElementById('exportJsonBtn').addEventListener('click', function() {
-      const dataStr = JSON.stringify(pantryItems, null, 2);
-      const dataBlob = new Blob([dataStr], { type: 'application/json' });
-      const url = URL.createObjectURL(dataBlob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'pantry.json';
-      link.click();
-    });
-
-       // Render lần đầu
-    renderPantry();
-
-    // Hàm chuyển đổi view
-    function showPantry() {
-      document.getElementById('heroView').style.display = 'none';
-      document.getElementById('pantryView').style.display = 'block';
-      document.getElementById('pantryView').classList.add('active');
-    }
-
-    function showHero() {
-      document.getElementById('heroView').style.display = 'block';
-      document.getElementById('pantryView').style.display = 'none';
-      document.getElementById('pantryView').classList.remove('active');
-    }
-  </script>
-
-  
+  fab.addEventListener('click', () => {
+    panel.classList.add('show');
+    if (!frame.src) loadGenre(currentGenre);
+  });
+  closeBtn.addEventListener('click', () => panel.classList.remove('show'));
+  tabs.forEach(t => t.addEventListener('click', () => loadGenre(t.dataset.genre)));
+})();
+</script>
 </body>
 </html>
