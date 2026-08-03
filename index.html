@@ -107,9 +107,49 @@
     object-fit: contain;
     margin-left: -10px;
   }
+
+  @keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.6; }
+  50% { transform: translateY(-30px) rotate(10deg); opacity: 0.8; }
+}
+
+.floating-ingredient {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 1;
+  animation: float 6s infinite ease-in-out;
+}
+
+.floating-ingredient:nth-child(1) { bottom: 20%; left: 5%; animation-delay: 0s; }
+.floating-ingredient:nth-child(2) { bottom: 40%; left: 12%; animation-delay: 1s; }
+.floating-ingredient:nth-child(3) { bottom: 15%; right: 8%; animation-delay: 2s; }
+.floating-ingredient:nth-child(4) { bottom: 35%; right: 15%; animation-delay: 1.5s; }
+.floating-ingredient:nth-child(5) { bottom: 55%; left: 8%; animation-delay: 2.5s; }
+.floating-ingredient:nth-child(6) { bottom: 50%; right: 5%; animation-delay: 0.5s; }
+.floating-ingredient:nth-child(7) { bottom: 25%; left: 20%; animation-delay: 3s; }
+.floating-ingredient:nth-child(8) { bottom: 60%; right: 20%; animation-delay: 1.8s; }
+.floating-ingredient:nth-child(9) { bottom: 30%; right: 25%; animation-delay: 2.2s; }
+  
 </style>
 </head>
 <body class="bg-white">
+
+  <!-- Floating ingredients background -->
+<div style="position: fixed; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; z-index: 1; overflow: hidden;">
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/broccoli.png" alt="" class="floating-ingredient" />
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/chilli.webp" alt="" class="floating-ingredient" />
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/egg.webp" alt="" class="floating-ingredient" />
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/hoa%20qu%E1%BA%A3%20trang%20tr%C3%AD.png" alt="" class="floating-ingredient" />
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/igdi%202.webp" alt="" class="floating-ingredient" />
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/igdi.jpg" alt="" class="floating-ingredient" />
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/leaf.png" alt="" class="floating-ingredient" />
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/onion.webp" alt="" class="floating-ingredient" />
+  <img src="https://raw.githubusercontent.com/k632414410088-byte/remeal/main/tomato%201.png" alt="" class="floating-ingredient" />
+</div>
 
 <div class="hero relative w-full overflow-hidden select-none">
 
