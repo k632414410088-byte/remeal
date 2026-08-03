@@ -134,6 +134,239 @@
   .floating-ingredient:nth-child(7) { bottom: 25%; left: 20%; animation-delay: 3s; }
   .floating-ingredient:nth-child(8) { bottom: 60%; right: 20%; animation-delay: 1.8s; }
   .floating-ingredient:nth-child(9) { bottom: 30%; right: 25%; animation-delay: 2.2s; }
+
+/* PANTRY STYLES */
+  
+.pantry-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 315px;
+  gap: 16px;
+  align-items: start;
+}
+
+.pantry-main {
+  padding: 19px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  flex: 1;
+  min-width: 220px;
+  position: relative;
+}
+
+.search-box svg {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 17px;
+  color: #778179;
+}
+
+.search-box input,
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  border: 1px solid #dfe7e1;
+  border-radius: 12px;
+  background: #fff;
+  outline: 0;
+}
+
+.search-box input {
+  height: 44px;
+  padding: 0 13px 0 40px;
+}
+
+.search-box input:focus,
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--g500);
+  box-shadow: 0 0 0 4px rgba(70, 173, 110, 0.09);
+}
+
+.filter-select {
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid #dfe7e1;
+  background: #fff;
+  color: #465249;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.pantry-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 11px;
+}
+
+.pantry-card {
+  position: relative;
+  min-height: 150px;
+  padding: 13px;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #fff, #fbfcfa);
+  border: 1px solid #e4eae5;
+  box-shadow: 0 5px 16px rgba(23, 75, 43, 0.04);
+}
+
+.pantry-card-top {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.pantry-card .food-icon {
+  width: 49px;
+  height: 49px;
+  font-size: 31px;
+  border-radius: 14px;
+}
+
+.pantry-card h4 {
+  font-size: 11px;
+  margin-bottom: 3px;
+}
+
+.pantry-card p {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.pantry-card-meta {
+  margin-top: 12px;
+  display: grid;
+  gap: 7px;
+  font-size: 8px;
+}
+
+.meta-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.expiry-track {
+  height: 6px;
+  border-radius: 999px;
+  background: #edf1ed;
+  overflow: hidden;
+}
+
+.expiry-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--g500);
+}
+
+.expiry-track.urgent span {
+  background: var(--red);
+}
+
+.expiry-track.soon span {
+  background: var(--orange);
+}
+
+.pantry-card-actions {
+  margin-top: 11px;
+  display: flex;
+  gap: 6px;
+}
+
+.icon-btn {
+  width: 31px;
+  height: 31px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: #f3f7f4;
+  color: #506057;
+}
+
+.icon-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.pantry-side {
+  display: grid;
+  gap: 16px;
+}
+
+.side-card {
+  padding: 18px;
+}
+
+.health-notice {
+  padding: 13px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #edf7ff, #fbfdff);
+  border: 1px solid #d8eaf9;
+  color: #416273;
+  font-size: 9px;
+  line-height: 1.6;
+}
+
+.status-list {
+  display: grid;
+  gap: 9px;
+}
+
+.status-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 9px;
+  align-items: center;
+  font-size: 9px;
+}
+
+.status-row span:first-child {
+  color: #4c5a50;
+}
+
+.status-row strong {
+  color: var(--g800);
+}
+
+.leftover-box {
+  margin-top: 13px;
+}
+
+.leftover-result {
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.leftover-suggestion {
+  padding: 10px;
+  border-radius: 12px;
+  background: #fafcf9;
+  border: 1px solid #e5ebe5;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.leftover-suggestion strong {
+  display: block;
+  font-size: 10px;
+  color: var(--g800);
+  margin-bottom: 3px;
+}
   
 </style>
 </head>
@@ -293,23 +526,264 @@
 
     </div>
 
-    <!-- CTA button -->
-    <button class="cta-btn" style="margin-top:18px;">
-      <span class="flex items-center gap-2">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M6 20c8 0 13-5 13-13 0-1 0-2-.2-3C10.5 4.2 6 9 6 17c0 1 0 2 .2 3z" />
-        </svg>
-        Tạo bữa ăn ngay
-      </span>
-      <span class="cta-circle">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#2f6b3a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 12h14M13 6l6 6-6 6" />
-        </svg>
-      </span>
-    </button>
+    <<!-- CTA button -->
+<button class="cta-btn" style="margin-top:18px;" onclick="window.location.href='pantry.html'">
+  <span class="flex items-center gap-2">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 20c8 0 13-5 13-13 0-1 0-2-.2-3C10.5 4.2 6 9 6 17c0 1 0 2 .2 3z" />
+    </svg>
+    Tạo bữa ăn ngay
+  </span>
+  <span class="cta-circle">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#2f6b3a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  </span>
+</button>
 
   </div>
 </div>
 
+<section class="view" id="pantryView">
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">Pantry Intelligence</div>
+        <h1>Tủ lạnh thông minh của bạn</h1>
+        <p>Theo dõi số lượng, trạng thái, hạn sử dụng và ưu tiên các nguyên liệu cần dùng trước.</p>
+      </div>
+      <div class="page-actions">
+        <button class="secondary-btn" id="exportJsonBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Xuất JSON
+        </button>
+        <button class="primary-btn" id="openPantryModal">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Thêm nguyên liệu
+        </button>
+      </div>
+    </div>
+
+    <div class="pantry-layout">
+      <section class="panel pantry-main">
+        <div class="toolbar">
+          <div class="search-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <input id="pantrySearch" placeholder="Tìm nguyên liệu...">
+          </div>
+          <select class="filter-select" id="pantryFilter">
+            <option value="all">Tất cả trạng thái</option>
+            <option value="urgent">Cần dùng ngay</option>
+            <option value="soon">Sắp hết hạn</option>
+            <option value="fresh">Còn tươi</option>
+            <option value="cooked">Đã nấu chín</option>
+            <option value="frozen">Đông lạnh</option>
+          </select>
+          <select class="filter-select" id="pantryCategory">
+            <option value="all">Tất cả nhóm</option>
+            <option value="protein">Chất đạm</option>
+            <option value="vegetable">Rau củ</option>
+            <option value="grain">Tinh bột</option>
+            <option value="other">Khác</option>
+          </select>
+        </div>
+        <div class="pantry-grid" id="pantryGrid">
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            <p>Chưa có nguyên liệu nào. Bấm "Thêm nguyên liệu" để bắt đầu!</p>
+          </div>
+        </div>
+      </section>
+
+      <aside class="pantry-side">
+        <section class="panel side-card">
+          <div class="panel-title">
+            <h3>Tổng quan tủ lạnh</h3>
+            <span class="pill" id="pantryCountPill">0 mục</span>
+          </div>
+          <div class="status-list" id="pantryStatusList">
+            <div class="status-item">
+              <strong>Cần dùng ngay:</strong>
+              <span class="status-count">0</span>
+            </div>
+            <div class="status-item">
+              <strong>Sắp hết hạn:</strong>
+              <span class="status-count">0</span>
+            </div>
+            <div class="status-item">
+              <strong>Còn tươi:</strong>
+              <span class="status-count">0</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel side-card">
+          <div class="panel-title">
+            <h3>Biến đồ ăn thừa thành món mới</h3>
+            <span class="pill orange">Leftover</span>
+          </div>
+          <div class="leftover-box">
+            <select class="filter-select" id="leftoverSelect" style="width:100%">
+              <option value="">Chọn đồ ăn thừa...</option>
+              <option value="rice">Cơm nguội</option>
+              <option value="chicken">Gà đã nấu</option>
+              <option value="vegetables">Rau củ đã chín</option>
+              <option value="bread">Bánh mì cũ</option>
+              <option value="broth">Nước dùng còn thừa</option>
+            </select>
+            <div class="leftover-result" id="leftoverResult">
+              Chọn một loại đồ ăn thừa để nhận gợi ý cách biến thành món mới
+            </div>
+          </div>
+        </section>
+
+        <div class="health-notice">
+          <strong style="display:block;margin-bottom:5px;">Lưu ý an toàn thực phẩm</strong>
+          ReMeal hỗ trợ sắp xếp và gợi ý, nhưng không thể xác định thực phẩm còn an toàn chỉ qua ngày nhập. Hãy kiểm tra mùi, màu sắc, nhiệt độ bảo quản và hướng dẫn an toàn trước khi sử dụng.
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <script>
+    // Dữ liệu mẫu
+    let pantryItems = JSON.parse(localStorage.getItem('pantryItems')) || [];
+
+    const leftoverRecipes = {
+      rice: [
+        'Cơm chiên gà: Cơm nguội + trứng + rau + nước mắm',
+        'Cơm cari: Cơm nguội + cà ri + rau + sữa tươi',
+        'Cơm cơm: Cơm nguội + nước dùng + hành'
+      ],
+      chicken: [
+        'Gà xé phát khô: Gà + ớt + sả + nước mắm',
+        'Bánh mì gà: Gà + bánh mì + dưa chuột',
+        'Cơm gà: Cơm + gà + hành hoa'
+      ],
+      vegetables: [
+        'Canh rau: Rau + thịt/cá + nước dùng',
+        'Gỏi rau: Rau + tôm + nước cốt chanh',
+        'Rau xào: Rau + tương ớt + dầu ăn'
+      ],
+      bread: [
+        'Bánh mì nướng: Bánh mì + bơ + jam',
+        'Bánh mì cuộn: Bánh mì + thịt + rau',
+        'Cơm bánh mì: Bánh mì ngâm nước dùng'
+      ],
+      broth: [
+        'Canh măng: Nước dùng + măng + thịt',
+        'Súp rau: Nước dùng + rau + gia vị',
+        'Mì nước: Nước dùng + mì + cà chua'
+      ]
+    };
+
+    // Xử lý nút Thêm nguyên liệu
+    document.getElementById('openPantryModal').addEventListener('click', function() {
+      const name = prompt('Tên nguyên liệu:');
+      if (!name) return;
+      
+      const quantity = prompt('Số lượng:');
+      const expiry = prompt('Hạn sử dụng (YYYY-MM-DD):');
+      const status = prompt('Trạng thái (fresh/urgent/soon/cooked/frozen):', 'fresh');
+      const category = prompt('Nhóm (protein/vegetable/grain/other):', 'other');
+
+      const item = {
+        id: Date.now(),
+        name,
+        quantity: quantity || '1',
+        expiry: expiry || '',
+        status: status || 'fresh',
+        category: category || 'other'
+      };
+
+      pantryItems.push(item);
+      localStorage.setItem('pantryItems', JSON.stringify(pantryItems));
+      renderPantry();
+    });
+
+    // Render danh sách nguyên liệu
+    function renderPantry() {
+      const grid = document.getElementById('pantryGrid');
+      const countPill = document.getElementById('pantryCountPill');
+      
+      if (pantryItems.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            <p>Chưa có nguyên liệu nào. Bấm "Thêm nguyên liệu" để bắt đầu!</p>
+          </div>
+        `;
+      } else {
+        grid.innerHTML = pantryItems.map(item => `
+          <div class="ingredient-card">
+            <div class="ingredient-name">${item.name}</div>
+            <div class="ingredient-details">
+              <div>Số lượng: ${item.quantity}</div>
+              ${item.expiry ? `<div>Hạn: ${item.expiry}</div>` : ''}
+              <span class="status-badge status-${item.status}">${item.status}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      countPill.textContent = `${pantryItems.length} mục`;
+      updateStatus();
+    }
+
+    // Cập nhật trạng thái
+    function updateStatus() {
+      const urgent = pantryItems.filter(i => i.status === 'urgent').length;
+      const soon = pantryItems.filter(i => i.status === 'soon').length;
+      const fresh = pantryItems.filter(i => i.status === 'fresh').length;
+
+      document.querySelectorAll('.status-count').forEach((el, i) => {
+        const counts = [urgent, soon, fresh];
+        el.textContent = counts[i];
+      });
+    }
+
+    // Xử lý gợi ý đồ ăn thừa
+    document.getElementById('leftoverSelect').addEventListener('change', function(e) {
+      const result = document.getElementById('leftoverResult');
+      const value = e.target.value;
+      
+      if (value && leftoverRecipes[value]) {
+        result.innerHTML = leftoverRecipes[value].map(r => `<div style="margin-bottom: 8px;">✓ ${r}</div>`).join('');
+      } else {
+        result.textContent = 'Chọn một loại đồ ăn thừa để nhận gợi ý cách biến thành món mới';
+      }
+    });
+
+    // Xuất JSON
+    document.getElementById('exportJsonBtn').addEventListener('click', function() {
+      const dataStr = JSON.stringify(pantryItems, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'pantry.json';
+      link.click();
+    });
+
+    // Render lần đầu
+    renderPantry();
+  </script>
+
+  
 </body>
 </html>
