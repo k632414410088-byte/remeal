@@ -367,6 +367,79 @@
   color: var(--g800);
   margin-bottom: 3px;
 }
+
+  .view {
+  display: none;
+  animation: fadeIn 0.28s ease;
+}
+
+.view.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes riseFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.view.active {
+  animation: riseFadeIn 0.42s cubic-bezier(0.22, 0.9, 0.35, 1.1);
+}
+
+.panel {
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.home-stat:hover,
+.recipe-card:hover,
+.family-card:hover,
+.quick-step:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 34px rgba(14, 74, 39, 0.14);
+}
+
+.recipe-card {
+  will-change: transform;
+}
+
+.primary-btn,
+.secondary-btn,
+.small-btn {
+  transition: transform 0.16s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px rgba(25, 130, 69, 0.32);
+}
+
+.secondary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(14, 74, 39, 0.14);
+}
+
+.primary-btn:active,
+.secondary-btn:active,
+.small-btn:active {
+  transform: scale(0.96);
+}
   
 </style>
 </head>
@@ -526,8 +599,8 @@
 
     </div>
 
-    <<!-- CTA button -->
-<button class="cta-btn" style="margin-top:18px;" onclick="window.location.href='pantry.html'">
+    <!-- CTA button -->
+<button class="cta-btn" style="margin-top:18px;" onclick="showPantry();">
   <span class="flex items-center gap-2">
     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M6 20c8 0 13-5 13-13 0-1 0-2-.2-3C10.5 4.2 6 9 6 17c0 1 0 2 .2 3z" />
@@ -544,7 +617,7 @@
   </div>
 </div>
 
-<section class="view" id="pantryView">
+<section id="pantryView" style="display:none; min-height:100vh; background:#f5f7fa; padding:24px; overflow-y:auto;">
     <div class="page-head">
       <div>
         <div class="eyebrow">Pantry Intelligence</div>
@@ -780,8 +853,21 @@
       link.click();
     });
 
-    // Render lần đầu
+       // Render lần đầu
     renderPantry();
+
+    // Hàm chuyển đổi view
+    function showPantry() {
+      document.getElementById('heroView').style.display = 'none';
+      document.getElementById('pantryView').style.display = 'block';
+      document.getElementById('pantryView').classList.add('active');
+    }
+
+    function showHero() {
+      document.getElementById('heroView').style.display = 'block';
+      document.getElementById('pantryView').style.display = 'none';
+      document.getElementById('pantryView').classList.remove('active');
+    }
   </script>
 
   
