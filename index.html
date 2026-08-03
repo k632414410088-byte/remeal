@@ -99,7 +99,15 @@
 .music-frame-wrap iframe{width:100%;height:170px;border-radius:12px;background:#0b1210}
 .music-hint{font-size:8.5px;color:#8a9690;text-align:center;padding:8px 12px 12px;margin:0}
 @media(max-width:640px){.music-panel{width:min(88vw,320px);right:-8px}.music-widget{right:14px;bottom:14px}}
-</style>
+
+ /* ==== Ẩn theo yêu cầu ==== */
+#landingSkipBtn{display:none!important}
+.avatar,.profile-name{display:none!important}
+.control-block:has(#builderFamily){display:none!important}
+.nav-btn[data-view="family"]{display:none!important}
+#familyView{display:none!important} 
+  
+  </style>
 <style>
 /* ================= LANDING OVERLAY (scoped, không đụng CSS của app) ================= */
 #landing{position:fixed;inset:0;z-index:9999;width:100%;height:100vh;overflow:hidden;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:#fff;user-select:none;transition:opacity .45s ease,visibility .45s ease}
@@ -300,7 +308,7 @@ body.landing-lock{overflow:hidden}
     <nav class="main-nav" id="mainNav">
       <button class="nav-btn active" data-view="home"><i data-lucide="house"></i><span>Trang chủ</span></button><button class="nav-btn" data-view="pantry"><i data-lucide="refrigerator"></i><span>Tủ lạnh</span></button><button class="nav-btn" data-view="builder"><i data-lucide="sparkles"></i><span>Tạo bữa ăn</span></button><button class="nav-btn" data-view="recipes"><i data-lucide="chef-hat"></i><span>Công thức</span></button><button class="nav-btn" data-view="planner"><i data-lucide="calendar-days"></i><span>Kế hoạch tuần</span></button><button class="nav-btn" data-view="shopping"><i data-lucide="shopping-cart"></i><span>Mua sắm</span></button><button class="nav-btn" data-view="family"><i data-lucide="users"></i><span>Gia đình</span></button><button class="nav-btn" data-view="progress"><i data-lucide="chart-no-axes-combined"></i><span>Tiến độ</span></button><button class="nav-btn" data-view="vision"><i data-lucide="rocket"></i><span>Tiềm năng</span></button>
     </nav>
-    <div class="header-actions"><button class="header-chip" data-view="planner"><i data-lucide="calendar-check" width="15"></i> Tuần này</button><img class="avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" alt="Lan Anh"><span class="profile-name" style="font-size:10px;font-weight:800">Lan Anh</span><button class="menu-btn" id="menuBtn"><i data-lucide="menu"></i></button></div>
+    <div class="header-actions"><button class="header-chip" data-view="planner"><i data-lucide="calendar-check" width="15"></i> Tuần này</button><button class="menu-btn" id="menuBtn"><i data-lucide="menu"></i></button></div>
   </header>
   <main>
     <section class="view active" id="homeView">
