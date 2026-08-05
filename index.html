@@ -5353,7 +5353,12 @@
               <div class="toolbar">
                 <div class="search-box">
                   <i data-lucide="search"></i
-                  ><input id="pantrySearch" placeholder="Tìm nguyên liệu..." />
+                  ><select
+                    id="pantrySearch"
+                    style="border: none; background: transparent; width: 100%"
+                  >
+                    <option value="">Chọn nguyên liệu để hiển thị...</option>
+                  </select>
                 </div>
                 <select class="filter-select" id="pantryFilter">
                   <option value="all">Tất cả trạng thái</option>
@@ -5369,15 +5374,6 @@
                   <option value="grain">Tinh bột</option>
                   <option value="other">Khác</option>
                 </select>
-                <div class="pantry-select-wrap" style="position:relative">
-                  <button type="button" class="filter-select" id="pantryVisibleToggle">
-                    Chọn nguyên liệu hiển thị <i data-lucide="chevron-down" width="14"></i>
-                  </button>
-                  <div id="pantryVisibleDropdown"
-                       style="display:none;position:absolute;top:110%;left:0;z-index:20;background:#fff;
-                              border:1px solid #e2e2e2;border-radius:10px;padding:10px;max-height:260px;
-                              overflow:auto;min-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.08)"></div>
-                </div>
               </div>
               <div class="pantry-grid" id="pantryGrid"></div>
             </section>
@@ -9641,61 +9637,52 @@
         $("#homeRescued").textContent = summary.food.toFixed(1) + "kg";
         $("#homeWasteReduction").textContent = summary.wasteReduction + "%";
       }
-      let pantryVisibleIds = null; // null = đang ở chế độ "sample mặc định"
+      let pantryVisibleIds = null; // null = đang ở chế độ "sample mặc định 3 món"
 
-function renderPantryVisibleDropdown() {
-  const box = $("#pantryVisibleDropdown");
-  if (!box) return;
-  const defaultIds = state.pantry.slice(0, 3).map((i) => i.id);
-  box.innerHTML =
-    state.pantry
-      .map((i) => {
-        const checked = pantryVisibleIds
-          ? pantryVisibleIds.includes(i.id)
-          : defaultIds.includes(i.id);
-        return `<label style="display:flex;gap:8px;align-items:center;padding:4px 0;font-size:13px">
-          <input type="checkbox" value="${i.id}" ${checked ? "checked" : ""}
-                 onchange="togglePantryVisible('${i.id}',this.checked)"/>
-          ${i.emoji || ""} ${i.name}
-        </label>`;
-      })
-      .join("") ||
-    `<div style="font-size:13px;color:#888">Chưa có nguyên liệu nào.</div>`;
-}
+      function populatePantryVisibleSelect() {
+        const sel = $("#pantrySearch");
+        if (!sel) return;
+        const current = sel.value;
+        const labels = {
+          protein: "Chất đạm",
+          vegetable: "Rau củ",
+          grain: "Tinh bột",
+          other: "Khác",
+        };
+        const groups = {};
+        state.pantry.forEach((i) => {
+          (groups[i.category] || (groups[i.category] = [])).push(i);
+        });
+        sel.innerHTML =
+          `<option value="">Chọn nguyên liệu để hiển thị...</option>` +
+          Object.entries(groups)
+            .map(
+              ([cat, items]) =>
+                `<optgroup label="${labels[cat] || cat}">${items
+                  .sort((a, b) => a.name.localeCompare(b.name, "vi"))
+                  .map(
+                    (i) => `<option value="${i.id}">${i.emoji} ${i.name}</option>`,
+                  )
+                  .join("")}</optgroup>`,
+            )
+            .join("");
+        sel.value = current || "";
+      }
 
-window.togglePantryVisible = (id, checked) => {
-  if (!pantryVisibleIds) pantryVisibleIds = state.pantry.slice(0, 3).map((i) => i.id);
-  pantryVisibleIds = checked
-    ? [...new Set([...pantryVisibleIds, id])]
-    : pantryVisibleIds.filter((x) => x !== id);
-  renderPantry();
-};
-
-$("#pantryVisibleToggle")?.addEventListener("click", (e) => {
-  e.stopPropagation();
-  const box = $("#pantryVisibleDropdown");
-  box.style.display = box.style.display === "none" ? "block" : "none";
-  renderPantryVisibleDropdown();
-});
-document.addEventListener("click", () => {
-  const box = $("#pantryVisibleDropdown");
-  if (box) box.style.display = "none";
-});
       function renderPantry() {
-        const q = ($("#pantrySearch")?.value || "").toLowerCase(),
-          f = $("#pantryFilter")?.value || "all",
+        const f = $("#pantryFilter")?.value || "all",
           c = $("#pantryCategory")?.value || "all";
-        const list = state.pantry.filter(
+        let list = state.pantry.filter(
           (i) =>
-            i.name.toLowerCase().includes(q) &&
             (f === "all" || pStatus(i).key === f) &&
             (c === "all" || i.category === c),
         );
-if (pantryVisibleIds) {
-  list = list.filter((i) => pantryVisibleIds.includes(i.id));
-} else {
-  list = list.slice(0, 3); // sample mặc định 2-3 nguyên liệu
-}
+        if (pantryVisibleIds) {
+          list = list.filter((i) => pantryVisibleIds.includes(i.id));
+        } else {
+          list = list.slice(0, 3); // sample mặc định 3 nguyên liệu
+        }
+        populatePantryVisibleSelect();
         $("#pantryGrid").innerHTML =
           list
             .map((i) => {
@@ -10718,7 +10705,14 @@ if (pantryVisibleIds) {
         renderFamily();
         showToast("Đã thêm thành viên gia đình.");
       };
-      $("#pantrySearch").oninput = renderPantry;
+      $("#pantrySearch").onchange = (e) => {
+        const id = e.target.value;
+        if (!id) return;
+        if (!pantryVisibleIds)
+          pantryVisibleIds = state.pantry.slice(0, 3).map((i) => i.id);
+        if (!pantryVisibleIds.includes(id)) pantryVisibleIds.push(id);
+        renderPantry();
+      };
       $("#pantryFilter").onchange = renderPantry;
       $("#pantryCategory").onchange = renderPantry;
       $("#leftoverSelect").onchange = renderLeftovers;
