@@ -9567,24 +9567,32 @@
         showView("pantry");
         showToast("Tạo tài khoản thành công! Hãy cho ReMeal biết trong tủ có gì.");
       }
-      function renderHome() {
-        const x = [...state.pantry]
-          .sort((a, b) => daysUntil(a.expiry) - daysUntil(b.expiry))
-          .slice(0, 3);
-        $("#homeRescueList").innerHTML = x
-          .map(
-            (i) =>
-              `<div class="rescue-item"><div class="food-icon">${i.emoji}</div><div><strong>${i.name}</strong><small>${i.qty}${i.unit} · ${pStatus(i).label}</small></div><span class="days-left">${daysUntil(i.expiry) <= 0 ? "Hôm nay" : daysUntil(i.expiry) + " ngày"}</span></div>`,
-          )
-          .join("");
-        const summary = historySummary();
-        $("#homeMealCount").textContent = summary.meals;
-        $("#homeSavedMoney").textContent = summary.money
-          ? Math.round(summary.money / 1000) + "K"
-          : "0đ";
-        $("#homeRescued").textContent = summary.food.toFixed(1) + "kg";
-        $("#homeWasteReduction").textContent = summary.wasteReduction + "%";
-      }
+     function renderHome() {
+  const x = [...state.pantry]
+    .sort((a, b) => daysUntil(a.expiry) - daysUntil(b.expiry))
+    .slice(0, 3);
+  const rescueList = $("#homeRescueList");
+  if (rescueList) {
+    rescueList.innerHTML = x
+      .map(
+        (i) =>
+          `<div class="rescue-item"><div class="food-icon">${i.emoji}</div><div><strong>${i.name}</strong><small>${i.qty}${i.unit} · ${pStatus(i).label}</small></div><span class="days-left">${daysUntil(i.expiry) <= 0 ? "Hôm nay" : daysUntil(i.expiry) + " ngày"}</span></div>`,
+        )
+      .join("");
+  }
+  const summary = historySummary();
+  const setText = (sel, val) => {
+    const el = $(sel);
+    if (el) el.textContent = val;
+  };
+  setText("#homeMealCount", summary.meals);
+  setText(
+    "#homeSavedMoney",
+    summary.money ? Math.round(summary.money / 1000) + "K" : "0đ",
+  );
+  setText("#homeRescued", summary.food.toFixed(1) + "kg");
+  setText("#homeWasteReduction", summary.wasteReduction + "%");
+}
       let pantryVisibleIds = null; // null = đang ở chế độ "sample mặc định 3 món"
 
       function getVisiblePantry() {
