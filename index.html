@@ -9622,53 +9622,40 @@
       let pantryVisibleIds = null; // null = đang ở chế độ "sample mặc định 3 món"
 
       function getVisiblePantry() {
-  return state.pantry;
-}
+        return pantryVisibleIds
+          ? state.pantry.filter((i) => pantryVisibleIds.includes(i.id))
+          : state.pantry.slice(0, 3); // sample mặc định 3 nguyên liệu
+      }
 
       function populatePantryVisibleSelect() {
-  const sel = $("#pantrySearch");
-  if (!sel) return;
-
-  const current = sel.value;
-
-  const labels = {
-    protein: "Chất đạm",
-    vegetable: "Rau củ",
-    grain: "Tinh bột",
-    other: "Khác",
-  };
-
-  const groups = {};
-
-  Object.entries(catalog).forEach(([key, item]) => {
-    const category = item.category || "other";
-
-    (groups[category] || (groups[category] = [])).push({
-      key,
-      name: item.name,
-      emoji: item.emoji,
-    });
-  });
-
-  sel.innerHTML =
-    `<option value="">Chọn nguyên liệu để hiển thị...</option>` +
-    Object.entries(groups)
-      .map(
-        ([category, items]) =>
-          `<optgroup label="${labels[category] || category}">
-            ${items
-              .sort((a, b) => a.name.localeCompare(b.name, "vi"))
-              .map(
-                (item) =>
-                  `<option value="${item.key}">${item.emoji} ${item.name}</option>`,
-              )
-              .join("")}
-          </optgroup>`,
-      )
-      .join("");
-
-  sel.value = current || "";
-}
+        const sel = $("#pantrySearch");
+        if (!sel) return;
+        const current = sel.value;
+        const labels = {
+          protein: "Chất đạm",
+          vegetable: "Rau củ",
+          grain: "Tinh bột",
+          other: "Khác",
+        };
+        const groups = {};
+        state.pantry.forEach((i) => {
+          (groups[i.category] || (groups[i.category] = [])).push(i);
+        });
+        sel.innerHTML =
+          `<option value="">Chọn nguyên liệu để hiển thị...</option>` +
+          Object.entries(groups)
+            .map(
+              ([cat, items]) =>
+                `<optgroup label="${labels[cat] || cat}">${items
+                  .sort((a, b) => a.name.localeCompare(b.name, "vi"))
+                  .map(
+                    (i) => `<option value="${i.id}">${i.emoji} ${i.name}</option>`,
+                  )
+                  .join("")}</optgroup>`,
+            )
+            .join("");
+        sel.value = current || "";
+      }
 
       function renderPantry() {
         const f = $("#pantryFilter")?.value || "all",
@@ -10663,48 +10650,14 @@
         renderFamily();
         showToast("Đã thêm thành viên gia đình.");
       };
-   $("#pantrySearch").onchange = (e) => {
-  const key = e.target.value;
-
-  if (!key) return;
-
-  // Đã có trên giao diện thì không thêm trùng
-  const alreadyExists = state.pantry.some(
-    (item) => item.key === key,
-  );
-
-  if (!alreadyExists) {
-    const ingredient = catalog[key];
-
-    state.pantry.push({
-      id: crypto.randomUUID(),
-      key: key,
-      name: ingredient.name,
-      emoji: ingredient.emoji,
-      category: ingredient.category || "other",
-      quantity: 1,
-      unit: ingredient.unit || "phần",
-    });
-
-    save();
-    renderPantry();
-  }
-
-  e.target.value = "";
-};
-
-  if (!pantryVisibleIds) {
-    pantryVisibleIds = state.pantry
-      .slice(0, 3)
-      .map((item) => item.id);
-  }
-
-  if (!pantryVisibleIds.includes(pantryItem.id)) {
-    pantryVisibleIds.push(pantryItem.id);
-  }
-
-  renderPantry();
-};
+      $("#pantrySearch").onchange = (e) => {
+        const id = e.target.value;
+        if (!id) return;
+        if (!pantryVisibleIds)
+          pantryVisibleIds = state.pantry.slice(0, 3).map((i) => i.id);
+        if (!pantryVisibleIds.includes(id)) pantryVisibleIds.push(id);
+        renderPantry();
+      };
       $("#pantryFilter").onchange = renderPantry;
       $("#pantryCategory").onchange = renderPantry;
       $("#leftoverSelect").onchange = renderLeftovers;
