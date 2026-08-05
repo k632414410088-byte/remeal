@@ -10631,10 +10631,7 @@ function getVisiblePantry() {
             if (e.target === m) closeModal(m.id);
           }),
       );
-      $("#openPantryModal").onclick = () => {
-        $("#pantryForm [name=expiry]").value = addDays(7);
-        openModal("pantryModal");
-      };
+  
       $("#pantryForm").onsubmit = (e) => {
   e.preventDefault();
 
