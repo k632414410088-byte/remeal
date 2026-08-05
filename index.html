@@ -5475,52 +5475,13 @@
                   <div>
                     <h3>1. Tạo bữa ăn từ nguyên liệu đã có</h3>
                     <small
-                      >Chọn nguyên liệu từ tủ hoặc thêm nhanh nguyên liệu bạn
-                      muốn sử dụng trong bữa ăn này.</small
+                      >Bấm chọn nguyên liệu đang có sẵn trong tủ lạnh để dùng
+                      cho bữa ăn này.</small
                     >
                   </div>
                 </div>
-                <form class="ingredient-add-form" id="builderIngredientForm">
-                  <div class="ingredient-name-field">
-                    <label for="builderIngredientName">Tên nguyên liệu</label>
-                    <input
-                      id="builderIngredientName"
-                      list="builderIngredientOptions"
-                      placeholder="Ví dụ: thịt gà, cà chua, trứng..."
-                      autocomplete="off"
-                      required
-                    />
-                    <datalist id="builderIngredientOptions"></datalist>
-                  </div>
-                  <div>
-                    <label for="builderIngredientQty">Số lượng</label>
-                    <input
-                      id="builderIngredientQty"
-                      type="number"
-                      min="0.1"
-                      step="0.1"
-                      value="1"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label for="builderIngredientUnit">Đơn vị</label>
-                    <select id="builderIngredientUnit">
-                      <option>g</option>
-                      <option>kg</option>
-                      <option>quả</option>
-                      <option>củ</option>
-                      <option>bó</option>
-                      <option>miếng</option>
-                      <option>phần</option>
-                    </select>
-                  </div>
-                  <button class="primary-btn" type="submit">
-                    <i data-lucide="plus" width="16"></i> Thêm nguyên liệu
-                  </button>
-                </form>
                 <div class="ingredient-suggestion-wrap">
-                  <span>Gợi ý nhanh</span>
+                  <span>Các nguyên liệu có sẵn trong tủ lạnh của bạn</span>
                   <div
                     class="ingredient-suggestions"
                     id="builderIngredientSuggestions"
@@ -7189,17 +7150,34 @@
           grain: 60,
           other: 14,
         };
-        return Object.entries(catalog).map(([key, c]) => ({
-          id: crypto.randomUUID(),
-          key,
-          name: c.name,
-          emoji: c.emoji,
-          qty: qtyByCategory[c.category] || 150,
-          unit: unitByCategory[c.category] || "g",
-          expiry: addDays(expiryByCategory[c.category] || 7),
-          condition: "fresh",
-          category: c.category,
-        }));
+        const seedKeys = [
+          "chicken",
+          "egg",
+          "carrot",
+          "greens",
+          "rice",
+          "tomato",
+          "pork",
+          "tofu",
+          "onion",
+          "garlic",
+        ];
+        return seedKeys
+          .filter((key) => catalog[key])
+          .map((key) => {
+            const c = catalog[key];
+            return {
+              id: crypto.randomUUID(),
+              key,
+              name: c.name,
+              emoji: c.emoji,
+              qty: qtyByCategory[c.category] || 150,
+              unit: unitByCategory[c.category] || "g",
+              expiry: addDays(expiryByCategory[c.category] || 7),
+              condition: "fresh",
+              category: c.category,
+            };
+          });
       }
       const defaultMembers = () => [
         {
@@ -9639,6 +9617,12 @@
       }
       let pantryVisibleIds = null; // null = đang ở chế độ "sample mặc định 3 món"
 
+      function getVisiblePantry() {
+        return pantryVisibleIds
+          ? state.pantry.filter((i) => pantryVisibleIds.includes(i.id))
+          : state.pantry.slice(0, 3); // sample mặc định 3 nguyên liệu
+      }
+
       function populatePantryVisibleSelect() {
         const sel = $("#pantrySearch");
         if (!sel) return;
@@ -9672,16 +9656,11 @@
       function renderPantry() {
         const f = $("#pantryFilter")?.value || "all",
           c = $("#pantryCategory")?.value || "all";
-        let list = state.pantry.filter(
+        let list = getVisiblePantry().filter(
           (i) =>
             (f === "all" || pStatus(i).key === f) &&
             (c === "all" || i.category === c),
         );
-        if (pantryVisibleIds) {
-          list = list.filter((i) => pantryVisibleIds.includes(i.id));
-        } else {
-          list = list.slice(0, 3); // sample mặc định 3 nguyên liệu
-        }
         populatePantryVisibleSelect();
         $("#pantryGrid").innerHTML =
           list
@@ -9871,23 +9850,20 @@
                   `<article class="ingredient-select"><button class="ingredient-remove" type="button" aria-label="Xóa ${i.name}" onclick="removeBuilderIngredient('${i.id}')">×</button><div class="food-icon">${i.emoji}</div><strong>${i.name}</strong><small>${i.qty}${i.unit}</small></article>`,
               )
               .join("")
-          : `<div class="ingredient-empty"><div><strong>Chưa có nguyên liệu nào</strong>Nhập nguyên liệu ở phía trên hoặc chọn một gợi ý nhanh để bắt đầu.</div></div>`;
+          : `<div class="ingredient-empty"><div><strong>Chưa có nguyên liệu nào</strong>Bấm chọn nguyên liệu có sẵn trong tủ lạnh ở phía trên để bắt đầu.</div></div>`;
         $("#selectedIngredientCount").textContent =
           `${selectedIngredients.length} nguyên liệu`;
-        $("#builderIngredientOptions").innerHTML = state.pantry
-          .slice()
-          .sort((a, b) => a.name.localeCompare(b.name, "vi"))
-          .map((item) => `<option value="${item.name}"></option>`)
-          .join("");
-        const quickItems = state.pantry
-          .filter((item) => !state.builder.selectedPantry.includes(item.id))
-          .slice(0, 12);
-        $("#builderIngredientSuggestions").innerHTML = quickItems
-          .map(
-            (item) =>
-              `<button class="ingredient-suggestion" type="button" data-add-ingredient="${item.id}">${item.emoji} ${item.name} +</button>`,
-          )
-          .join("");
+        const quickItems = getVisiblePantry().filter(
+          (item) => !state.builder.selectedPantry.includes(item.id),
+        );
+        $("#builderIngredientSuggestions").innerHTML = quickItems.length
+          ? quickItems
+              .map(
+                (item) =>
+                  `<button class="ingredient-suggestion" type="button" data-add-ingredient="${item.id}">${item.emoji} ${item.name} +</button>`,
+              )
+              .join("")
+          : `<div class="ingredient-empty"><div><strong>Tủ lạnh trống</strong>Hãy thêm nguyên liệu ở Bước 0 trước.</div></div>`;
         $("#builderFamily").innerHTML = state.members
           .map(
             (m) =>
@@ -10681,13 +10657,6 @@
       $("#pantryFilter").onchange = renderPantry;
       $("#pantryCategory").onchange = renderPantry;
       $("#leftoverSelect").onchange = renderLeftovers;
-      $("#builderIngredientForm").onsubmit = (e) => {
-        e.preventDefault();
-        addBuilderIngredient($("#builderIngredientName").value);
-        $("#builderIngredientName").value = "";
-        $("#builderIngredientQty").value = "1";
-        $("#builderIngredientName").focus();
-      };
       $("#builderIngredientSuggestions").onclick = (e) => {
         const button = e.target.closest("[data-add-ingredient]");
         if (!button) return;
