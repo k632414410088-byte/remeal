@@ -9622,10 +9622,8 @@
       let pantryVisibleIds = null; // null = đang ở chế độ "sample mặc định 3 món"
 
       function getVisiblePantry() {
-        return pantryVisibleIds
-          ? state.pantry.filter((i) => pantryVisibleIds.includes(i.id))
-          : state.pantry.slice(0, 3); // sample mặc định 3 nguyên liệu
-      }
+  return state.pantry;
+}
 
       function populatePantryVisibleSelect() {
   const sel = $("#pantrySearch");
@@ -10665,23 +10663,35 @@
         renderFamily();
         showToast("Đã thêm thành viên gia đình.");
       };
-     $("#pantrySearch").onchange = (e) => {
+   $("#pantrySearch").onchange = (e) => {
   const key = e.target.value;
 
   if (!key) return;
 
-  const pantryItem = state.pantry.find(
+  // Đã có trên giao diện thì không thêm trùng
+  const alreadyExists = state.pantry.some(
     (item) => item.key === key,
   );
 
-  if (!pantryItem) {
-    showToast(
-      "Nguyên liệu này chưa có trong tủ. Hãy bấm “Thêm nguyên liệu” để thêm vào tủ.",
-    );
+  if (!alreadyExists) {
+    const ingredient = catalog[key];
 
-    e.target.value = "";
-    return;
+    state.pantry.push({
+      id: crypto.randomUUID(),
+      key: key,
+      name: ingredient.name,
+      emoji: ingredient.emoji,
+      category: ingredient.category || "other",
+      quantity: 1,
+      unit: ingredient.unit || "phần",
+    });
+
+    save();
+    renderPantry();
   }
+
+  e.target.value = "";
+};
 
   if (!pantryVisibleIds) {
     pantryVisibleIds = state.pantry
