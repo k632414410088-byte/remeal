@@ -5330,11 +5330,7 @@
                 dụng và tìm món ăn phù hợp nhất.
               </p>
             </div>
-            <div class="page-actions">
-              <button class="primary-btn" id="openPantryModal">
-                <i data-lucide="plus" width="16"></i> Thêm nguyên liệu
-              </button>
-            </div>
+        
           </div>
           <div class="journey-progress" aria-label="Tiến trình tạo bữa ăn 5 bước">
             <div class="journey-step active"><b>0</b><strong>Có gì trong tủ?</strong><small>Quản lý nguyên liệu</small></div>
@@ -5352,7 +5348,7 @@
     id="pantrySearch"
     style="border: none; background: transparent; width: 100%; height: 44px; padding: 0 13px 0 40px; appearance: none; -webkit-appearance: none;"
   >
-    <option value="">Chọn nguyên liệu để hiển thị...</option>
+    <option value="">Thêm nguyên liệu</option>
   </select>
 </div>
                 <select class="filter-select" id="pantryFilter">
@@ -6462,10 +6458,33 @@
         </div>
         <div class="modal-body">
           <form id="pantryForm" class="form-grid">
-            <div class="field full">
-              <label>Tên nguyên liệu</label
-              ><input name="name" required placeholder="Ví dụ: Cà chua" />
-            </div>
+           <div class="field full">
+  <label>Nguyên liệu</label>
+  <input
+    name="name"
+    id="pantryIngredientName"
+    readonly
+    required
+  />
+</div>
+
+<input
+  type="hidden"
+  name="key"
+  id="pantryIngredientKey"
+/>
+
+<input
+  type="hidden"
+  name="emoji"
+  id="pantryIngredientEmoji"
+/>
+
+<input
+  type="hidden"
+  name="category"
+  id="pantryIngredientCategory"
+/>
             <div class="field">
               <label>Số lượng</label
               ><input
@@ -9619,43 +9638,54 @@
   setText("#homeRescued", summary.food.toFixed(1) + "kg");
   setText("#homeWasteReduction", summary.wasteReduction + "%");
 }
-      let pantryVisibleIds = null; // null = đang ở chế độ "sample mặc định 3 món"
-
-      function getVisiblePantry() {
-        return pantryVisibleIds
-          ? state.pantry.filter((i) => pantryVisibleIds.includes(i.id))
-          : state.pantry.slice(0, 3); // sample mặc định 3 nguyên liệu
-      }
+function getVisiblePantry() {
+  return state.pantry;
+}
 
       function populatePantryVisibleSelect() {
-        const sel = $("#pantrySearch");
-        if (!sel) return;
-        const current = sel.value;
-        const labels = {
-          protein: "Chất đạm",
-          vegetable: "Rau củ",
-          grain: "Tinh bột",
-          other: "Khác",
-        };
-        const groups = {};
-        state.pantry.forEach((i) => {
-          (groups[i.category] || (groups[i.category] = [])).push(i);
-        });
-        sel.innerHTML =
-          `<option value="">Chọn nguyên liệu để hiển thị...</option>` +
-          Object.entries(groups)
-            .map(
-              ([cat, items]) =>
-                `<optgroup label="${labels[cat] || cat}">${items
-                  .sort((a, b) => a.name.localeCompare(b.name, "vi"))
-                  .map(
-                    (i) => `<option value="${i.id}">${i.emoji} ${i.name}</option>`,
-                  )
-                  .join("")}</optgroup>`,
-            )
-            .join("");
-        sel.value = current || "";
-      }
+  const sel = $("#pantrySearch");
+  if (!sel) return;
+
+  const labels = {
+    protein: "Chất đạm",
+    vegetable: "Rau củ",
+    grain: "Tinh bột",
+    other: "Khác",
+  };
+
+  const groups = {};
+
+  Object.entries(catalog).forEach(([key, item]) => {
+    const category = item.category || "other";
+
+    if (!groups[category]) {
+      groups[category] = [];
+    }
+
+    groups[category].push({
+      key,
+      name: item.name,
+      emoji: item.emoji,
+    });
+  });
+
+  sel.innerHTML =
+    `<option value="">+ Thêm nguyên liệu</option>` +
+    Object.entries(groups)
+      .map(
+        ([category, items]) =>
+          `<optgroup label="${labels[category] || category}">
+            ${items
+              .sort((a, b) => a.name.localeCompare(b.name, "vi"))
+              .map(
+                (item) =>
+                  `<option value="${item.key}">${item.emoji} ${item.name}</option>`,
+              )
+              .join("")}
+          </optgroup>`,
+      )
+      .join("");
+}
 
       function renderPantry() {
         const f = $("#pantryFilter")?.value || "all",
@@ -10606,34 +10636,63 @@
         openModal("pantryModal");
       };
       $("#pantryForm").onsubmit = (e) => {
-        e.preventDefault();
-        const d = Object.fromEntries(new FormData(e.target)),
-          key = d.name.toLowerCase().replace(/\s+/g, "-");
-        state.pantry.push({
-          id: crypto.randomUUID(),
-          key,
-          name: d.name,
-          emoji: d.emoji || "🥣",
-          qty: +d.qty,
-          unit: d.unit,
-          expiry: d.expiry,
-          condition: d.condition,
-          category: d.category,
-        });
-        save();
-        closeModal("pantryModal");
-        e.target.reset();
-        renderPantry();
-        renderBuilder();
-        showToast("Đã thêm nguyên liệu vào tủ lạnh.");
-      };
+  e.preventDefault();
+
+  const d = Object.fromEntries(
+    new FormData(e.target),
+  );
+
+  const ingredient = catalog[d.key];
+
+  if (!ingredient) return;
+
+  // Không thêm trùng cùng một nguyên liệu
+  const existing = state.pantry.find(
+    (item) => item.key === d.key,
+  );
+
+  if (existing) {
+    existing.qty = +d.qty;
+    existing.unit = d.unit;
+    existing.expiry = d.expiry;
+    existing.condition = d.condition;
+  } else {
+    state.pantry.push({
+      id: crypto.randomUUID(),
+      key: d.key,
+      name: ingredient.name,
+      emoji: ingredient.emoji,
+      qty: +d.qty,
+      unit: d.unit,
+      expiry: d.expiry,
+      condition: d.condition,
+      category: ingredient.category || "other",
+    });
+  }
+
+  save();
+
+  closeModal("pantryModal");
+
+  e.target.reset();
+
+  renderPantry();
+
+  renderBuilder();
+
+  showToast(
+    existing
+      ? "Đã cập nhật nguyên liệu trong tủ."
+      : "Đã thêm nguyên liệu vào tủ lạnh.",
+  );
+};
       $("#openFamilyModal").onclick = () => openModal("familyModal");
       $("#familyForm").onsubmit = (e) => {
         e.preventDefault();
         const d = Object.fromEntries(new FormData(e.target));
         state.members.push({
           id: crypto.randomUUID(),
-          name: d.name,
+          name: d.name
           role: d.role || "Thành viên",
           avatar: d.avatar || "🙂",
           goal: d.goal,
@@ -10650,14 +10709,32 @@
         renderFamily();
         showToast("Đã thêm thành viên gia đình.");
       };
-      $("#pantrySearch").onchange = (e) => {
-        const id = e.target.value;
-        if (!id) return;
-        if (!pantryVisibleIds)
-          pantryVisibleIds = state.pantry.slice(0, 3).map((i) => i.id);
-        if (!pantryVisibleIds.includes(id)) pantryVisibleIds.push(id);
-        renderPantry();
-      };
+     $("#pantrySearch").onchange = (e) => {
+  const key = e.target.value;
+
+  if (!key) return;
+
+  const ingredient = catalog[key];
+
+  if (!ingredient) return;
+
+  // Tự điền thông tin cố định từ catalog
+  $("#pantryIngredientKey").value = key;
+  $("#pantryIngredientName").value = ingredient.name;
+  $("#pantryIngredientEmoji").value = ingredient.emoji;
+  $("#pantryIngredientCategory").value =
+    ingredient.category || "other";
+
+  // Giá trị mặc định người dùng có thể chỉnh
+  $("#pantryForm [name=qty]").value = 1;
+  $("#pantryForm [name=expiry]").value = addDays(7);
+
+  // Mở form
+  openModal("pantryModal");
+
+  // Trả dropdown về trạng thái ban đầu
+  e.target.value = "";
+};
       $("#pantryFilter").onchange = renderPantry;
       $("#pantryCategory").onchange = renderPantry;
       $("#leftoverSelect").onchange = renderLeftovers;
