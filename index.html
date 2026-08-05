@@ -4958,15 +4958,22 @@
     <script>
       (function () {
         document.body.classList.add("landing-lock");
-        function dismissLanding() {
-          var landing = document.getElementById("landing");
-          if (!landing) return;
-          landing.classList.add("landing-hidden");
-          document.body.classList.remove("landing-lock");
-          setTimeout(function () {
-            landing.style.display = "none";
-          }, 500);
-        }
+       function dismissLanding() {
+  var landing = document.getElementById("landing");
+  if (!landing) return;
+  landing.classList.add("landing-hidden");
+  document.body.classList.remove("landing-lock");
+  setTimeout(function () {
+    landing.style.display = "none";
+    // Ép trình duyệt repaint lại các phần tử có backdrop-filter (như .topbar),
+    // vì khi lớp phủ fixed z-index cao biến mất, trình duyệt đôi khi không
+    // tự vẽ lại đúng layer GPU của phần tử phía dưới cho tới khi có thao tác khác.
+    document.body.style.display = "none";
+    void document.body.offsetHeight; // force reflow
+    document.body.style.display = "";
+    window.dispatchEvent(new Event("resize"));
+  }, 500);
+}
         document
           .getElementById("landingCtaBtn")
           .addEventListener("click", dismissLanding);
