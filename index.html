@@ -1626,6 +1626,17 @@
         justify-content: flex-end;
         border-top: 1px solid #e2e9e3;
       }
+      .journey-footer-side {
+  margin-top: 0;
+  margin-bottom: 16px;
+  padding: 0;
+  border-top: 0;
+  justify-content: stretch;
+}
+.journey-footer-side .primary-btn {
+  min-width: 0;
+  width: 100%;
+}
       .journey-footer .primary-btn {
         min-width: 300px;
         min-height: 54px;
@@ -5350,7 +5361,13 @@
               </div>
               <div class="pantry-grid" id="pantryGrid"></div>
             </section>
-            <aside class="pantry-side">
+           <aside class="pantry-side">
+              <div class="journey-footer journey-footer-side">
+                <button class="primary-btn" id="pantryNextBtn" type="button">
+                  Tiếp tục: Bước 1 Tạo bữa ăn
+                  <i data-lucide="arrow-right" width="18"></i>
+                </button>
+              </div>
               <section class="panel side-card">
                 <div class="panel-title">
                   <h3>Tổng quan tủ lạnh</h3>
@@ -5388,12 +5405,7 @@
               </div>
             </aside>
           </div>
-          <div class="journey-footer">
-            <button class="primary-btn" id="pantryNextBtn" type="button">
-              Tiếp tục: Bước 1 Tạo bữa ăn
-              <i data-lucide="arrow-right" width="18"></i>
-            </button>
-          </div>
+         
         </section>
         <section class="view" id="builderView">
           <div class="page-head">
