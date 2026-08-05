@@ -9823,39 +9823,15 @@
           .replace(/[\u0300-\u036f]/g, "")
           .replace(/đ/g, "d");
       }
-      function addBuilderIngredient(name, qty = 1, unit = "g") {
+      function addBuilderIngredient(name) {
         const normalized = normalizedIngredientName(name);
         if (!normalized) return;
-        let entry = Object.entries(catalog).find(
-          ([, item]) => normalizedIngredientName(item.name) === normalized,
+        const pantryItem = state.pantry.find(
+          (item) => normalizedIngredientName(item.name) === normalized,
         );
-        const key = entry
-          ? entry[0]
-          : normalized.replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-        const info = entry?.[1] || {
-          name: name.trim(),
-          emoji: "🥣",
-          category: "other",
-          price: 12000,
-        };
-        if (!catalog[key]) catalog[key] = info;
-        let pantryItem = state.pantry.find((item) => item.key === key);
         if (!pantryItem) {
-          pantryItem = {
-            id: crypto.randomUUID(),
-            key,
-            name: info.name,
-            emoji: info.emoji,
-            qty: Number(qty) || 1,
-            unit,
-            expiry: addDays(7),
-            condition: "fresh",
-            category: info.category,
-          };
-          state.pantry.push(pantryItem);
-        } else {
-          pantryItem.qty = Number(qty) || pantryItem.qty;
-          pantryItem.unit = unit || pantryItem.unit;
+          showToast("Nguyên liệu này chưa có trong tủ lạnh. Hãy thêm vào tủ trước ở Bước 0.");
+          return;
         }
         state.builder.selectedPantry = [
           ...new Set([...state.builder.selectedPantry, pantryItem.id]),
@@ -9898,29 +9874,18 @@
           : `<div class="ingredient-empty"><div><strong>Chưa có nguyên liệu nào</strong>Nhập nguyên liệu ở phía trên hoặc chọn một gợi ý nhanh để bắt đầu.</div></div>`;
         $("#selectedIngredientCount").textContent =
           `${selectedIngredients.length} nguyên liệu`;
-        $("#builderIngredientOptions").innerHTML = Object.values(catalog)
+        $("#builderIngredientOptions").innerHTML = state.pantry
+          .slice()
           .sort((a, b) => a.name.localeCompare(b.name, "vi"))
           .map((item) => `<option value="${item.name}"></option>`)
           .join("");
-        const quickKeys = [
-          "chicken",
-          "egg",
-          "pork",
-          "beef",
-          "tofu",
-          "rice",
-          "tomato",
-          "greens",
-          "mushroom",
-          "shrimp",
-          "potato",
-          "carrot",
-        ];
-        $("#builderIngredientSuggestions").innerHTML = quickKeys
-          .filter((key) => catalog[key])
+        const quickItems = state.pantry
+          .filter((item) => !state.builder.selectedPantry.includes(item.id))
+          .slice(0, 12);
+        $("#builderIngredientSuggestions").innerHTML = quickItems
           .map(
-            (key) =>
-              `<button class="ingredient-suggestion" type="button" data-add-ingredient="${key}">${catalog[key].emoji} ${catalog[key].name} +</button>`,
+            (item) =>
+              `<button class="ingredient-suggestion" type="button" data-add-ingredient="${item.id}">${item.emoji} ${item.name} +</button>`,
           )
           .join("");
         $("#builderFamily").innerHTML = state.members
@@ -10718,11 +10683,7 @@
       $("#leftoverSelect").onchange = renderLeftovers;
       $("#builderIngredientForm").onsubmit = (e) => {
         e.preventDefault();
-        addBuilderIngredient(
-          $("#builderIngredientName").value,
-          $("#builderIngredientQty").value,
-          $("#builderIngredientUnit").value,
-        );
+        addBuilderIngredient($("#builderIngredientName").value);
         $("#builderIngredientName").value = "";
         $("#builderIngredientQty").value = "1";
         $("#builderIngredientName").focus();
@@ -10730,13 +10691,14 @@
       $("#builderIngredientSuggestions").onclick = (e) => {
         const button = e.target.closest("[data-add-ingredient]");
         if (!button) return;
-        const key = button.dataset.addIngredient;
-        const existing = state.pantry.find((item) => item.key === key);
-        addBuilderIngredient(
-          catalog[key].name,
-          existing?.qty || 1,
-          existing?.unit || "g",
-        );
+        const id = button.dataset.addIngredient;
+        const item = state.pantry.find((p) => p.id === id);
+        if (!item) return;
+        state.builder.selectedPantry = [
+          ...new Set([...state.builder.selectedPantry, item.id]),
+        ];
+        save();
+        renderBuilder();
       };
       $("#clearBuilderIngredients").onclick = () => {
         state.builder.selectedPantry = [];
