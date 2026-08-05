@@ -10692,7 +10692,7 @@ function getVisiblePantry() {
         const d = Object.fromEntries(new FormData(e.target));
         state.members.push({
           id: crypto.randomUUID(),
-          name: d.name
+          name: d.name,
           role: d.role || "Thành viên",
           avatar: d.avatar || "🙂",
           goal: d.goal,
